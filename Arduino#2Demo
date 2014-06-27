@@ -1,0 +1,79 @@
+//device #2 of 5 connected Galileos - this is SLAVE2
+//Forest Park School Molecule Interactive Wall
+//This sketch is for lighting up indicator LEDs, 
+//and sending onto and receiving/detecting 5V on the next portion 
+//of the "snap circuit."
+//When a connection is made at 1 of 6 inputs 
+//(in order of location on wall, from bottom to top: 
+//(1) pressure sensor, (2)toggle,
+//(3)joystick, (4)photoresistor, 
+//(5)slide potentiometer, and (6)turn knob potentiometer), 
+//this code sends 5V from that connection point.
+//Travis Feldman, Molecule Synth
+//ADX Portland, OR - May 2014
+
+#include <Wire.h>
+
+const int write5V4 (A0);
+const int write5V5 (A1);
+const int write5V6 (A2);
+
+const int read5V6 (A3);
+//A4 and A5 are used for I2C, A4 is data (SDA) and A5 is clock (ACL)
+
+const int ledInput1 (0);
+const int ledInput2 (1);
+const int ledInput3 (2);
+const int ledInput4 (3);
+const int ledInput5 (4);
+const int ledInput6 (5);
+
+const int write5V1 (6);
+const int write5V2 (7);
+const int write5V3 (8);
+
+const int read5V1 (9);
+const int read5V2 (10);
+const int read5V3 (11);
+const int read5V4 (12);
+const int read5V5 (13);
+
+void setup ()
+ {
+   pinMode (ledInput1, OUTPUT);
+   pinMode (ledInput2, OUTPUT);
+   pinMode (ledInput3, OUTPUT);
+   pinMode (ledInput4, OUTPUT);
+   pinMode (ledInput5, OUTPUT);
+   pinMode (ledInput6, OUTPUT);
+   
+Wire.begin(2); //this assigns the number 2 to this device on the I2C bus
+
+ }
+
+void loop (){ 
+  
+  digitalWrite (ledInput1, HIGH);
+   delay (100);
+   digitalWrite (ledInput1, LOW);
+   
+   digitalWrite (ledInput2, HIGH);
+   delay (100);
+   digitalWrite (ledInput2, LOW);
+   
+   digitalWrite (ledInput3, HIGH);
+   delay (100);
+   digitalWrite (ledInput3, LOW);
+   
+   digitalWrite (ledInput4, HIGH);
+   delay (100);
+   digitalWrite (ledInput4, LOW);
+   
+   digitalWrite (ledInput5, HIGH);
+   delay (100);
+   digitalWrite (ledInput5, LOW);
+   
+   digitalWrite (ledInput6, HIGH);
+   delay (100);
+   digitalWrite (ledInput6, LOW);
+}
