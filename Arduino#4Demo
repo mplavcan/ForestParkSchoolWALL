@@ -1,0 +1,116 @@
+//device #4 of 5 interconnected Galileos - SLAVE4
+//this is a "receiving_slave" looking for data from MASTER1.
+//it looks for 5V and lights up LEDs when a connection is made.
+
+//Forest Park School Molecule Interactive Wall
+//Travis Feldman, Molecule Synth
+//Portland, OR - May 2014
+
+#include <Wire.h>
+
+const int readSpeaker (A0);
+const int readLED1 (A1);
+const int readLED2 (A2);
+const int readLED3 (A3);
+
+//A4 and A5 are used for I2C, A4 is data (SDA) and A5 is clock (ACL)
+
+const int readMotor1 (0);
+const int readMotor2 (1);
+
+const int writeSpeaker (2);  //these are indicator LEDs, one on each of the components' hexagons
+const int writeLED3 (3);
+const int writeMotor2 (4);
+const int writeLED2 (5);
+const int writeMotor1 (6);
+const int writeLED1 (7);
+
+const int ledDisplay1A (8);
+const int ledDisplay1B (9);
+const int ledDisplay2A (10);
+const int ledDisplay2B (11);
+const int ledDisplay2C (12);
+const int ledDisplay3 (13);
+
+void setup ()
+ {
+   
+   
+Wire.begin(4); //this assigns the number 4 to this device on the I2C bus
+
+//Initialize the pins -- inputs for connectors, and outputs for 
+//indicator LEDs and student soldered LED panels.
+
+   pinMode(readSpeaker, INPUT);
+   pinMode(readLED1, INPUT);
+   pinMode(readLED2, INPUT);
+   pinMode(readLED3, INPUT);
+   pinMode(readMotor1, INPUT);
+   pinMode(readMotor2, INPUT);
+   pinMode(writeSpeaker, OUTPUT);
+   pinMode(writeLED1, OUTPUT);
+   pinMode(writeLED2, OUTPUT);
+   pinMode(writeLED3, OUTPUT);
+   pinMode(writeMotor1, OUTPUT);
+   pinMode(writeMotor2,OUTPUT);
+   pinMode(ledDisplay1A, OUTPUT);
+   pinMode(ledDisplay1B, OUTPUT);
+   pinMode(ledDisplay2A, OUTPUT);
+   pinMode(ledDisplay2B, OUTPUT);
+   pinMode(ledDisplay2C, OUTPUT);
+   pinMode(ledDisplay3, OUTPUT);
+   
+ }
+
+void loop (){ 
+   
+  digitalWrite (writeLED1, HIGH);
+  delay (500);
+   digitalWrite (writeLED1, LOW);
+   
+  digitalWrite (writeLED2, HIGH);
+  delay (500);
+   digitalWrite (writeLED2, LOW);
+   
+  digitalWrite (writeLED3, HIGH);
+  delay (500);
+   digitalWrite (writeLED3, LOW);
+   
+   
+  digitalWrite (writeMotor2, HIGH);
+  delay(500);
+  digitalWrite (writeMotor2, LOW);
+  
+  
+  digitalWrite (ledDisplay1A, HIGH);
+   delay (500);
+   digitalWrite (ledDisplay1A, LOW);
+   
+   digitalWrite (ledDisplay1B, HIGH);
+   delay (500);
+   digitalWrite (ledDisplay1B, LOW);
+   
+   digitalWrite (ledDisplay2A, HIGH);
+   delay (500);
+   digitalWrite (ledDisplay2A, LOW);
+   
+   digitalWrite (ledDisplay2B, HIGH);
+   delay (500);
+   digitalWrite (ledDisplay2B, LOW);
+   
+   digitalWrite (ledDisplay2C, HIGH);
+   delay (500);
+   digitalWrite (ledDisplay2C, LOW);
+   
+   digitalWrite (writeMotor1, HIGH);
+  delay (500);
+   digitalWrite (writeMotor1, LOW);
+   
+   digitalWrite (writeSpeaker, HIGH);
+  delay (500);
+   digitalWrite (writeSpeaker, LOW);
+   
+   digitalWrite (ledDisplay3, HIGH);
+   delay (500);
+   digitalWrite (ledDisplay3, LOW);
+}
