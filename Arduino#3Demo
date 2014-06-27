@@ -1,0 +1,74 @@
+//device #3 of 5 interconnected Galileos - this is SLAVE3, 
+//it is a slave_receiver looking for data from MASTER1 (Molecule1).
+//sketch for "output" side of Molecule Wall
+//controlling Arduino Motor Shield with two DC motors
+//Forest Park School Molecule Interactive Wall
+//Travis Feldman, Molecule Synth
+//ADX Portland, OR - May 2014
+
+
+#include <Wire.h>
+
+
+void setup() {
+  
+//Wire.begin(3);   //this assigns #3 to this device on the I2C bus
+//Wire.onReceive(receiveEvent); // register event
+  //Serial.begin(9600);           // start serial for output
+//}
+
+  //Setup Channel A
+  pinMode(12, OUTPUT); //Initiates Motor Channel A pin
+  pinMode(9, OUTPUT); //Initiates Brake Channel A pin
+
+  //Setup Channel B
+  pinMode(13, OUTPUT); //Initiates Motor Channel B pin
+  pinMode(8, OUTPUT);  //Initiates Brake Channel B pin
+  
+}
+
+void loop(){
+
+  
+  //Motor A forward @ full speed
+  digitalWrite(12, HIGH); //Establishes forward direction of Channel A
+  digitalWrite(9, LOW);   //Disengage the Brake for Channel A
+  analogWrite(3, 255);   //Spins the motor on Channel A at full speed
+
+  //Motor B backward @ half speed
+  digitalWrite(13, LOW);  //Establishes backward direction of Channel B
+  digitalWrite(8, LOW);   //Disengage the Brake for Channel B
+  analogWrite(11, 123);    //Spins the motor on Channel B at half speed
+
+  
+  delay(3000);
+
+  
+  digitalWrite(9, HIGH);  //Engage the Brake for Channel A
+  digitalWrite(9, HIGH);  //Engage the Brake for Channel B
+
+
+  delay(1000);
+  
+  
+  //Motor A forward @ full speed
+  digitalWrite(12, LOW);  //Establishes backward direction of Channel A
+  digitalWrite(9, LOW);   //Disengage the Brake for Channel A
+  analogWrite(3, 123);    //Spins the motor on Channel A at half speed
+  
+  //Motor B forward @ full speed
+  digitalWrite(13, HIGH); //Establishes forward direction of Channel B
+  digitalWrite(8, LOW);   //Disengage the Brake for Channel B
+  analogWrite(11, 255);   //Spins the motor on Channel B at full speed
+  
+  
+  delay(3000);
+  
+  
+  digitalWrite(9, HIGH);  //Engage the Brake for Channel A
+  digitalWrite(9, HIGH);  //Engage the Brake for Channel B
+  
+  
+  delay(1000);
+  
+}
