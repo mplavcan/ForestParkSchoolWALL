@@ -1,0 +1,56 @@
+//device #5 of 5 interconnected Galileos - SLAVE5
+//NOTE: for some reason, Galileo did not like this code, 
+//so we'll run it on either an Arduino Uno R3 or Sparkfun Red Board;
+//this sketch is for "output" side of Molecule Wall,
+//creating sound for speaker/transducer, 
+//"Twinkle Twinkle" is the demo song,
+//based on sketch "ch9r2" in the Arduino Cookbook 2ndEd.
+
+//Forest Park School Molecule Interactive Wall
+//Travis Feldman, Molecule Synth
+//ADX Portland, OR - May 2014
+
+#include <Wire.h>
+
+
+const int speakerPin = 3; // connect speaker to pin 3
+
+char noteNames[] =     {'C','D','E','F','G','a','b'};
+unsigned int frequencies[] = {262,294,330,349,392,440,494};
+const byte noteCount = sizeof(noteNames); // the number of notes 
+                                          // (7 in this example)
+
+//notes, a space represents a rest
+char score[] = "CCGGaaGFFEEDDC GGFFEEDGGFFEED CCGGaaGFFEEDDC ";  
+const byte scoreLen = sizeof(score); // the number of notes in the score
+
+void setup()
+{
+}
+
+void loop()
+{
+  for (int i = 0; i < scoreLen; i++)
+  {
+    int duration = 333;  // each note lasts for a third of a second
+    playNote(score[i], duration); // play the note
+  }
+
+  delay(3000); // wait three seconds before repeating the song
+}
+
+void playNote(char note, int duration)
+{
+  // play the tone corresponding to the note name
+  for (int i = 0; i < noteCount; i++)
+  {
+    // try and find a match for the noteName to get the index to the note
+    if (noteNames[i] == note) // find a matching note name in the array
+      //  play the note using the frequency:
+      tone(speakerPin, frequencies[i], duration); 
+  }
+  // if there is no match then the note is a rest, so just do the delay
+  delay(duration);
+}
+      
+    
