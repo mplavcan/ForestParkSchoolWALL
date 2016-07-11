@@ -11,5 +11,5 @@ It is designed to be an attraction to introduce students to the ideas of circuit
 
 [Wall Conceptual Design](documentation/Concept.md)
 [2016 Board Electrical Redesign](documentation/Redesign.md)
-[Programming the Wall](documenation/Programming.md)
+[Programming the Wall](documentation/Programming.md)
 
