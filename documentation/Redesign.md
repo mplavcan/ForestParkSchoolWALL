@@ -12,7 +12,7 @@ I/O was distributed through six Arduinos:
 * Four others handled miscellaneous I/O
 
 Lots of this:
-[Bird's nest of Wire](pictures/old_wiring.jpg)
+[Bird's nest of Wire](/pictures/old_wiring.jpg)
 
 The replacement design consolidated the control into a single Arduino101, keeping the Sparkfun board for EL control, and handling the other I/O via expansion boards:
 * Four Sparkfun SX1509 I2C 16-channel digital I/O
@@ -21,7 +21,7 @@ The replacement design consolidated the control into a single Arduino101, keepin
 * One Adafruit TB6612 2-channel motor controller
 * One Adafruit TCA9548 I2C multiplexer (to avoid multiple devices with the same address conflicting on the I2C bus)
 
-[Reverse side of Wall showing boards](pictures/Wall_reverse_side_boards.tiff)
+[Reverse side of Wall showing boards](/pictures/Wall_reverse_side_boards.tiff)
 
 The group added a SeeedStudio Grove I2C RGB LCD display under a clear hex in the upper left corner of the Wall to provide additional visual feedback.
 
