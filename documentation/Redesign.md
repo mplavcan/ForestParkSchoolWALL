@@ -8,18 +8,19 @@ With very little circuit documentation, and a large amount of wiring to sort thr
 
 I/O was distributed through six Arduinos:
 * One had a motor shield to handle the motors
-* One had a Sparkfun El Escudo Dos to control the EL wire
+* One had a [Sparkfun El Escudo Dos](https://www.sparkfun.com/products/10878) to control the EL wire
 * Four others handled miscellaneous I/O
 
 Lots of this:
+
 ![Bird's nest of Wire](/pictures/old_wiring.jpg)
 
-The replacement design consolidated the control into a single Arduino101, keeping the Sparkfun board for EL control, and handling the other I/O via expansion boards:
-* Four Sparkfun SX1509 I2C 16-channel digital I/O
-* Two Adafruit ADS1015 I2C 4-channel 12-bit analog inputs
-* One Adafruit TCA9685 I2C 16-channel PWM driver outputs
-* One Adafruit TB6612 2-channel motor controller
-* One Adafruit TCA9548 I2C multiplexer (to avoid multiple devices with the same address conflicting on the I2C bus)
+The replacement design consolidated the control into a single [Intel Arduino 101](http://www.intel.com/content/www/us/en/do-it-yourself/arduino-101.html), keeping the Sparkfun board for EL control, and handling the other I/O via expansion boards:
+* Four [Sparkfun SX1509 I2C 16-channel digital I/O](https://www.sparkfun.com/products/13601)
+* Two [Adafruit ADS1015 I2C 4-channel 12-bit analog inputs](https://www.adafruit.com/products/1083)
+* One [Adafruit TCA9685 I2C 16-channel PWM driver outputs](https://learn.adafruit.com/16-channel-pwm-servo-driver/overview)
+* One [Adafruit TB6612 2-channel motor controller](https://www.adafruit.com/products/2448)
+* One [Adafruit TCA9548a I2C multiplexer](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (to avoid multiple devices with the same address conflicting on the I2C bus)
 
 ![Reverse side of Wall showing boards](/pictures/Wall_reverse_side_boards.tiff)
 

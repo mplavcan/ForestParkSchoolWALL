@@ -3,7 +3,8 @@ Programming
 
 Arduino and Friends
 -------------------
-The Wall is powered by a single Intel Arduino 101 ("Curie"), assited by several I/O expansion boards.  The libraries for these  will need to be included in any sketch in order for the Wall to function correctly:
+The Wall is powered by a single [Intel Arduino 101 "Curie"](https://www.arduino.cc/en/Guide/Arduino101)
+ assisted by several I/O expansion boards.  The libraries for these  will need to be included in any sketch in order for the Wall to function correctly:
 * Sparkfun SX1509 IO Expander
 * Adafruit ADS1X15
 * Adafruit PWM Servo Driver Library
