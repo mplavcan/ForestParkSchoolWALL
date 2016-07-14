@@ -1,4 +1,4 @@
 Wall_IO
 =======
 
-Wall Input/Outpu Object
+Wall Input/Output Object
