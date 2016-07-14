@@ -19,9 +19,9 @@
 #define SPARKFUN_SX1509_THIRD_I2C_BUS        0
 #define SPARKFUN_SX1509_FOURTH_I2C_BUS       0
 #define GROVE_I2C_BUS                        0
-#define ADAFRUIT_PWM_I2C_ADDRESS             1
-#define ADAFRUIT_ANALOG_FIRST_I2C_ADDRESS    0 
-#define ADAFRUIT_ANALOG_SECOND_I2C_ADDRESS   0
+#define ADAFRUIT_PWM_I2C_BUS                 1
+#define ADAFRUIT_ANALOG_FIRST_I2C_BUS        0 
+#define ADAFRUIT_ANALOG_SECOND_I2C_BUS       0
 
 // El Escudo Dos Electroluminescent wires
 // (Arduino pins D2-D9)
