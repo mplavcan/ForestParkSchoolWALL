@@ -21,10 +21,13 @@ On the right (mountain) side are "battery negative" terminal and six outputs:
 * LED array (green)
 * Transducer (speaker)
 
-The circuits allow any one of the input types to be connected to one of the outputs using a series of wooden blocks to bridge across the intervening hexes.  When a full connection between the positive/input/output/negative conenction are made, the input will manipulate the output.
-
 The board also has five large illuminated colored buttons (Red, Green, White, Blue, Yellow) that are associated with electroluminescent wire wrapped under the hexes.  
 
 A LCD with a selectable color backlight occupies a hex in th upper-left corner of the board.
 
-All components are software controllable, independent of each other.  While the students appear to be creating circuits, in fact the grid connections are only inputs to the Arduino.
+The circuits allow any one of the input types to be connected to one of the outputs using a series of wooden blocks to bridge across the intervening hexes.  When a full connection between the positive/input/output/negative conenction are made, the input will manipulate the output.
+
+All components are software controllable by the Arduino, independent of each other.  While the students appear to be creating circuits, in fact the software is making the decision about what to activate.  This also prevents accidental damage from being done by "short circuits"
+
+
+
