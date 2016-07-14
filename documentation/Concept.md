@@ -1,7 +1,9 @@
 Board Design
 ============
 
-The board consists of an artistic map of the state of Oregon, laid out using hexagons.
+The board consists of an artistic map of the state of Oregon, laid out using hexagons:
+
+![Board front showing hexes](/pictures/Board_Hexes.jpg)
 
 On the left (ocean) side are a "battery positive" terminal and six input types:
 * Rotary potentiometer (knob)
