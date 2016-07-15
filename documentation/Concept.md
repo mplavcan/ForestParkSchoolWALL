@@ -1,6 +1,8 @@
 Board Design
 ============
 
+Board concept was created by [Travis Feldman](http://travisfeldman.org) in June 2014
+
 The board consists of an artistic map of the state of Oregon, laid out using hexagons:
 
 ![Board front showing hexes](/pictures/Board_Hexes.jpg)
