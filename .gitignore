@@ -4,8 +4,11 @@
 *.userosscache
 *.sln.docstates
 
-# User-specific files (MonoDevelop/Xamarin Studio)
+# User-specific files 
 *.userprefs
+
+# NuGet packages
+packages/
 
 # Build results
 [Dd]ebug/
