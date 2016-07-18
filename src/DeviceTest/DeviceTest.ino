@@ -1,8 +1,7 @@
-/*
- Name:		DeviceTest.ino
- Created:	7/13/2016 4:19:16 PM
- Author:	mplavcan
-*/
+// Basic exercise of all forest Park School Wall components
+//
+
+#include <Arduino.h>
 
 // the setup function runs once when you press reset or power the board
 void setup() {

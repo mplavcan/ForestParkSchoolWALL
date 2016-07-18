@@ -1,8 +1,7 @@
-/*
- Name:		Main.ino
- Created:	7/13/2016 4:16:10 PM
- Author:	mplavcan
-*/
+// Main program for Forest Park School Wall
+//
+
+#include <Arduino.h>
 
 // the setup function runs once when you press reset or power the board
 void setup() {
