@@ -78,9 +78,6 @@
   <ItemGroup>
     <ClInclude Include="__vm\.DeviceTest.vsarduino.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\libraries\Wall\src\Wall.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
