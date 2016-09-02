@@ -2,6 +2,9 @@
 //
 
 #include <Arduino.h>
+#include <Wire.h>
+#include <SparkFunSX1509.h>
+#include "Wall.h"
 
 // the setup function runs once when you press reset or power the board
 void setup() {

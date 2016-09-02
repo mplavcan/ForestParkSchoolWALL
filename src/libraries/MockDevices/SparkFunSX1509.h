@@ -40,7 +40,7 @@ class SX1509
 class SX1509Mock : public SX1509
 {
 public:
-    MOCK_METHOD2(begin, byte (byte, byte));
+    MOCK_METHOD2(begin, byte(byte, byte));
     MOCK_METHOD1(reset, void (bool));
     MOCK_METHOD2(pinMode, void (byte, byte));
     MOCK_METHOD2(digitalWrite, void (byte, byte));
