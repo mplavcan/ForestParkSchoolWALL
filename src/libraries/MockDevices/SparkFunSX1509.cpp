@@ -9,4 +9,7 @@ SX1509Mock* SX1509MockInstance()
     return new SX1509Mock();
 }
 
-void releaseSX1509Mock() {}
+void releaseSX1509Mock(SX1509Mock *mock)
+{
+    delete mock;
+}

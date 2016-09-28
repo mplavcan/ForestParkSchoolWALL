@@ -8,8 +8,9 @@
 #include "Wall.h"
 
 // I2C multiplexer select vectors
-#define FIRST_I2C_BUS_SELECT_VECTOR 0x01
-#define SECOND_I2C_BUS_SELECT_VECTOR 0x02
+#define I2C_MUX_BUS_ZERO_SELECTED 0x01
+#define I2C_MUX_BUS_ONE_SELECTED 0x02
+#define WIRE_TRANSMIT_SUCCESS 1
 
 namespace testing {
 
@@ -18,35 +19,40 @@ using testing::StrictMock;
 class WallFixture : public Test {
 protected:
     
-    SX1509Mock* mock_io_expander;
-    WireMock* mock_i2c;
+    StrictMock<SX1509Mock> *mock_io_expander;
+    StrictMock<WireMock> *mock_i2c;
     Wall *wall;
 
     WallFixture() {
-        mock_i2c = WireMockInstance();
-        mock_io_expander = SX1509MockInstance();
+        mock_i2c = static_cast<StrictMock<WireMock> *>(WireMockInstance());
+        mock_io_expander = static_cast<StrictMock<SX1509Mock> *>(SX1509MockInstance());
         wall = new Wall(mock_io_expander);
     }
 
     virtual ~WallFixture() {
-        releaseSX1509Mock();
+        releaseWireMock();
+        releaseSX1509Mock(mock_io_expander);
+        delete wall;
     }
 };
 
 
 TEST_F(WallFixture, TestInitializeI2CDevices)
 {
-    EXPECT_CALL(*mock_i2c,
+  InSequence init;
+
+  EXPECT_CALL(*mock_i2c,
         beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
     EXPECT_CALL(*mock_i2c,
-        write(SPARKFUN_SX1509_FIRST_I2C_BUS));
-   EXPECT_CALL(*mock_i2c,
+        write(I2C_MUX_BUS_ONE_SELECTED));
+    EXPECT_CALL(*mock_i2c,
         endTransmission())
-        .WillOnce(Return(1));
+        .WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
 
     EXPECT_CALL(*mock_io_expander, 
         begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
-        .WillOnce(Return(1));
+        .WillOnce(Return(true));
+
     ASSERT_EQ(wall->Initialize(), true);
 }
 

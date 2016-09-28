@@ -18,5 +18,6 @@ int Wall::set_multiplexer_i2c_bus(uint8_t bus) {
 
 bool Wall::Initialize()
 {
+    set_multiplexer_i2c_bus(SPARKFUN_SX1509_FIRST_I2C_BUS);
     return io_expander->begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS);
 }

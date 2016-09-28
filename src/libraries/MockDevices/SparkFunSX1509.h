@@ -60,7 +60,7 @@ public:
 };  
 
 SX1509Mock* SX1509MockInstance();
-void releaseSX1509Mock();
+void releaseSX1509Mock(SX1509Mock *mock);
 
 typedef SX1509 sx1509Class;
 
