@@ -39,9 +39,9 @@ protected:
 
 TEST_F(WallFixture, TestInitializeI2CDevices)
 {
-  InSequence init;
+    InSequence init;
 
-  EXPECT_CALL(*mock_i2c,
+    EXPECT_CALL(*mock_i2c,
         beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
     EXPECT_CALL(*mock_i2c,
         write(I2C_MUX_BUS_ONE_SELECTED));
@@ -58,7 +58,7 @@ TEST_F(WallFixture, TestInitializeI2CDevices)
 
 }; // namespace
 
-   // Entry point for Google Test
+// Entry point for Google Test
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
