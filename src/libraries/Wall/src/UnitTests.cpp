@@ -7,6 +7,10 @@
 #include "../../MockDevices/SparkFunSX1509.h"
 #include "Wall.h"
 
+// I2C multiplexer select vectors
+#define FIRST_I2C_BUS_SELECT_VECTOR 0x01
+#define SECOND_I2C_BUS_SELECT_VECTOR 0x02
+
 namespace testing {
 
 using testing::StrictMock;
@@ -36,12 +40,12 @@ TEST_F(WallFixture, TestInitializeI2CDevices)
         beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
     EXPECT_CALL(*mock_i2c,
         write(SPARKFUN_SX1509_FIRST_I2C_BUS));
-    EXPECT_CALL(*mock_i2c,
+   EXPECT_CALL(*mock_i2c,
         endTransmission())
         .WillOnce(Return(1));
 
     EXPECT_CALL(*mock_io_expander, 
-        begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, 255))
+        begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(1));
     ASSERT_EQ(wall->Initialize(), true);
 }

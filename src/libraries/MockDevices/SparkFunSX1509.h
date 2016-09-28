@@ -14,6 +14,12 @@
 #define SOFTWARE_RESET 0
 #define HARDWARE_RESET 1
 #define ANALOG_OUTPUT 0x3
+#define SPARKFUN_SX1509_RESET_PIN 0xFF
+#define SPARKFUN_SX1509_DEFAULT_I2C_ADDRESS 0x3E
+#define SPARKFUN_SX1509_MINIMUM_INTENSITY 0
+#define SPARKFUN_SX1509_MAXIMUM_INTENSITY 255
+#define SPARKFUN_SX1509_MINIMUM_DURATION 0
+#define SPARKFUN_SX1509_MAXIMUM_DURATION 255
 
 typedef uint8_t boolean;
 typedef uint8_t byte;
@@ -23,16 +29,16 @@ class SX1509
 {
   public:
     SX1509() {}
-    virtual byte begin(byte address = 0x3E, byte resetPin = 0xFF) = 0;
+    virtual byte begin(byte address = SPARKFUN_SX1509_DEFAULT_I2C_ADDRESS, byte resetPin = SPARKFUN_SX1509_RESET_PIN) = 0;
     virtual void reset(bool hardware) = 0;
     virtual void pinMode(byte pin, byte inOut) = 0;
     virtual void digitalWrite(byte pin, byte highLow) = 0;
     virtual byte digitalRead(byte pin) = 0;
     virtual void ledDriverInit(byte pin, byte freq = 1, bool log = false) = 0;
     virtual void analogWrite(byte pin, byte iOn) = 0;
-    virtual void setupBlink(byte pin, byte tOn, byte toff, byte onIntensity = 255, byte offIntensity = 0, byte tRise = 0, byte tFall = 0, bool log = false) = 0;
-    virtual void blink(byte pin, unsigned long tOn, unsigned long tOff, byte onIntensity = 255, byte offIntensity = 0) = 0;
-    virtual void breathe(byte pin, unsigned long tOn, unsigned long tOff, unsigned long rise, unsigned long fall, byte onInt = 255, byte offInt = 0, bool log = LINEAR) = 0;
+    virtual void setupBlink(byte pin, byte tOn, byte toff, byte onIntensity = SPARKFUN_SX1509_MAXIMUM_INTENSITY, byte offIntensity = SPARKFUN_SX1509_MINIMUM_INTENSITY, byte tRise = SPARKFUN_SX1509_MINIMUM_DURATION, byte tFall = SPARKFUN_SX1509_MINIMUM_DURATION, bool log = false) = 0;
+    virtual void blink(byte pin, unsigned long tOn, unsigned long tOff, byte onIntensity = SPARKFUN_SX1509_MAXIMUM_INTENSITY, byte offIntensity = SPARKFUN_SX1509_MINIMUM_INTENSITY) = 0;
+    virtual void breathe(byte pin, unsigned long tOn, unsigned long tOff, unsigned long rise, unsigned long fall, byte onInt = SPARKFUN_SX1509_MAXIMUM_DURATION, byte offInt = SPARKFUN_SX1509_MINIMUM_DURATION, bool log = LINEAR) = 0;
     virtual void sync(void) = 0;
 };
 
