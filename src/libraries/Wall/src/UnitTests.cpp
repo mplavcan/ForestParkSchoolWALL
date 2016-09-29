@@ -34,21 +34,36 @@ protected:
         releaseSX1509Mock(mock_io_expander);
         delete wall;
     }
+
+    void WallFixture::expect_multiplexer_choice(int choice);
 };
 
 
-TEST_F(WallFixture, TestInitializeI2CDevices)
+TEST_F(WallFixture, TestMultiplexerSelectsBus0)
 {
-    InSequence init;
+    expect_multiplexer_choice(I2C_MUX_BUS_ZERO_SELECTED);
+    wall->set_multiplexer_i2c_bus(0);
+
+}
+
+void WallFixture::expect_multiplexer_choice(int choice)
+{
+    InSequence mux_bus_selection;
 
     EXPECT_CALL(*mock_i2c,
         beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
     EXPECT_CALL(*mock_i2c,
-        write(I2C_MUX_BUS_ONE_SELECTED));
+        write(choice));
     EXPECT_CALL(*mock_i2c,
         endTransmission())
         .WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
+}
 
+TEST_F(WallFixture, TestInitializeI2CDevices)
+{
+    InSequence init;
+    expect_multiplexer_choice(I2C_MUX_BUS_ONE_SELECTED);
+ 
     EXPECT_CALL(*mock_io_expander, 
         begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
