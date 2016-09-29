@@ -7,11 +7,6 @@
 #include "../../MockDevices/SparkFunSX1509.h"
 #include "Wall.h"
 
-// I2C multiplexer select vectors
-#define I2C_MUX_BUS_ZERO_SELECTED 0x01
-#define I2C_MUX_BUS_ONE_SELECTED 0x02
-#define WIRE_TRANSMIT_SUCCESS 1
-
 namespace testing {
 
 using testing::StrictMock;
@@ -39,11 +34,27 @@ protected:
 };
 
 
+// I2C multiplexer select vectors
+#define I2C_MUX_BUS_ZERO_SELECTED 0x01
+#define I2C_MUX_BUS_ONE_SELECTED 0x02
+#define I2C_MUX_BUS_TWO_SELECTED 0x04
+#define WIRE_TRANSMIT_SUCCESS 1
+
 TEST_F(WallFixture, TestMultiplexerSelectsBus0)
 {
     expect_multiplexer_choice(I2C_MUX_BUS_ZERO_SELECTED);
     wall->set_multiplexer_i2c_bus(0);
+}
 
+TEST_F(WallFixture, TestMultiplexerSelectsBus1)
+{
+    expect_multiplexer_choice(I2C_MUX_BUS_ONE_SELECTED);
+    wall->set_multiplexer_i2c_bus(1);
+}
+TEST_F(WallFixture, TestMultiplexerSelectsBus2)
+{
+    expect_multiplexer_choice(I2C_MUX_BUS_TWO_SELECTED);
+    wall->set_multiplexer_i2c_bus(2);
 }
 
 void WallFixture::expect_multiplexer_choice(int choice)
@@ -59,7 +70,10 @@ void WallFixture::expect_multiplexer_choice(int choice)
         .WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
 }
 
-TEST_F(WallFixture, TestInitializeI2CDevices)
+
+// Higher-level Wall tests
+//
+TEST_F(WallFixture, TestWallInitialization)
 {
     InSequence init;
     expect_multiplexer_choice(I2C_MUX_BUS_ONE_SELECTED);
