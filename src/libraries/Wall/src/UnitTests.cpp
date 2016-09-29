@@ -60,14 +60,9 @@ TEST_F(WallFixture, TestMultiplexerSelectsBus2)
 void WallFixture::expect_multiplexer_choice(int choice)
 {
     InSequence mux_bus_selection;
-
-    EXPECT_CALL(*mock_i2c,
-        beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
-    EXPECT_CALL(*mock_i2c,
-        write(choice));
-    EXPECT_CALL(*mock_i2c,
-        endTransmission())
-        .WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
+    EXPECT_CALL(*mock_i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
+    EXPECT_CALL(*mock_i2c, write(choice));
+    EXPECT_CALL(*mock_i2c, endTransmission()).WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
 }
 
 
