@@ -113,6 +113,9 @@
 #define OUTPUT_MOTOR2_IN2              12
 
 // LED array output array outputs
+//  Array 1 - White (left/right)
+//  Array 2 - Green (left/right)
+//  Array 3 - Red (quadrants)
 #define OUTPUT_LED_ARRAY_I2C_DEVICE    SPARKFUN_SX1509_SECOND_I2C_ADDRESS
 #define OUTPUT_LED_ARRAY_2_LEFT         0
 #define OUTPUT_LED_ARRAY_2_RIGHT        1
