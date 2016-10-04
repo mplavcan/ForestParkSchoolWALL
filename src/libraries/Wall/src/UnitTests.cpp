@@ -44,18 +44,6 @@ protected:
     void WallFixture::ExpectMultiplexerSelectedBus(int choice);
 };
 
-
-// I2C multiplexer select vectors
-class MuxFixture : public WallFixture, public ::testing::WithParamInterface<int> {
-};
-TEST_P(MuxFixture, TestMultiplexerSelection)
-{
-    int bus_selection = GetParam(); 
-    ExpectMultiplexerSelectedBus(bus_selection);
-    wall->set_multiplexer_i2c_bus(bus_selection);
-}
-INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
-
 void WallFixture::ExpectMultiplexerSelectedBus(int bus_choice)
 {
     int expected_bus_vector = 1 << bus_choice;
@@ -72,13 +60,25 @@ TEST_F(WallFixture, TestWallInitialization)
 {
     InSequence init;
     ExpectMultiplexerSelectedBus(1);
- 
-    EXPECT_CALL(*mock_io_expander1, 
+
+    EXPECT_CALL(*mock_io_expander1,
         begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
 
     ASSERT_EQ(wall->Initialize(), true);
 }
+
+// I2C multiplexer select vectors
+class MuxFixture : public WallFixture, public ::testing::WithParamInterface<int> {
+};
+TEST_P(MuxFixture, TestMultiplexerSelection)
+{
+    int bus_selection = GetParam(); 
+    ExpectMultiplexerSelectedBus(bus_selection);
+    wall->set_multiplexer_i2c_bus(bus_selection);
+}
+INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
+
 
 // LED array tests
 //
