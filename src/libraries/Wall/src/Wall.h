@@ -5,8 +5,6 @@
 
 #define LED_OFF 0
 #define LED_ON 1
-#define WHITE_LED_ARRAY_LEFT 0
-#define WHITE_LED_ARRAY_RIGHT 1
 
 
 class Wall

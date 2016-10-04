@@ -27,12 +27,5 @@ bool Wall::Initialize()
 void Wall::ChangeLEDState(int led_selector, int led_state)
 {
     set_multiplexer_i2c_bus(SPARKFUN_SX1509_SECOND_I2C_BUS);
-    int pin;
-    switch (led_selector)
-    {
-        case WHITE_LED_ARRAY_LEFT: pin = OUTPUT_LED_ARRAY_1_LEFT; break;
-        case WHITE_LED_ARRAY_RIGHT: pin = OUTPUT_LED_ARRAY_1_RIGHT; break;
-        default: break;
-    }
-    io_expander2->digitalWrite(pin, led_state);
+    io_expander2->digitalWrite(led_selector, led_state);
 }

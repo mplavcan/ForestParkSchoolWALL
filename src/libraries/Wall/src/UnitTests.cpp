@@ -6,6 +6,7 @@
 #include "../../arduino-mock/Wire.h"
 #include "../../MockDevices/SparkFunSX1509.h"
 #include "Wall.h"
+#include <tuple>
 
 namespace testing {
 
@@ -49,18 +50,20 @@ protected:
 #define I2C_MUX_BUS_ONE_SELECTED 0x02
 #define I2C_MUX_BUS_TWO_SELECTED 0x04
 #define WIRE_TRANSMIT_SUCCESS 1
+class MuxFixture : public WallFixture, public ::testing::WithParamInterface<tuple<int, int>> {
+};
 
-TEST_F(WallFixture, TestMultiplexerSelectsBus0)
+TEST_F(MuxFixture, TestMultiplexerSelectsBus0)
 {
     expect_multiplexer_choice(I2C_MUX_BUS_ZERO_SELECTED);
     wall->set_multiplexer_i2c_bus(0);
 }
-TEST_F(WallFixture, TestMultiplexerSelectsBus1)
+TEST_F(MuxFixture, TestMultiplexerSelectsBus1)
 {
     expect_multiplexer_choice(I2C_MUX_BUS_ONE_SELECTED);
     wall->set_multiplexer_i2c_bus(1);
 }
-TEST_F(WallFixture, TestMultiplexerSelectsBus2)
+TEST_F(MuxFixture, TestMultiplexerSelectsBus2)
 {
     expect_multiplexer_choice(I2C_MUX_BUS_TWO_SELECTED);
     wall->set_multiplexer_i2c_bus(2);
@@ -90,30 +93,29 @@ TEST_F(WallFixture, TestWallInitialization)
 
 // LED array tests
 //
-TEST_F(WallFixture, TestTurnLeftWhiteLEDArrayOn)
+class LEDFixture : public WallFixture, public ::testing::WithParamInterface<tuple<int,int>> {
+};
+
+TEST_P(LEDFixture, ChangeLedState)
 {
+    int led_array, led_state;
+    std::tie<int,int>(led_array, led_state) = GetParam();
+    
     InSequence led_change;
     expect_multiplexer_choice(I2C_MUX_BUS_ONE_SELECTED);
     EXPECT_CALL(*mock_io_expander2,
-        digitalWrite(OUTPUT_LED_ARRAY_1_LEFT, 1)).Times(1);
-    wall->ChangeLEDState(WHITE_LED_ARRAY_LEFT, LED_ON);
+        digitalWrite(led_array, led_state)).Times(1);
+    wall->ChangeLEDState(led_array, led_state);
 }
-TEST_F(WallFixture, TestTurnRightWhiteLEDArrayOn)
-{
-    InSequence led_change;
-    expect_multiplexer_choice(I2C_MUX_BUS_ONE_SELECTED);
-    EXPECT_CALL(*mock_io_expander2,
-        digitalWrite(OUTPUT_LED_ARRAY_1_RIGHT, 1)).Times(1);
-    wall->ChangeLEDState(WHITE_LED_ARRAY_RIGHT, LED_ON);
-}
-TEST_F(WallFixture, TestTurnRightWhiteLEDArrayOff)
-{
-    InSequence led_change;
-    expect_multiplexer_choice(I2C_MUX_BUS_ONE_SELECTED);
-    EXPECT_CALL(*mock_io_expander2,
-        digitalWrite(OUTPUT_LED_ARRAY_1_RIGHT, 0)).Times(1);
-    wall->ChangeLEDState(WHITE_LED_ARRAY_RIGHT, LED_OFF);
-}
+INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDFixture, Values(
+    std::make_tuple(OUTPUT_LED_ARRAY_WHITE_LEFT, LED_ON),
+    std::make_tuple(OUTPUT_LED_ARRAY_WHITE_RIGHT, LED_ON),
+    std::make_tuple(OUTPUT_LED_ARRAY_WHITE_RIGHT, LED_OFF),
+    std::make_tuple(OUTPUT_LED_ARRAY_GREEN_LEFT, LED_ON),
+    std::make_tuple(OUTPUT_LED_ARRAY_GREEN_RIGHT, LED_OFF),
+    std::make_tuple(OUTPUT_LED_ARRAY_RED_QUAD_2, LED_ON)
+    )
+);
 
 }; // namespace
 
