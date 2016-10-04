@@ -41,38 +41,27 @@ protected:
         delete wall;
     }
 
-    void WallFixture::expect_multiplexer_choice(int choice);
+    void WallFixture::ExpectMultiplexerSelectedBus(int choice);
 };
 
 
 // I2C multiplexer select vectors
-#define I2C_MUX_BUS_ZERO_SELECTED 0x01
-#define I2C_MUX_BUS_ONE_SELECTED 0x02
-#define I2C_MUX_BUS_TWO_SELECTED 0x04
-#define WIRE_TRANSMIT_SUCCESS 1
-class MuxFixture : public WallFixture, public ::testing::WithParamInterface<tuple<int, int>> {
+class MuxFixture : public WallFixture, public ::testing::WithParamInterface<int> {
 };
+TEST_P(MuxFixture, TestMultiplexerSelection)
+{
+    int bus_selection = GetParam(); 
+    ExpectMultiplexerSelectedBus(bus_selection);
+    wall->set_multiplexer_i2c_bus(bus_selection);
+}
+INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
 
-TEST_F(MuxFixture, TestMultiplexerSelectsBus0)
+void WallFixture::ExpectMultiplexerSelectedBus(int bus_choice)
 {
-    expect_multiplexer_choice(I2C_MUX_BUS_ZERO_SELECTED);
-    wall->set_multiplexer_i2c_bus(0);
-}
-TEST_F(MuxFixture, TestMultiplexerSelectsBus1)
-{
-    expect_multiplexer_choice(I2C_MUX_BUS_ONE_SELECTED);
-    wall->set_multiplexer_i2c_bus(1);
-}
-TEST_F(MuxFixture, TestMultiplexerSelectsBus2)
-{
-    expect_multiplexer_choice(I2C_MUX_BUS_TWO_SELECTED);
-    wall->set_multiplexer_i2c_bus(2);
-}
-void WallFixture::expect_multiplexer_choice(int choice)
-{
+    int expected_bus_vector = 1 << bus_choice;
     InSequence mux_bus_selection;
     EXPECT_CALL(*mock_i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
-    EXPECT_CALL(*mock_i2c, write(choice));
+    EXPECT_CALL(*mock_i2c, write(expected_bus_vector));
     EXPECT_CALL(*mock_i2c, endTransmission()).WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
 }
 
@@ -82,7 +71,7 @@ void WallFixture::expect_multiplexer_choice(int choice)
 TEST_F(WallFixture, TestWallInitialization)
 {
     InSequence init;
-    expect_multiplexer_choice(I2C_MUX_BUS_ONE_SELECTED);
+    ExpectMultiplexerSelectedBus(1);
  
     EXPECT_CALL(*mock_io_expander1, 
         begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
@@ -102,7 +91,7 @@ TEST_P(LEDFixture, ChangeLedState)
     std::tie<int,int>(led_array, led_state) = GetParam();
     
     InSequence led_change;
-    expect_multiplexer_choice(I2C_MUX_BUS_ONE_SELECTED);
+    ExpectMultiplexerSelectedBus(1);
     EXPECT_CALL(*mock_io_expander2,
         digitalWrite(led_array, led_state)).Times(1);
     wall->ChangeLEDState(led_array, led_state);

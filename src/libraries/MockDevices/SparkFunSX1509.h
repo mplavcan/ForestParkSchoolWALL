@@ -21,6 +21,8 @@
 #define SPARKFUN_SX1509_MINIMUM_DURATION 0
 #define SPARKFUN_SX1509_MAXIMUM_DURATION 255
 
+#define WIRE_TRANSMIT_SUCCESS 1
+
 typedef uint8_t boolean;
 typedef uint8_t byte;
 
