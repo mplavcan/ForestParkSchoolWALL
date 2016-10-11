@@ -14,10 +14,10 @@ const int Wall::IODeviceAddress[NUMBER_OF_SX1509_DEVICES] = {
     SPARKFUN_SX1509_THIRD_I2C_ADDRESS,
     SPARKFUN_SX1509_FOURTH_I2C_ADDRESS
 };
-Wall::Wall(SX1509* io_expanders[4])
-{
+
+Wall::Wall(DeviceFactory *io) {
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
-        this->io_expander[device] = io_expanders[device];
+        this->io_expander[device] = io->CreateSX1509Instance();
 }
 
 int Wall::setMultiplexerI2Cbus(uint8_t bus) {
@@ -43,8 +43,6 @@ bool Wall::Initialize()
         result = result && resetIO(device);
     return result;
 }
-
-
 
 void Wall::ChangeLEDState(int ledSelector, int ledState)
 {

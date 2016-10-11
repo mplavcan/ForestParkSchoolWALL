@@ -7,11 +7,17 @@
 #define LED_ON 1
 #define NUMBER_OF_SX1509_DEVICES 4
 
+class DeviceFactory
+{
+public:
+    virtual SX1509* CreateSX1509Instance() = 0;
+    virtual ~DeviceFactory() {}
+};
 
 class Wall
 {
 public:
-    Wall::Wall(SX1509* io_expanders[NUMBER_OF_SX1509_DEVICES]);
+    Wall(DeviceFactory *io);
     bool Initialize(void);
     int setMultiplexerI2Cbus(uint8_t bus);
     bool resetIO(int device);

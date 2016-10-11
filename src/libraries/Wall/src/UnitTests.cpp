@@ -12,30 +12,53 @@ namespace testing {
 
 using testing::StrictMock;
 
+class MockDeviceFactory: public DeviceFactory
+{
+public:
+    MockDeviceFactory() {}
+    SX1509* CreateSX1509Instance();
+    StrictMock<SX1509Mock>* AccessMockSX1509(int index);
+
+    ~MockDeviceFactory()
+    {
+        for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
+            releaseSX1509Mock(deviceList[device]);
+    }
+private:
+    int deviceCount = 0;
+    SX1509Mock* deviceList[NUMBER_OF_SX1509_DEVICES];
+};
+
+SX1509* MockDeviceFactory::CreateSX1509Instance()
+{
+    StrictMock<SX1509Mock>* newDevice = static_cast<StrictMock<SX1509Mock>*>(SX1509MockInstance());
+    deviceList[deviceCount] = newDevice;
+    deviceCount++;
+    return static_cast<SX1509*>(newDevice);
+}
+
+StrictMock<SX1509Mock>* MockDeviceFactory::AccessMockSX1509(int index)
+{
+    return static_cast<StrictMock<SX1509Mock>*>(deviceList[index]);
+}
+
+
 class WallFixture : public Test {
 protected:
     
-    StrictMock<SX1509Mock> *mock_io_expander[NUMBER_OF_SX1509_DEVICES];
+    MockDeviceFactory *io;
     StrictMock<WireMock> *mock_i2c;
-    Wall *wall;
+    Wall *wall;    
 
     WallFixture() {
         mock_i2c = static_cast<StrictMock<WireMock> *>(WireMockInstance());
-        
-        SX1509 *mock_io_expander_param[NUMBER_OF_SX1509_DEVICES];
-        for(int x=0;x<NUMBER_OF_SX1509_DEVICES;x++)
-        {
-            mock_io_expander[x] = static_cast<StrictMock<SX1509Mock>*>(SX1509MockInstance());
-            mock_io_expander_param[x] = static_cast<SX1509*>(mock_io_expander[x]);
-        }
- 
-        wall = new Wall(mock_io_expander_param);
+        io = new MockDeviceFactory;
+        wall = new Wall(io);
     }
 
     virtual ~WallFixture() {
         releaseWireMock();
-        for (int x = 0; x < NUMBER_OF_SX1509_DEVICES; x++)
-            releaseSX1509Mock(static_cast<SX1509Mock *>(mock_io_expander[x]));
+        delete io;
         delete wall;
     }
 
@@ -52,7 +75,7 @@ void WallFixture::ExpectMultiplexerSelectedBus(int bus_choice)
 }
 
 
-// Wall setup and IO initialization tests
+// Wall setup and DeviceFactory initialization tests
 //
 class InitFixture : public WallFixture, public ::testing::WithParamInterface<int> {
 };
@@ -63,7 +86,7 @@ TEST_P(InitFixture, TestMultiplexerSelection)
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
     {
         ExpectMultiplexerSelectedBus(Wall::IODeviceBus[device]);
-        EXPECT_CALL(*mock_io_expander[device],
+        EXPECT_CALL(*io->AccessMockSX1509(device),
             begin(Wall::IODeviceAddress[device], SPARKFUN_SX1509_RESET_PIN))
             .WillOnce(Return(device != failingDevice));
         if (device == failingDevice)
@@ -95,11 +118,12 @@ class LEDFixture : public WallFixture, public ::testing::WithParamInterface<tupl
 TEST_P(LEDFixture, ChangeLedState)
 {
     int ledArray, ledState;
+    const int ledDevice = 1;
     std::tie<int,int>(ledArray, ledState) = GetParam();
     
     InSequence led_change;
-    ExpectMultiplexerSelectedBus(1);
-    EXPECT_CALL(*mock_io_expander[1],
+    ExpectMultiplexerSelectedBus(ledDevice);
+    EXPECT_CALL(*io->AccessMockSX1509(ledDevice),
         digitalWrite(ledArray, ledState)).Times(1);
     wall->ChangeLEDState(ledArray, ledState);
 }
