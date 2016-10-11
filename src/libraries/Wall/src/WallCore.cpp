@@ -5,7 +5,7 @@
 
 Wall::Wall(SX1509* io_expanders[4])
 {
-    for(int x=0;x<4;x++)
+    for(int x=0;x<NUMBER_OF_SX1509_DEVICES;x++)
       this->io_expander[x] = io_expanders[x];
 }
 
@@ -22,17 +22,16 @@ int Wall::set_multiplexer_i2c_bus(uint8_t bus) {
 bool Wall::resetIO(int device)
 {
     int bus;
-    int index = device - 1;
-    if (device > 4)
+    if (device >= NUMBER_OF_SX1509_DEVICES)
         return false;
-    set_multiplexer_i2c_bus(IODeviceBus[index]);
-    return io_expander[index]->begin(IODeviceAddress[index]);
+    set_multiplexer_i2c_bus(IODeviceBus[device]);
+    return io_expander[device]->begin(IODeviceAddress[device]);
 }
 
 bool Wall::Initialize()
 {
     bool result = true;
-    for(int x=1;x<=4;x++)
+    for(int x=0;x< NUMBER_OF_SX1509_DEVICES;x++)
         result = result && resetIO(x);
     return result;
 }

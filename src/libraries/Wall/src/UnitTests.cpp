@@ -15,15 +15,15 @@ using testing::StrictMock;
 class WallFixture : public Test {
 protected:
     
-    StrictMock<SX1509Mock> *mock_io_expander[4];
+    StrictMock<SX1509Mock> *mock_io_expander[NUMBER_OF_SX1509_DEVICES];
     StrictMock<WireMock> *mock_i2c;
     Wall *wall;
 
     WallFixture() {
         mock_i2c = static_cast<StrictMock<WireMock> *>(WireMockInstance());
         
-        SX1509 *mock_io_expander_param[4];
-        for(int x=0;x<4;x++)
+        SX1509 *mock_io_expander_param[NUMBER_OF_SX1509_DEVICES];
+        for(int x=0;x<NUMBER_OF_SX1509_DEVICES;x++)
         {
             mock_io_expander[x] = static_cast<StrictMock<SX1509Mock>*>(SX1509MockInstance());
             mock_io_expander_param[x] = static_cast<SX1509*>(mock_io_expander[x]);
@@ -34,7 +34,7 @@ protected:
 
     virtual ~WallFixture() {
         releaseWireMock();
-        for (int x = 0; x<4; x++)
+        for (int x = 0; x < NUMBER_OF_SX1509_DEVICES; x++)
             releaseSX1509Mock(static_cast<SX1509Mock *>(mock_io_expander[x]));
         delete wall;
     }
