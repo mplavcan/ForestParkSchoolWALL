@@ -18,11 +18,34 @@ int Wall::set_multiplexer_i2c_bus(uint8_t bus) {
     return Wire.endTransmission();
 }
 
+
+
+bool Wall::resetIO(int device)
+{
+    int bus;
+    int index = device - 1;
+    set_multiplexer_i2c_bus(IODeviceBus[index]);
+    
+    if (device == 1)
+       return io_expander1->begin(IODeviceAddress[index]);
+    if (device == 2)
+        return io_expander2->begin(IODeviceAddress[index]);
+    if (device == 3)
+        return io_expander3->begin(IODeviceAddress[index]);
+    if (device == 4)
+        return io_expander4->begin(IODeviceAddress[index]);
+    return false;
+}
+
 bool Wall::Initialize()
 {
-    set_multiplexer_i2c_bus(SPARKFUN_SX1509_FIRST_I2C_BUS);
-    return io_expander1->begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS);
+    bool result = true;
+    for(int x=1;x<=4;x++)
+        result = result && resetIO(x);
+    return result;
 }
+
+
 
 void Wall::ChangeLEDState(int led_selector, int led_state)
 {
