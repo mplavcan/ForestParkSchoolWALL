@@ -15,29 +15,27 @@ using testing::StrictMock;
 class WallFixture : public Test {
 protected:
     
-    StrictMock<SX1509Mock> 
-        *mock_io_expander1, 
-        *mock_io_expander2, 
-        *mock_io_expander3, 
-        *mock_io_expander4 ;
+    StrictMock<SX1509Mock> *mock_io_expander[4];
     StrictMock<WireMock> *mock_i2c;
     Wall *wall;
 
     WallFixture() {
         mock_i2c = static_cast<StrictMock<WireMock> *>(WireMockInstance());
-        mock_io_expander1 = static_cast<StrictMock<SX1509Mock> *>(SX1509MockInstance());
-        mock_io_expander2 = static_cast<StrictMock<SX1509Mock> *>(SX1509MockInstance());
-        mock_io_expander3 = static_cast<StrictMock<SX1509Mock> *>(SX1509MockInstance());
-        mock_io_expander4 = static_cast<StrictMock<SX1509Mock> *>(SX1509MockInstance());
-        wall = new Wall(mock_io_expander1, mock_io_expander2, mock_io_expander3, mock_io_expander4);
+        
+        SX1509 *mock_io_expander_param[4];
+        for(int x=0;x<4;x++)
+        {
+            mock_io_expander[x] = static_cast<StrictMock<SX1509Mock>*>(SX1509MockInstance());
+            mock_io_expander_param[x] = static_cast<SX1509*>(mock_io_expander[x]);
+        }
+ 
+        wall = new Wall(mock_io_expander_param);
     }
 
     virtual ~WallFixture() {
         releaseWireMock();
-        releaseSX1509Mock(mock_io_expander1);
-        releaseSX1509Mock(mock_io_expander2);
-        releaseSX1509Mock(mock_io_expander3);
-        releaseSX1509Mock(mock_io_expander4);
+        for (int x = 0; x<4; x++)
+            releaseSX1509Mock(static_cast<SX1509Mock *>(mock_io_expander[x]));
         delete wall;
     }
 
@@ -60,22 +58,22 @@ TEST_F(WallFixture, TestSuccessfulWallInitialization)
 {
     InSequence success_init;
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_FIRST_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander1,
+    EXPECT_CALL(*mock_io_expander[0],
         begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
 
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_SECOND_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander2,
+    EXPECT_CALL(*mock_io_expander[1],
         begin(SPARKFUN_SX1509_SECOND_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
 
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_THIRD_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander3,
+    EXPECT_CALL(*mock_io_expander[2],
         begin(SPARKFUN_SX1509_THIRD_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
 
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_FOURTH_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander4,
+    EXPECT_CALL(*mock_io_expander[3],
         begin(SPARKFUN_SX1509_FOURTH_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
 
@@ -85,7 +83,7 @@ TEST_F(WallFixture, TestFailedWallInitializationFirstIOExpander)
 {
     InSequence failed_init;
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_FIRST_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander1,
+    EXPECT_CALL(*mock_io_expander[0],
         begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(false));
 
@@ -95,11 +93,11 @@ TEST_F(WallFixture, TestFailedWallInitializationSecondIOExpander)
 {
     InSequence failed_init;
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_FIRST_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander1,
+    EXPECT_CALL(*mock_io_expander[0],
         begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_SECOND_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander2,
+    EXPECT_CALL(*mock_io_expander[1],
         begin(SPARKFUN_SX1509_SECOND_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(false));
 
@@ -109,17 +107,17 @@ TEST_F(WallFixture, TestFailedWallInitializationThirdIOExpander)
 {
     InSequence failed_init;
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_FIRST_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander1,
+    EXPECT_CALL(*mock_io_expander[0],
         begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
 
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_SECOND_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander2,
+    EXPECT_CALL(*mock_io_expander[1],
         begin(SPARKFUN_SX1509_SECOND_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
 
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_THIRD_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander3,
+    EXPECT_CALL(*mock_io_expander[2],
         begin(SPARKFUN_SX1509_THIRD_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(false));
 
@@ -129,22 +127,22 @@ TEST_F(WallFixture, TestFailedWallInitializationFourthIOExpander)
 {
     InSequence failed_init;
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_FIRST_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander1,
+    EXPECT_CALL(*mock_io_expander[0],
         begin(SPARKFUN_SX1509_FIRST_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
 
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_SECOND_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander2,
+    EXPECT_CALL(*mock_io_expander[1],
         begin(SPARKFUN_SX1509_SECOND_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
 
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_THIRD_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander3,
+    EXPECT_CALL(*mock_io_expander[2],
         begin(SPARKFUN_SX1509_THIRD_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(true));
 
     ExpectMultiplexerSelectedBus(SPARKFUN_SX1509_FOURTH_I2C_BUS);
-    EXPECT_CALL(*mock_io_expander4,
+    EXPECT_CALL(*mock_io_expander[3],
         begin(SPARKFUN_SX1509_FOURTH_I2C_ADDRESS, SPARKFUN_SX1509_RESET_PIN))
         .WillOnce(Return(false));
 
@@ -175,7 +173,7 @@ TEST_P(LEDFixture, ChangeLedState)
     
     InSequence led_change;
     ExpectMultiplexerSelectedBus(1);
-    EXPECT_CALL(*mock_io_expander2,
+    EXPECT_CALL(*mock_io_expander[1],
         digitalWrite(led_array, led_state)).Times(1);
     wall->ChangeLEDState(led_array, led_state);
 }

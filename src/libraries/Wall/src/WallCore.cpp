@@ -2,12 +2,11 @@
 // Forest Park School Wall Project 
 //
 
-Wall::Wall(SX1509* io_one, SX1509* io_two, SX1509* io_three, SX1509* io_four)
+
+Wall::Wall(SX1509* io_expanders[4])
 {
-    this->io_expander1 = io_one;
-    this->io_expander2 = io_two;
-    this->io_expander3 = io_three;
-    this->io_expander4 = io_four;
+    for(int x=0;x<4;x++)
+      this->io_expander[x] = io_expanders[x];
 }
 
 int Wall::set_multiplexer_i2c_bus(uint8_t bus) {
@@ -24,17 +23,10 @@ bool Wall::resetIO(int device)
 {
     int bus;
     int index = device - 1;
+    if (device > 4)
+        return false;
     set_multiplexer_i2c_bus(IODeviceBus[index]);
-    
-    if (device == 1)
-       return io_expander1->begin(IODeviceAddress[index]);
-    if (device == 2)
-        return io_expander2->begin(IODeviceAddress[index]);
-    if (device == 3)
-        return io_expander3->begin(IODeviceAddress[index]);
-    if (device == 4)
-        return io_expander4->begin(IODeviceAddress[index]);
-    return false;
+    return io_expander[index]->begin(IODeviceAddress[index]);
 }
 
 bool Wall::Initialize()
@@ -49,6 +41,7 @@ bool Wall::Initialize()
 
 void Wall::ChangeLEDState(int led_selector, int led_state)
 {
-    set_multiplexer_i2c_bus(SPARKFUN_SX1509_SECOND_I2C_BUS);
-    io_expander2->digitalWrite(led_selector, led_state);
+    const int io_device = 1;
+    set_multiplexer_i2c_bus(IODeviceBus[io_device]);
+    io_expander[io_device]->digitalWrite(led_selector, led_state);
 }
