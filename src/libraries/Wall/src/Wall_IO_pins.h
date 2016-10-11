@@ -58,12 +58,12 @@
 
 // LED Indicators for input and output hexes
 #define INDICATOR_I2C_DEVICE           ADAFRUIT_PWM_I2C_ADDRESS
-#define INDICATOR_LED_ARRAY_WHITE           0
+#define INDICATOR_LED_ARRAY_WHITE       0
 #define INDICATOR_MOTOR_2               1
 #define INDICATOR_LEDARRAY_3            2
 #define INDICATOR_MOTOR_1               3
 #define INDICATOR_TRANSDUCER            4
-#define INDICATOR_LED_ARRAY_GREEN           5
+#define INDICATOR_LED_ARRAY_GREEN       5
 #define INDICATOR_ROTARY_POT            8
 #define INDICATOR_LINEAR_POT            9
 #define INDICATOR_PHOTO_SENSOR         10
@@ -156,7 +156,7 @@
 #define GRID_TRANSDUCER_LEFT              2
 #define GRID_TRANSDUCER_RIGHT             1
 #define GRID_LED_ARRAY_GREEN_LEFT         3
-#define GRID_LED_ARRAY_GREEN_RIGHT         0
+#define GRID_LED_ARRAY_GREEN_RIGHT        0
 #define GRID_LED_ARRAY_RED_LEFT           4
 #define GRID_LED_ARRAY_RED_RIGHT          5
 #define GRID_MOTOR_1_LEFT                 7

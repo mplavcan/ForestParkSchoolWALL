@@ -2,14 +2,25 @@
 // Forest Park School Wall Project 
 //
 
-
+const int Wall::IODeviceBus[NUMBER_OF_SX1509_DEVICES] = {
+    SPARKFUN_SX1509_FIRST_I2C_BUS,
+    SPARKFUN_SX1509_SECOND_I2C_BUS,
+    SPARKFUN_SX1509_THIRD_I2C_BUS,
+    SPARKFUN_SX1509_FOURTH_I2C_BUS
+};
+const int Wall::IODeviceAddress[NUMBER_OF_SX1509_DEVICES] = {
+    SPARKFUN_SX1509_FIRST_I2C_ADDRESS,
+    SPARKFUN_SX1509_SECOND_I2C_ADDRESS,
+    SPARKFUN_SX1509_THIRD_I2C_ADDRESS,
+    SPARKFUN_SX1509_FOURTH_I2C_ADDRESS
+};
 Wall::Wall(SX1509* io_expanders[4])
 {
-    for(int x=0;x<NUMBER_OF_SX1509_DEVICES;x++)
-      this->io_expander[x] = io_expanders[x];
+    for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
+        this->io_expander[device] = io_expanders[device];
 }
 
-int Wall::set_multiplexer_i2c_bus(uint8_t bus) {
+int Wall::setMultiplexerI2Cbus(uint8_t bus) {
     if (bus > 7)
         return 0;
     Wire.beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS);
@@ -17,30 +28,27 @@ int Wall::set_multiplexer_i2c_bus(uint8_t bus) {
     return Wire.endTransmission();
 }
 
-
-
 bool Wall::resetIO(int device)
 {
-    int bus;
     if (device >= NUMBER_OF_SX1509_DEVICES)
         return false;
-    set_multiplexer_i2c_bus(IODeviceBus[device]);
+    setMultiplexerI2Cbus(IODeviceBus[device]);
     return io_expander[device]->begin(IODeviceAddress[device]);
 }
 
 bool Wall::Initialize()
 {
     bool result = true;
-    for(int x=0;x< NUMBER_OF_SX1509_DEVICES;x++)
-        result = result && resetIO(x);
+    for(int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
+        result = result && resetIO(device);
     return result;
 }
 
 
 
-void Wall::ChangeLEDState(int led_selector, int led_state)
+void Wall::ChangeLEDState(int ledSelector, int ledState)
 {
-    const int io_device = 1;
-    set_multiplexer_i2c_bus(IODeviceBus[io_device]);
-    io_expander[io_device]->digitalWrite(led_selector, led_state);
+    const int LEDDevice = 1;
+    setMultiplexerI2Cbus(IODeviceBus[LEDDevice]);
+    io_expander[LEDDevice]->digitalWrite(ledSelector, ledState);
 }
