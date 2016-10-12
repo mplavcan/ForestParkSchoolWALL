@@ -17,7 +17,7 @@ const int Wall::IODeviceAddress[NUMBER_OF_SX1509_DEVICES] = {
 
 Wall::Wall(DeviceFactory *io) {
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
-        this->io_expander[device] = io->CreateSX1509Instance();
+        this->io_expander[device] = io->createSX1509Instance();
 }
 
 int Wall::setMultiplexerI2Cbus(uint8_t bus) {
@@ -36,7 +36,7 @@ bool Wall::resetIO(int device)
     return io_expander[device]->begin(IODeviceAddress[device]);
 }
 
-bool Wall::Initialize()
+bool Wall::initialize()
 {
     bool result = true;
     for(int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
@@ -44,9 +44,9 @@ bool Wall::Initialize()
     return result;
 }
 
-void Wall::ChangeLEDState(int ledSelector, int ledState)
+void Wall::changeLEDState(int ledSelector, int ledState)
 {
-    const int LEDDevice = 1;
-    setMultiplexerI2Cbus(IODeviceBus[LEDDevice]);
-    io_expander[LEDDevice]->digitalWrite(ledSelector, ledState);
+    const int ledDevice = 1;
+    setMultiplexerI2Cbus(IODeviceBus[ledDevice]);
+    io_expander[ledDevice]->digitalWrite(ledSelector, ledState);
 }

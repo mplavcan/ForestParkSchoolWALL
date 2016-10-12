@@ -16,8 +16,8 @@ class MockDeviceFactory: public DeviceFactory
 {
 public:
     MockDeviceFactory() {}
-    SX1509* CreateSX1509Instance();
-    StrictMock<SX1509Mock>* AccessMockSX1509(int index);
+    SX1509* createSX1509Instance();
+    StrictMock<SX1509Mock>* accessMockSX1509(int index);
 
     ~MockDeviceFactory()
     {
@@ -29,7 +29,7 @@ private:
     SX1509Mock* deviceList[NUMBER_OF_SX1509_DEVICES];
 };
 
-SX1509* MockDeviceFactory::CreateSX1509Instance()
+SX1509* MockDeviceFactory::createSX1509Instance()
 {
     StrictMock<SX1509Mock>* newDevice = static_cast<StrictMock<SX1509Mock>*>(SX1509MockInstance());
     deviceList[deviceCount] = newDevice;
@@ -37,7 +37,7 @@ SX1509* MockDeviceFactory::CreateSX1509Instance()
     return static_cast<SX1509*>(newDevice);
 }
 
-StrictMock<SX1509Mock>* MockDeviceFactory::AccessMockSX1509(int index)
+StrictMock<SX1509Mock>* MockDeviceFactory::accessMockSX1509(int index)
 {
     return static_cast<StrictMock<SX1509Mock>*>(deviceList[index]);
 }
@@ -62,10 +62,10 @@ protected:
         delete wall;
     }
 
-    void WallFixture::ExpectMultiplexerSelectedBus(int choice);
+    void WallFixture::expectMultiplexerSelectedBus(int choice);
 };
 
-void WallFixture::ExpectMultiplexerSelectedBus(int bus_choice)
+void WallFixture::expectMultiplexerSelectedBus(int bus_choice)
 {
     int expected_bus_vector = 1 << bus_choice;
     InSequence mux_bus_selection;
@@ -76,7 +76,6 @@ void WallFixture::ExpectMultiplexerSelectedBus(int bus_choice)
 
 
 // Wall setup and DeviceFactory initialization tests
-//
 class InitFixture : public WallFixture, public ::testing::WithParamInterface<int> {
 };
 TEST_P(InitFixture, TestMultiplexerSelection)
@@ -85,8 +84,8 @@ TEST_P(InitFixture, TestMultiplexerSelection)
     InSequence initialization;
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
     {
-        ExpectMultiplexerSelectedBus(Wall::IODeviceBus[device]);
-        EXPECT_CALL(*io->AccessMockSX1509(device),
+        expectMultiplexerSelectedBus(Wall::IODeviceBus[device]);
+        EXPECT_CALL(*io->accessMockSX1509(device),
             begin(Wall::IODeviceAddress[device], SPARKFUN_SX1509_RESET_PIN))
             .WillOnce(Return(device != failingDevice));
         if (device == failingDevice)
@@ -94,7 +93,7 @@ TEST_P(InitFixture, TestMultiplexerSelection)
     }
 
     bool noDeviceWillFail = (failingDevice < 0) || (failingDevice >= NUMBER_OF_SX1509_DEVICES);
-    ASSERT_EQ(wall->Initialize(), noDeviceWillFail);
+    ASSERT_EQ(wall->initialize(), noDeviceWillFail);
 }
 INSTANTIATE_TEST_CASE_P(InitalizationTests, InitFixture, Values(-1, 0, 1, 2, 3));
 
@@ -104,14 +103,13 @@ class MuxFixture : public WallFixture, public ::testing::WithParamInterface<int>
 TEST_P(MuxFixture, TestMultiplexerSelection)
 {
     int selectedBus = GetParam(); 
-    ExpectMultiplexerSelectedBus(selectedBus);
+    expectMultiplexerSelectedBus(selectedBus);
     wall->setMultiplexerI2Cbus(selectedBus);
 }
 INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
 
 
 // LED array tests
-//
 class LEDFixture : public WallFixture, public ::testing::WithParamInterface<tuple<int,int>> {
 };
 
@@ -122,10 +120,10 @@ TEST_P(LEDFixture, ChangeLedState)
     std::tie<int,int>(ledArray, ledState) = GetParam();
     
     InSequence led_change;
-    ExpectMultiplexerSelectedBus(ledDevice);
-    EXPECT_CALL(*io->AccessMockSX1509(ledDevice),
+    expectMultiplexerSelectedBus(ledDevice);
+    EXPECT_CALL(*io->accessMockSX1509(ledDevice),
         digitalWrite(ledArray, ledState)).Times(1);
-    wall->ChangeLEDState(ledArray, ledState);
+    wall->changeLEDState(ledArray, ledState);
 }
 INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDFixture, Values(
     std::make_tuple(OUTPUT_LED_ARRAY_WHITE_LEFT, LED_ON),
