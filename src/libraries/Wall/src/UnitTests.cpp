@@ -2,6 +2,8 @@
 //
 #include <gtest/gtest.h>
 
+#include "../../arduino-mock/Arduino.h"
+#include "../../arduino-mock/Wire.h"
 #include "MockDeviceFactory.h"
 #include "Wall.h"
 #include <tuple>

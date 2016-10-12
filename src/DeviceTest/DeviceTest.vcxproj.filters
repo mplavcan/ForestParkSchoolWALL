@@ -27,7 +27,7 @@
     <ClInclude Include="..\libraries\Wall\src\Wall_IO_pins.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libraries\Wall\src\DeviceFactory.h">
+    <ClInclude Include="..\libraries\Wall\src\FactoryInterface.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

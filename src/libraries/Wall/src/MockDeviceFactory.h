@@ -2,10 +2,8 @@
 //
 #include <gtest/gtest.h>
 
-#include "../../arduino-mock/Arduino.h"
-#include "../../arduino-mock/Wire.h"
 #include "../../MockDevices/SparkFunSX1509.h"
-#include "DeviceFactory.h"
+#include "FactoryInterface.h"
 
 #define MAXIMUM_IO_INSTANCES 10  // arbitrary, must be great than any of "NUMBER_OF_xxxx_DEVICES"
 
