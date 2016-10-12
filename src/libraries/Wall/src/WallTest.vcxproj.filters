@@ -24,6 +24,9 @@
     <ClCompile Include="..\..\arduino-mock\src\Wire.cc">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="MockDeviceFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="MockedWall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -2,47 +2,13 @@
 //
 #include <gtest/gtest.h>
 
-#include "../../arduino-mock/Arduino.h"
-#include "../../arduino-mock/Wire.h"
-#include "../../MockDevices/SparkFunSX1509.h"
+#include "MockDeviceFactory.h"
 #include "Wall.h"
 #include <tuple>
 
 namespace testing {
 
 using testing::StrictMock;
-
-class MockDeviceFactory: public DeviceFactory
-{
-public:
-    MockDeviceFactory() {}
-    SX1509* createSX1509Instance();
-    StrictMock<SX1509Mock>* accessMockSX1509(int index);
-
-    ~MockDeviceFactory()
-    {
-        for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
-            releaseSX1509Mock(deviceList[device]);
-    }
-private:
-    int deviceCount = 0;
-    SX1509Mock* deviceList[NUMBER_OF_SX1509_DEVICES];
-};
-
-SX1509* MockDeviceFactory::createSX1509Instance()
-{
-    StrictMock<SX1509Mock>* newDevice = static_cast<StrictMock<SX1509Mock>*>(SX1509MockInstance());
-    deviceList[deviceCount] = newDevice;
-    deviceCount++;
-    return static_cast<SX1509*>(newDevice);
-}
-
-StrictMock<SX1509Mock>* MockDeviceFactory::accessMockSX1509(int index)
-{
-    return static_cast<StrictMock<SX1509Mock>*>(deviceList[index]);
-}
-
-
 class WallFixture : public Test {
 protected:
     

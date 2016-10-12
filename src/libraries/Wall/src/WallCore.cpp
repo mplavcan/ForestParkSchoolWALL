@@ -15,7 +15,7 @@ const int Wall::IODeviceAddress[NUMBER_OF_SX1509_DEVICES] = {
     SPARKFUN_SX1509_FOURTH_I2C_ADDRESS
 };
 
-Wall::Wall(DeviceFactory *io) {
+Wall::Wall(FactoryInterface *io) {
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
         this->io_expander[device] = io->createSX1509Instance();
 }

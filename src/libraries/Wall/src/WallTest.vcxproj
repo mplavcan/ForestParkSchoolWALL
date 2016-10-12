@@ -115,6 +115,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\arduino-mock\src\Wire.cc" />
     <ClCompile Include="..\..\MockDevices\SparkFunSX1509.cpp" />
+    <ClCompile Include="MockDeviceFactory.cpp" />
     <ClCompile Include="MockedWall.cpp" />
     <ClCompile Include="UnitTests.cpp" />
   </ItemGroup>
