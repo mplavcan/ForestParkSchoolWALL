@@ -39,7 +39,7 @@ void WallFixture::expectMultiplexerSelectedBus(int bus_choice)
     InSequence mux_bus_selection;
     EXPECT_CALL(*mock_i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
     EXPECT_CALL(*mock_i2c, write(expected_bus_vector));
-    EXPECT_CALL(*mock_i2c, endTransmission()).WillRepeatedly(Return(WIRE_TRANSMIT_SUCCESS));
+    EXPECT_CALL(*mock_i2c, endTransmission()).WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
 }
 
 
@@ -116,6 +116,28 @@ INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDFixture, Values(
     )
 );
 
+
+// Motor tests
+class MotorFixture : public WallFixture, public ::testing::WithParamInterface<int> {
+};
+
+TEST_F(MotorFixture, TestRunFirstMotorClockwise)
+{
+    const int motorDevice = 0;
+
+    InSequence run_motor;
+    expectMultiplexerSelectedBus(Wall::IODeviceBus[motorDevice]);
+    EXPECT_CALL(*io->accessMockSX1509(motorDevice),
+        digitalWrite(OUTPUT_MOTOR1_IN1, 1)).Times(1);
+    EXPECT_CALL(*io->accessMockSX1509(motorDevice),
+        digitalWrite(OUTPUT_MOTOR1_IN2, 0)).Times(1);
+    expectMultiplexerSelectedBus(Wall::IODeviceBus[motorDevice]);
+    EXPECT_CALL(*io->accessMockSX1509(motorDevice),
+        analogWrite(OUTPUT_MOTOR1_PWM, 255)).Times(1);
+
+    wall->MotorOneClockwise();
+    wall->MotorOneSpeed(255);
+}
 }; // namespace
 
 // Entry point for Google Test

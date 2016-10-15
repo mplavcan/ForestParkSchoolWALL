@@ -50,9 +50,24 @@ void Wall::turnOnLEDarray(int ledSelector)
     setMultiplexerI2Cbus(IODeviceBus[ledDevice]);
     io_expander[ledDevice]->digitalWrite(ledSelector, LED_ON);
 }
+
 void Wall::turnOffLEDarray(int ledSelector)
 {
     const int ledDevice = 1;
     setMultiplexerI2Cbus(IODeviceBus[ledDevice]);
     io_expander[ledDevice]->digitalWrite(ledSelector, LED_OFF);
+}
+
+void Wall::MotorOneClockwise()
+{
+    const int motorDevice = 0;
+    setMultiplexerI2Cbus(IODeviceBus[motorDevice]);
+    io_expander[motorDevice]->digitalWrite(OUTPUT_MOTOR1_IN1, 1);
+    io_expander[motorDevice]->digitalWrite(OUTPUT_MOTOR1_IN2, 0);
+}
+void Wall::MotorOneSpeed(int speed)
+{
+    const int motorDevice = 0;
+    setMultiplexerI2Cbus(IODeviceBus[motorDevice]);
+    io_expander[motorDevice]->analogWrite(OUTPUT_MOTOR1_PWM, speed);
 }

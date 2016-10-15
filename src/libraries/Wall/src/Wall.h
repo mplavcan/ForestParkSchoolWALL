@@ -18,7 +18,8 @@ public:
     bool resetIO(int device);
     void turnOnLEDarray(int led_selector);
     void turnOffLEDarray(int led_selector);
-
+    void MotorOneClockwise();
+    void MotorOneSpeed(int speed);
     static const int IODeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int IODeviceAddress[NUMBER_OF_SX1509_DEVICES];
     
