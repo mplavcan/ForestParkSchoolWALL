@@ -44,9 +44,15 @@ bool Wall::initialize()
     return result;
 }
 
-void Wall::changeLEDState(int ledSelector, int ledState)
+void Wall::turnOnLEDarray(int ledSelector)
 {
     const int ledDevice = 1;
     setMultiplexerI2Cbus(IODeviceBus[ledDevice]);
-    io_expander[ledDevice]->digitalWrite(ledSelector, ledState);
+    io_expander[ledDevice]->digitalWrite(ledSelector, LED_ON);
+}
+void Wall::turnOffLEDarray(int ledSelector)
+{
+    const int ledDevice = 1;
+    setMultiplexerI2Cbus(IODeviceBus[ledDevice]);
+    io_expander[ledDevice]->digitalWrite(ledSelector, LED_OFF);
 }

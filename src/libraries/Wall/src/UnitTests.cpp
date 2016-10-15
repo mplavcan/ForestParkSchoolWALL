@@ -78,28 +78,41 @@ INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
 
 
 // LED array tests
-class LEDFixture : public WallFixture, public ::testing::WithParamInterface<tuple<int,int>> {
+class LEDFixture : public WallFixture, public ::testing::WithParamInterface<int> {
 };
 
-TEST_P(LEDFixture, ChangeLedState)
+TEST_P(LEDFixture, TurnOnLEDArray)
 {
-    int ledArray, ledState;
     const int ledDevice = 1;
-    std::tie<int,int>(ledArray, ledState) = GetParam();
+    int ledArray = GetParam();
+
+    InSequence led_change;
+    expectMultiplexerSelectedBus(ledDevice);
+    EXPECT_CALL(*io->accessMockSX1509(ledDevice),
+        digitalWrite(ledArray, LED_ON)).Times(1);
+    wall->turnOnLEDarray(ledArray);
+}
+TEST_P(LEDFixture, TurnOffLEDArray)
+{
+    const int ledDevice = 1;
+    int ledArray = GetParam();
     
     InSequence led_change;
     expectMultiplexerSelectedBus(ledDevice);
     EXPECT_CALL(*io->accessMockSX1509(ledDevice),
-        digitalWrite(ledArray, ledState)).Times(1);
-    wall->changeLEDState(ledArray, ledState);
+        digitalWrite(ledArray, LED_OFF)).Times(1);
+    wall->turnOffLEDarray(ledArray);
 }
 INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDFixture, Values(
-    std::make_tuple(OUTPUT_LED_ARRAY_WHITE_LEFT, LED_ON),
-    std::make_tuple(OUTPUT_LED_ARRAY_WHITE_RIGHT, LED_ON),
-    std::make_tuple(OUTPUT_LED_ARRAY_WHITE_RIGHT, LED_OFF),
-    std::make_tuple(OUTPUT_LED_ARRAY_GREEN_LEFT, LED_ON),
-    std::make_tuple(OUTPUT_LED_ARRAY_GREEN_RIGHT, LED_OFF),
-    std::make_tuple(OUTPUT_LED_ARRAY_RED_QUAD_2, LED_ON)
+    OUTPUT_LED_ARRAY_WHITE_LEFT,
+    OUTPUT_LED_ARRAY_WHITE_RIGHT, 
+    OUTPUT_LED_ARRAY_WHITE_RIGHT,
+    OUTPUT_LED_ARRAY_GREEN_LEFT,
+    OUTPUT_LED_ARRAY_GREEN_RIGHT,
+    OUTPUT_LED_ARRAY_RED_QUAD_1,
+    OUTPUT_LED_ARRAY_RED_QUAD_2,
+    OUTPUT_LED_ARRAY_RED_QUAD_3,
+    OUTPUT_LED_ARRAY_RED_QUAD_4
     )
 );
 

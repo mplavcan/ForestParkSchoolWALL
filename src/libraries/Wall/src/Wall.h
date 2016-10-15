@@ -16,7 +16,8 @@ public:
     bool initialize(void);
     int setMultiplexerI2Cbus(uint8_t bus);
     bool resetIO(int device);
-    void changeLEDState(int led_selector, int led_on);
+    void turnOnLEDarray(int led_selector);
+    void turnOffLEDarray(int led_selector);
 
     static const int IODeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int IODeviceAddress[NUMBER_OF_SX1509_DEVICES];
