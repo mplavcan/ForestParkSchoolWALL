@@ -87,7 +87,7 @@ TEST_P(LEDFixture, TurnOnLEDArray)
     int ledArray = GetParam();
 
     InSequence led_change;
-    expectMultiplexerSelectedBus(ledDevice);
+    expectMultiplexerSelectedBus(Wall::IODeviceBus[ledDevice]);
     EXPECT_CALL(*io->accessMockSX1509(ledDevice),
         digitalWrite(ledArray, LED_ON)).Times(1);
     wall->turnOnLEDarray(ledArray);
