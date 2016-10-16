@@ -20,11 +20,9 @@ Wall::Wall(FactoryInterface *io) {
         this->io_expander[device] = io->createSX1509Instance();
 }
 
-int Wall::setMultiplexerI2Cbus(uint8_t bus) {
-    if (bus > 7)
-        return 0;
+int Wall::setMultiplexerI2Cbus(int device) {
     Wire.beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS);
-    Wire.write(1 << bus);
+    Wire.write(1 << IODeviceBus[device]);
     return Wire.endTransmission();
 }
 
@@ -32,7 +30,7 @@ bool Wall::resetIO(int device)
 {
     if (device >= NUMBER_OF_SX1509_DEVICES)
         return false;
-    setMultiplexerI2Cbus(IODeviceBus[device]);
+    setMultiplexerI2Cbus(device);
     return io_expander[device]->begin(IODeviceAddress[device]);
 }
 
@@ -46,28 +44,37 @@ bool Wall::initialize()
 
 void Wall::turnOnLEDarray(int ledSelector)
 {
-    const int ledDevice = 1;
-    setMultiplexerI2Cbus(IODeviceBus[ledDevice]);
-    io_expander[ledDevice]->digitalWrite(ledSelector, LED_ON);
+    setMultiplexerI2Cbus(IO_EXPANDER_FOR_LED_ARRAYS);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(ledSelector, HIGH);
 }
 
 void Wall::turnOffLEDarray(int ledSelector)
 {
-    const int ledDevice = 1;
-    setMultiplexerI2Cbus(IODeviceBus[ledDevice]);
-    io_expander[ledDevice]->digitalWrite(ledSelector, LED_OFF);
+    setMultiplexerI2Cbus(IO_EXPANDER_FOR_LED_ARRAYS);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(ledSelector, LOW);
 }
 
-void Wall::MotorOneClockwise()
+int Wall::motorControlPin1(wall_motor motor)
 {
-    const int motorDevice = 0;
-    setMultiplexerI2Cbus(IODeviceBus[motorDevice]);
-    io_expander[motorDevice]->digitalWrite(OUTPUT_MOTOR1_IN1, 1);
-    io_expander[motorDevice]->digitalWrite(OUTPUT_MOTOR1_IN2, 0);
+    return (motor = BLUE_MOTOR) ? OUTPUT_MOTOR1_IN1 : OUTPUT_MOTOR2_IN1;
 }
-void Wall::MotorOneSpeed(int speed)
+int Wall::motorControlPin2(wall_motor motor)
 {
-    const int motorDevice = 0;
-    setMultiplexerI2Cbus(IODeviceBus[motorDevice]);
-    io_expander[motorDevice]->analogWrite(OUTPUT_MOTOR1_PWM, speed);
+    return (motor = BLUE_MOTOR) ? OUTPUT_MOTOR1_IN2 : OUTPUT_MOTOR2_IN2;
+}
+int Wall::motorPWMpin(wall_motor motor)
+{
+    return (motor = BLUE_MOTOR) ? OUTPUT_MOTOR1_PWM : OUTPUT_MOTOR2_PWM;
+}
+
+void Wall::setMotorDirectionClockwise(wall_motor motor)
+{
+    setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), HIGH);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), LOW);
+}
+void Wall::setMotorSpeed(wall_motor motor, int speed)
+{
+    setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->analogWrite(motorPWMpin(motor), speed);
 }

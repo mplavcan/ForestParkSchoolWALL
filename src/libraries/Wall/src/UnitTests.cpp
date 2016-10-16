@@ -33,9 +33,9 @@ protected:
     void WallFixture::expectMultiplexerSelectedBus(int choice);
 };
 
-void WallFixture::expectMultiplexerSelectedBus(int bus_choice)
+void WallFixture::expectMultiplexerSelectedBus(int device)
 {
-    int expected_bus_vector = 1 << bus_choice;
+    int expected_bus_vector = 1 << Wall::IODeviceBus[device];
     InSequence mux_bus_selection;
     EXPECT_CALL(*mock_i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
     EXPECT_CALL(*mock_i2c, write(expected_bus_vector));
@@ -46,13 +46,13 @@ void WallFixture::expectMultiplexerSelectedBus(int bus_choice)
 // Wall setup and DeviceFactory initialization tests
 class InitFixture : public WallFixture, public ::testing::WithParamInterface<int> {
 };
-TEST_P(InitFixture, TestMultiplexerSelection)
+TEST_P(InitFixture, TestFailedIOExpanderInitialization)
 {
     int failingDevice = GetParam(); 
     InSequence initialization;
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
     {
-        expectMultiplexerSelectedBus(Wall::IODeviceBus[device]);
+        expectMultiplexerSelectedBus(device);
         EXPECT_CALL(*io->accessMockSX1509(device),
             begin(Wall::IODeviceAddress[device], SPARKFUN_SX1509_RESET_PIN))
             .WillOnce(Return(device != failingDevice));
@@ -83,24 +83,22 @@ class LEDFixture : public WallFixture, public ::testing::WithParamInterface<int>
 
 TEST_P(LEDFixture, TurnOnLEDArray)
 {
-    const int ledDevice = 1;
-    int ledArray = GetParam();
+     int ledArray = GetParam();
 
     InSequence led_change;
-    expectMultiplexerSelectedBus(Wall::IODeviceBus[ledDevice]);
-    EXPECT_CALL(*io->accessMockSX1509(ledDevice),
-        digitalWrite(ledArray, LED_ON)).Times(1);
+    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        digitalWrite(ledArray, HIGH)).Times(1);
     wall->turnOnLEDarray(ledArray);
 }
 TEST_P(LEDFixture, TurnOffLEDArray)
 {
-    const int ledDevice = 1;
     int ledArray = GetParam();
     
     InSequence led_change;
-    expectMultiplexerSelectedBus(ledDevice);
-    EXPECT_CALL(*io->accessMockSX1509(ledDevice),
-        digitalWrite(ledArray, LED_OFF)).Times(1);
+    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        digitalWrite(ledArray, LOW)).Times(1);
     wall->turnOffLEDarray(ledArray);
 }
 INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDFixture, Values(
@@ -118,26 +116,32 @@ INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDFixture, Values(
 
 
 // Motor tests
-class MotorFixture : public WallFixture, public ::testing::WithParamInterface<int> {
+class MotorFixture : public WallFixture, public ::testing::WithParamInterface<wall_motor> {
 };
 
-TEST_F(MotorFixture, TestRunFirstMotorClockwise)
+TEST_P(MotorFixture, TestRunMotorClockwise)
 {
-    const int motorDevice = 0;
+    wall_motor motor = GetParam();
 
     InSequence run_motor;
-    expectMultiplexerSelectedBus(Wall::IODeviceBus[motorDevice]);
-    EXPECT_CALL(*io->accessMockSX1509(motorDevice),
-        digitalWrite(OUTPUT_MOTOR1_IN1, 1)).Times(1);
-    EXPECT_CALL(*io->accessMockSX1509(motorDevice),
-        digitalWrite(OUTPUT_MOTOR1_IN2, 0)).Times(1);
-    expectMultiplexerSelectedBus(Wall::IODeviceBus[motorDevice]);
-    EXPECT_CALL(*io->accessMockSX1509(motorDevice),
-        analogWrite(OUTPUT_MOTOR1_PWM, 255)).Times(1);
+    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        digitalWrite(Wall::motorControlPin1(motor), HIGH)).Times(1);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        digitalWrite(Wall::motorControlPin2(motor), LOW)).Times(1);
+    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        analogWrite(Wall::motorPWMpin(motor), 255)).Times(1);
 
-    wall->MotorOneClockwise();
-    wall->MotorOneSpeed(255);
+    wall->setMotorDirectionClockwise(motor);
+    wall->setMotorSpeed(motor, 255);
 }
+
+INSTANTIATE_TEST_CASE_P(MotorTests, MotorFixture, Values(
+    BLUE_MOTOR,
+    ORANGE_MOTOR)
+);
+
 }; // namespace
 
 // Entry point for Google Test
