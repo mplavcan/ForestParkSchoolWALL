@@ -118,6 +118,7 @@ class MotorFixture : public WallFixture, public ::testing::WithParamInterface<wa
 TEST_P(MotorFixture, TestRunMotorClockwise)
 {
     wall_motor motor = GetParam();
+    int speed = 247;
 
     InSequence run_motor;
     expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
@@ -127,10 +128,42 @@ TEST_P(MotorFixture, TestRunMotorClockwise)
         digitalWrite(Wall::motorControlPin2(motor), LOW)).Times(1);
     expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
-        analogWrite(Wall::motorPWMpin(motor), 255)).Times(1);
+        analogWrite(Wall::motorPWMpin(motor), speed)).Times(1);
 
     wall->setMotorDirectionClockwise(motor);
-    wall->setMotorSpeed(motor, 255);
+    wall->setMotorSpeed(motor, speed);
+}
+TEST_P(MotorFixture, TestRunMotorCounterClockwise)
+{
+    wall_motor motor = GetParam();
+    int speed = 522;
+
+    InSequence run_motor;
+    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        digitalWrite(Wall::motorControlPin1(motor), LOW)).Times(1);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        digitalWrite(Wall::motorControlPin2(motor), HIGH)).Times(1);
+    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        analogWrite(Wall::motorPWMpin(motor), speed)).Times(1);
+
+    wall->setMotorDirectionCounterClockwise(motor);
+    wall->setMotorSpeed(motor, speed);
+}
+
+TEST_P(MotorFixture, TestStopMotor)
+{
+    wall_motor motor = GetParam();
+
+    InSequence stop_motor;
+    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        digitalWrite(Wall::motorControlPin1(motor), LOW)).Times(1);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        digitalWrite(Wall::motorControlPin2(motor), LOW)).Times(1);
+
+    wall->stopMotor(motor);
 }
 INSTANTIATE_TEST_CASE_P(MotorTests, MotorFixture, Values(
     BLUE_MOTOR,

@@ -67,10 +67,31 @@ int Wall::motorPWMpin(wall_motor motor)
     return (motor = BLUE_MOTOR) ? OUTPUT_MOTOR1_PWM : OUTPUT_MOTOR2_PWM;
 }
 
+// Motor Truth Table (from TB6612 documentation):
+//
+//   PIN1  PIN2    Motor behavior   
+//  ================================
+//   LOW   LOW     Stop  
+//   LOW   HIGH    Counter-clockwise
+//   HIGH  LOW     Clockwise
+//   HIGH  HIGH    Brake
+//
 void Wall::setMotorDirectionClockwise(wall_motor motor)
 {
     setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
     io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), HIGH);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), LOW);
+}
+void Wall::setMotorDirectionCounterClockwise(wall_motor motor)
+{
+    setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), LOW);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), HIGH);
+}
+void Wall::stopMotor(wall_motor motor)
+{
+    setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), LOW);
     io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), LOW);
 }
 void Wall::setMotorSpeed(wall_motor motor, int speed)
