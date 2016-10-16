@@ -42,7 +42,6 @@ void WallFixture::expectMultiplexerSelectedBus(int device)
     EXPECT_CALL(*mock_i2c, endTransmission()).WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
 }
 
-
 // Wall setup and DeviceFactory initialization tests
 class InitFixture : public WallFixture, public ::testing::WithParamInterface<int> {
 };
@@ -76,11 +75,9 @@ TEST_P(MuxFixture, TestMultiplexerSelection)
 }
 INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
 
-
 // LED array tests
 class LEDFixture : public WallFixture, public ::testing::WithParamInterface<int> {
 };
-
 TEST_P(LEDFixture, TurnOnLEDArray)
 {
      int ledArray = GetParam();
@@ -118,7 +115,6 @@ INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDFixture, Values(
 // Motor tests
 class MotorFixture : public WallFixture, public ::testing::WithParamInterface<wall_motor> {
 };
-
 TEST_P(MotorFixture, TestRunMotorClockwise)
 {
     wall_motor motor = GetParam();
@@ -136,7 +132,6 @@ TEST_P(MotorFixture, TestRunMotorClockwise)
     wall->setMotorDirectionClockwise(motor);
     wall->setMotorSpeed(motor, 255);
 }
-
 INSTANTIATE_TEST_CASE_P(MotorTests, MotorFixture, Values(
     BLUE_MOTOR,
     ORANGE_MOTOR)
