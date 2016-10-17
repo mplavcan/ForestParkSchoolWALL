@@ -42,16 +42,27 @@ bool Wall::initialize()
     return result;
 }
 
+bool Wall::ledArrayIsActiveLow(int ledSelector)
+{
+    return (
+        ledSelector == OUTPUT_LED_ARRAY_RED_QUAD_1 ||
+        ledSelector == OUTPUT_LED_ARRAY_RED_QUAD_2 ||
+        ledSelector == OUTPUT_LED_ARRAY_RED_QUAD_3 ||
+        ledSelector == OUTPUT_LED_ARRAY_RED_QUAD_4);
+}
+
 void Wall::turnOnLEDarray(int ledSelector)
 {
+    int pinValue = ledArrayIsActiveLow(ledSelector) ? LOW : HIGH;
     setMultiplexerI2Cbus(IO_EXPANDER_FOR_LED_ARRAYS);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(ledSelector, HIGH);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(ledSelector, pinValue);
 }
 
 void Wall::turnOffLEDarray(int ledSelector)
 {
+    int pinValue = ledArrayIsActiveLow(ledSelector) ? HIGH : LOW;
     setMultiplexerI2Cbus(IO_EXPANDER_FOR_LED_ARRAYS);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(ledSelector, LOW);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(ledSelector, pinValue);
 }
 
 int Wall::motorControlPin1(wall_motor motor)

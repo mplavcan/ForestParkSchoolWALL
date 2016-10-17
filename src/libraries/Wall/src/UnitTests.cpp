@@ -76,41 +76,66 @@ TEST_P(MuxFixture, TestMultiplexerSelection)
 INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
 
 // LED array tests
-class LEDFixture : public WallFixture, public ::testing::WithParamInterface<int> {
+class LEDHighFixture : public WallFixture, public ::testing::WithParamInterface<int> {
 };
-TEST_P(LEDFixture, TurnOnLEDArray)
+TEST_P(LEDHighFixture, TurnOnLEDArray)
 {
      int ledArray = GetParam();
 
-    InSequence led_change;
+    InSequence led_on;
     expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
         digitalWrite(ledArray, HIGH)).Times(1);
     wall->turnOnLEDarray(ledArray);
 }
-TEST_P(LEDFixture, TurnOffLEDArray)
+TEST_P(LEDHighFixture, TurnOffLEDArray)
 {
     int ledArray = GetParam();
     
-    InSequence led_change;
+    InSequence led_off;
     expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
         digitalWrite(ledArray, LOW)).Times(1);
     wall->turnOffLEDarray(ledArray);
 }
-INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDFixture, Values(
+INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDHighFixture, Values(
     OUTPUT_LED_ARRAY_WHITE_LEFT,
     OUTPUT_LED_ARRAY_WHITE_RIGHT, 
-    OUTPUT_LED_ARRAY_WHITE_RIGHT,
     OUTPUT_LED_ARRAY_GREEN_LEFT,
-    OUTPUT_LED_ARRAY_GREEN_RIGHT,
+    OUTPUT_LED_ARRAY_GREEN_RIGHT
+    )
+);
+
+// LED array tests
+class LEDLowFixture : public WallFixture, public ::testing::WithParamInterface<int> {
+};
+TEST_P(LEDLowFixture, TurnOnLEDArray)
+{
+    int ledArray = GetParam();
+
+    InSequence led_on;
+    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        digitalWrite(ledArray, LOW)).Times(1);
+    wall->turnOnLEDarray(ledArray);
+}
+TEST_P(LEDLowFixture, TurnOffLEDArray)
+{
+    int ledArray = GetParam();
+
+    InSequence led_off;
+    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        digitalWrite(ledArray, HIGH)).Times(1);
+    wall->turnOffLEDarray(ledArray);
+}
+INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDLowFixture, Values(
     OUTPUT_LED_ARRAY_RED_QUAD_1,
     OUTPUT_LED_ARRAY_RED_QUAD_2,
     OUTPUT_LED_ARRAY_RED_QUAD_3,
     OUTPUT_LED_ARRAY_RED_QUAD_4
     )
 );
-
 
 // Motor tests
 class MotorFixture : public WallFixture, public ::testing::WithParamInterface<wall_motor> {
@@ -151,7 +176,6 @@ TEST_P(MotorFixture, TestRunMotorCounterClockwise)
     wall->setMotorDirectionCounterClockwise(motor);
     wall->setMotorSpeed(motor, speed);
 }
-
 TEST_P(MotorFixture, TestStopMotor)
 {
     wall_motor motor = GetParam();

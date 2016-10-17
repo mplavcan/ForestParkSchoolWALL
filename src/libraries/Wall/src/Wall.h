@@ -37,4 +37,6 @@ public:
 private:
     SX1509 *io_expander[NUMBER_OF_SX1509_DEVICES];
 
+    bool Wall::ledArrayIsActiveLow(int ledSelector);
+
 };
