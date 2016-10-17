@@ -21,17 +21,22 @@ Wall::Wall(FactoryInterface *io) {
     this->pwm = io->createPWMinstance(ADAFRUIT_PWM_I2C_ADDRESS);
 }
 
-int Wall::setMultiplexerI2Cbus(int device) {
+int Wall::setMultiplexerForIOexpander(int device) {
+    return setMultiplexerI2CBus(IODeviceBus[device]);
+}
+
+int Wall::setMultiplexerI2CBus(int bus) {
     Wire.beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS);
-    Wire.write(1 << IODeviceBus[device]);
+    Wire.write(1 << bus);
     return Wire.endTransmission();
 }
+
 
 bool Wall::resetIO(int device)
 {
     if (device >= NUMBER_OF_SX1509_DEVICES)
         return false;
-    setMultiplexerI2Cbus(device);
+    setMultiplexerForIOexpander(device);
     return io_expander[device]->begin(IODeviceAddress[device]);
 }
 
@@ -92,7 +97,7 @@ int Wall::ledArrayPin(led_array array, led_section section)
 void Wall::turnOnLEDarray(led_array array, led_section section)
 {
     int pinValue = ledArrayIsActiveLow(array) ? LOW : HIGH;
-    setMultiplexerI2Cbus(IO_EXPANDER_FOR_LED_ARRAYS);
+    setMultiplexerForIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
     io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(
         Wall::ledArrayPin(array, section), pinValue);
 }
@@ -100,7 +105,7 @@ void Wall::turnOnLEDarray(led_array array, led_section section)
 void Wall::turnOffLEDarray(led_array array, led_section section)
 {
     int pinValue = ledArrayIsActiveLow(array) ? HIGH : LOW;
-    setMultiplexerI2Cbus(IO_EXPANDER_FOR_LED_ARRAYS);
+    setMultiplexerForIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
     io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(
         Wall::ledArrayPin(array, section), pinValue);
 }
@@ -129,33 +134,38 @@ int Wall::motorPWMpin(wall_motor motor)
 //
 void Wall::setMotorDirectionClockwise(wall_motor motor)
 {
-    setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
+    setMultiplexerForIOexpander(IO_EXPANDER_FOR_MOTORS);
     io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), HIGH);
     io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), LOW);
 }
 void Wall::setMotorDirectionCounterClockwise(wall_motor motor)
 {
-    setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
+    setMultiplexerForIOexpander(IO_EXPANDER_FOR_MOTORS);
     io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), LOW);
     io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), HIGH);
 }
 void Wall::stopMotor(wall_motor motor)
 {
-    setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
+    setMultiplexerForIOexpander(IO_EXPANDER_FOR_MOTORS);
     io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), LOW);
     io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), LOW);
 }
 void Wall::setMotorSpeed(wall_motor motor, uint8_t speed)
 {
-    setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
+    setMultiplexerForIOexpander(IO_EXPANDER_FOR_MOTORS);
     io_expander[IO_EXPANDER_FOR_MOTORS]->analogWrite(motorPWMpin(motor), speed);
 }
 
 // Sound methods
-void Wall::turnOnTransducer(void)
+void Wall::turnTransducerOn(void)
 {
-    setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
+    setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPWMFreq(2000.0);
     pwm->setPWM(OUTPUT_TRANSDUCER, 2048, 4095);
+}
+void Wall::turnTransducerOff(void)
+{
+    setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
+    pwm->setPWM(OUTPUT_TRANSDUCER, 0, 0);
 }
 

@@ -21,7 +21,8 @@ class Wall
 public:
     Wall(FactoryInterface *io);
     bool initialize(void);
-    int setMultiplexerI2Cbus(int device);
+    int setMultiplexerForIOexpander(int device);
+    int setMultiplexerI2CBus(int bus);
     bool resetIO(int device);
     void turnOnLEDarray(led_array array, led_section section);
     void turnOffLEDarray(led_array array, led_section section);
@@ -29,7 +30,8 @@ public:
     void setMotorDirectionCounterClockwise(wall_motor motor);
     void setMotorSpeed(wall_motor motor, uint8_t speed);
     void stopMotor(wall_motor motor);
-    void turnOnTransducer(void);
+    void turnTransducerOn(void);
+    void turnTransducerOff(void);
     static const int IODeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int IODeviceAddress[NUMBER_OF_SX1509_DEVICES];
 

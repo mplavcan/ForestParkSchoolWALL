@@ -30,12 +30,17 @@ protected:
         delete wall;
     }
 
-    void WallFixture::expectMultiplexerSelectedBus(int choice);
+    void WallFixture::expectMultiplexerSelectedBusforIOexpander(int device);
+    void WallFixture::expectMultiplexerSelectedBus(int bus);
 };
 
-void WallFixture::expectMultiplexerSelectedBus(int device)
+void WallFixture::expectMultiplexerSelectedBusforIOexpander(int device)
 {
-    int expected_bus_vector = 1 << Wall::IODeviceBus[device];
+    expectMultiplexerSelectedBus(Wall::IODeviceBus[device]);
+}
+void WallFixture::expectMultiplexerSelectedBus(int bus)
+{
+    int expected_bus_vector = 1 << bus;
     InSequence mux_bus_selection;
     EXPECT_CALL(*mock_i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
     EXPECT_CALL(*mock_i2c, write(expected_bus_vector));
@@ -51,7 +56,7 @@ TEST_P(InitFixture, TestFailedIOExpanderInitialization)
     InSequence initialization;
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
     {
-        expectMultiplexerSelectedBus(device);
+        expectMultiplexerSelectedBusforIOexpander(device);
         EXPECT_CALL(*io->accessMockSX1509(device),
             begin(Wall::IODeviceAddress[device], SPARKFUN_SX1509_RESET_PIN))
             .WillOnce(Return(device != failingDevice));
@@ -69,9 +74,9 @@ class MuxFixture : public WallFixture, public ::testing::WithParamInterface<int>
 };
 TEST_P(MuxFixture, TestMultiplexerSelection)
 {
-    int selectedBus = GetParam(); 
-    expectMultiplexerSelectedBus(selectedBus);
-    wall->setMultiplexerI2Cbus(selectedBus);
+    int deviceIndex = GetParam(); 
+    expectMultiplexerSelectedBusforIOexpander(deviceIndex);
+    wall->setMultiplexerForIOexpander(deviceIndex);
 }
 INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
 
@@ -85,7 +90,7 @@ TEST_P(LEDHighFixture, TurnOnLEDArray)
     led_section section = get<1>(GetParam());
 
     InSequence led_on;
-    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
         digitalWrite(Wall::ledArrayPin(array, section), HIGH)).Times(1);
     wall->turnOnLEDarray(array, section);
@@ -96,7 +101,7 @@ TEST_P(LEDHighFixture, TurnOffLEDArray)
     led_section section = get<1>(GetParam());
 
     InSequence led_off;
-    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
         digitalWrite(Wall::ledArrayPin(array, section), LOW)).Times(1);
     wall->turnOffLEDarray(array, section);
@@ -118,7 +123,7 @@ TEST_P(LEDLowFixture, TurnOnLEDArray)
     led_section section = get<1>(GetParam());
 
     InSequence led_on;
-    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
         digitalWrite(Wall::ledArrayPin(array, section), LOW)).Times(1);
     wall->turnOnLEDarray(array, section);
@@ -129,7 +134,7 @@ TEST_P(LEDLowFixture, TurnOffLEDArray)
     led_section section = get<1>(GetParam());
 
     InSequence led_off;
-    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
         digitalWrite(Wall::ledArrayPin(array, section), HIGH)).Times(1);
     wall->turnOffLEDarray(array, section);
@@ -151,12 +156,12 @@ TEST_P(MotorFixture, TestRunMotorClockwise)
     int speed = 247;
 
     InSequence run_motor;
-    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
         digitalWrite(Wall::motorControlPin1(motor), HIGH)).Times(1);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
         digitalWrite(Wall::motorControlPin2(motor), LOW)).Times(1);
-    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
         analogWrite(Wall::motorPWMpin(motor), speed)).Times(1);
 
@@ -169,12 +174,12 @@ TEST_P(MotorFixture, TestRunMotorCounterClockwise)
     int speed = 522;
 
     InSequence run_motor;
-    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
         digitalWrite(Wall::motorControlPin1(motor), LOW)).Times(1);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
         digitalWrite(Wall::motorControlPin2(motor), HIGH)).Times(1);
-    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
         analogWrite(Wall::motorPWMpin(motor), speed)).Times(1);
 
@@ -186,7 +191,7 @@ TEST_P(MotorFixture, TestStopMotor)
     wall_motor motor = GetParam();
 
     InSequence stop_motor;
-    expectMultiplexerSelectedBus(IO_EXPANDER_FOR_MOTORS);
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
         digitalWrite(Wall::motorControlPin1(motor), LOW)).Times(1);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
@@ -204,12 +209,17 @@ class SoundFixture : public WallFixture {
 };
 TEST_F(SoundFixture, TestTransducerOn)
 {
-    const float frequency = 2000.0;
     InSequence make_sound;
-    expectMultiplexerSelectedBus(ADAFRUIT_PWM_I2C_BUS);
-    EXPECT_CALL(*io->accessPWM(), setPWMFreq(frequency));
+    expectMultiplexerSelectedBusforIOexpander(ADAFRUIT_PWM_I2C_BUS);
     EXPECT_CALL(*io->accessPWM(), setPWM(OUTPUT_TRANSDUCER, 2048, 4095));
-    wall->turnOnTransducer();
+    wall->turnTransducerOn();
+}
+TEST_F(SoundFixture, TestTransducerOff)
+{
+    InSequence no_sound;
+    expectMultiplexerSelectedBusforIOexpander(ADAFRUIT_PWM_I2C_BUS);
+    EXPECT_CALL(*io->accessPWM(), setPWM(OUTPUT_TRANSDUCER, 0, 0));
+    wall->turnTransducerOff();
 }
 
 }; // namespace
