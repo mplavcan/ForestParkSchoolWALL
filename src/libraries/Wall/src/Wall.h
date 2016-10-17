@@ -27,7 +27,7 @@ public:
     void turnOffLEDarray(led_array array, led_section section);
     void setMotorDirectionClockwise(wall_motor motor);
     void setMotorDirectionCounterClockwise(wall_motor motor);
-    void setMotorSpeed(wall_motor motor, int speed);
+    void setMotorSpeed(wall_motor motor, uint8_t speed);
     void stopMotor(wall_motor motor);
     static const int IODeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int IODeviceAddress[NUMBER_OF_SX1509_DEVICES];

@@ -76,7 +76,6 @@ int Wall::redLEDarrayPin(led_section section)
         default: return 0;
     }
 }
-
 int Wall::ledArrayPin(led_array array, led_section section)
 {
     if (array == GREEN_LED)
@@ -145,7 +144,7 @@ void Wall::stopMotor(wall_motor motor)
     io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), LOW);
     io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), LOW);
 }
-void Wall::setMotorSpeed(wall_motor motor, int speed)
+void Wall::setMotorSpeed(wall_motor motor, uint8_t speed)
 {
     setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
     io_expander[IO_EXPANDER_FOR_MOTORS]->analogWrite(motorPWMpin(motor), speed);
