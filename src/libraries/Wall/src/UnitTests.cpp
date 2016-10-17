@@ -76,64 +76,69 @@ TEST_P(MuxFixture, TestMultiplexerSelection)
 INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
 
 // LED array tests
-class LEDHighFixture : public WallFixture, public ::testing::WithParamInterface<int> {
+class LEDHighFixture : public WallFixture, 
+    public ::testing::WithParamInterface<tuple<led_array, led_section>> {
 };
 TEST_P(LEDHighFixture, TurnOnLEDArray)
 {
-     int ledArray = GetParam();
+    led_array array = get<0>(GetParam());
+    led_section section = get<1>(GetParam());
 
     InSequence led_on;
     expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
-        digitalWrite(ledArray, HIGH)).Times(1);
-    wall->turnOnLEDarray(ledArray);
+        digitalWrite(Wall::ledArrayPin(array, section), HIGH)).Times(1);
+    wall->turnOnLEDarray(array, section);
 }
 TEST_P(LEDHighFixture, TurnOffLEDArray)
 {
-    int ledArray = GetParam();
-    
+    led_array array = get<0>(GetParam());
+    led_section section = get<1>(GetParam());
+
     InSequence led_off;
     expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
-        digitalWrite(ledArray, LOW)).Times(1);
-    wall->turnOffLEDarray(ledArray);
+        digitalWrite(Wall::ledArrayPin(array, section), LOW)).Times(1);
+    wall->turnOffLEDarray(array, section);
 }
 INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDHighFixture, Values(
-    OUTPUT_LED_ARRAY_WHITE_LEFT,
-    OUTPUT_LED_ARRAY_WHITE_RIGHT, 
-    OUTPUT_LED_ARRAY_GREEN_LEFT,
-    OUTPUT_LED_ARRAY_GREEN_RIGHT
+    make_tuple(WHITE_LED, LEFT_SIDE),
+    make_tuple(WHITE_LED, RIGHT_SIDE),
+    make_tuple(GREEN_LED, LEFT_SIDE),
+    make_tuple(GREEN_LED, RIGHT_SIDE)
     )
 );
 
 // LED array tests
-class LEDLowFixture : public WallFixture, public ::testing::WithParamInterface<int> {
+class LEDLowFixture : public WallFixture, public ::testing::WithParamInterface<tuple<led_array, led_section>> {
 };
 TEST_P(LEDLowFixture, TurnOnLEDArray)
 {
-    int ledArray = GetParam();
+    led_array array = get<0>(GetParam());
+    led_section section = get<1>(GetParam());
 
     InSequence led_on;
     expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
-        digitalWrite(ledArray, LOW)).Times(1);
-    wall->turnOnLEDarray(ledArray);
+        digitalWrite(Wall::ledArrayPin(array, section), LOW)).Times(1);
+    wall->turnOnLEDarray(array, section);
 }
 TEST_P(LEDLowFixture, TurnOffLEDArray)
 {
-    int ledArray = GetParam();
+    led_array array = get<0>(GetParam());
+    led_section section = get<1>(GetParam());
 
     InSequence led_off;
     expectMultiplexerSelectedBus(IO_EXPANDER_FOR_LED_ARRAYS);
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
-        digitalWrite(ledArray, HIGH)).Times(1);
-    wall->turnOffLEDarray(ledArray);
+        digitalWrite(Wall::ledArrayPin(array, section), HIGH)).Times(1);
+    wall->turnOffLEDarray(array, section);
 }
 INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDLowFixture, Values(
-    OUTPUT_LED_ARRAY_RED_QUAD_1,
-    OUTPUT_LED_ARRAY_RED_QUAD_2,
-    OUTPUT_LED_ARRAY_RED_QUAD_3,
-    OUTPUT_LED_ARRAY_RED_QUAD_4
+    make_tuple(RED_LED, LEFT_SIDE),
+    make_tuple(RED_LED, RIGHT_SIDE),
+    make_tuple(RED_LED, LOWER_LEFT_SIDE),
+    make_tuple(RED_LED, LOWER_RIGHT_SIDE)
     )
 );
 

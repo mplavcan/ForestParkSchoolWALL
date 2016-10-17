@@ -13,6 +13,8 @@
 #define IO_EXPANDER_FOR_LED_ARRAYS 1
 
 typedef enum { BLUE_MOTOR, ORANGE_MOTOR } wall_motor;
+typedef enum { GREEN_LED, WHITE_LED, RED_LED } led_array;
+typedef enum { LEFT_SIDE, RIGHT_SIDE, LOWER_LEFT_SIDE, LOWER_RIGHT_SIDE } led_section;
 
 class Wall
 {
@@ -21,8 +23,8 @@ public:
     bool initialize(void);
     int setMultiplexerI2Cbus(int device);
     bool resetIO(int device);
-    void turnOnLEDarray(int led_selector);
-    void turnOffLEDarray(int led_selector);
+    void turnOnLEDarray(led_array array, led_section section);
+    void turnOffLEDarray(led_array array, led_section section);
     void setMotorDirectionClockwise(wall_motor motor);
     void setMotorDirectionCounterClockwise(wall_motor motor);
     void setMotorSpeed(wall_motor motor, int speed);
@@ -33,10 +35,14 @@ public:
     static int motorControlPin1(wall_motor motor);
     static int motorControlPin2(wall_motor motor);
     static int motorPWMpin(wall_motor motor);
+    static int ledArrayPin(led_array array, led_section section);
+    static int greenLEDarrayPin(led_section section);
+    static int whiteLEDarrayPin(led_section section);
+    static int redLEDarrayPin(led_section section);
 
 private:
     SX1509 *io_expander[NUMBER_OF_SX1509_DEVICES];
 
-    bool Wall::ledArrayIsActiveLow(int ledSelector);
+    bool ledArrayIsActiveLow(led_array array);
 
 };

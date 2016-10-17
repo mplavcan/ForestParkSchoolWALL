@@ -42,27 +42,67 @@ bool Wall::initialize()
     return result;
 }
 
-bool Wall::ledArrayIsActiveLow(int ledSelector)
+bool Wall::ledArrayIsActiveLow(led_array array)
 {
-    return (
-        ledSelector == OUTPUT_LED_ARRAY_RED_QUAD_1 ||
-        ledSelector == OUTPUT_LED_ARRAY_RED_QUAD_2 ||
-        ledSelector == OUTPUT_LED_ARRAY_RED_QUAD_3 ||
-        ledSelector == OUTPUT_LED_ARRAY_RED_QUAD_4);
+    return (array == RED_LED);
 }
 
-void Wall::turnOnLEDarray(int ledSelector)
+int Wall::greenLEDarrayPin(led_section section)
 {
-    int pinValue = ledArrayIsActiveLow(ledSelector) ? LOW : HIGH;
-    setMultiplexerI2Cbus(IO_EXPANDER_FOR_LED_ARRAYS);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(ledSelector, pinValue);
+    switch (section)
+    {
+        case LEFT_SIDE: return OUTPUT_LED_ARRAY_GREEN_LEFT;
+        case RIGHT_SIDE: return OUTPUT_LED_ARRAY_GREEN_RIGHT;
+        default: return 0;
+    }
+}
+int Wall::whiteLEDarrayPin(led_section section)
+{
+    switch (section)
+    {
+        case LEFT_SIDE: return OUTPUT_LED_ARRAY_WHITE_LEFT;
+        case RIGHT_SIDE: return OUTPUT_LED_ARRAY_WHITE_RIGHT;
+        default: return 0;
+    }
+}
+int Wall::redLEDarrayPin(led_section section)
+{
+    switch (section)
+    {
+        case LEFT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_1;
+        case RIGHT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_2;
+        case LOWER_LEFT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_1;
+        case LOWER_RIGHT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_2;
+        default: return 0;
+    }
 }
 
-void Wall::turnOffLEDarray(int ledSelector)
+int Wall::ledArrayPin(led_array array, led_section section)
 {
-    int pinValue = ledArrayIsActiveLow(ledSelector) ? HIGH : LOW;
+    if (array == GREEN_LED)
+        return greenLEDarrayPin(section);
+    if (array == WHITE_LED)
+        return whiteLEDarrayPin(section);
+    if (array == RED_LED)
+        return redLEDarrayPin(section);
+    return 0;
+}
+
+
+void Wall::turnOnLEDarray(led_array array, led_section section)
+{
+    int pinValue = ledArrayIsActiveLow(array) ? LOW : HIGH;
     setMultiplexerI2Cbus(IO_EXPANDER_FOR_LED_ARRAYS);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(ledSelector, pinValue);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(
+        Wall::ledArrayPin(array, section), pinValue);
+}
+
+void Wall::turnOffLEDarray(led_array array, led_section section)
+{
+    int pinValue = ledArrayIsActiveLow(array) ? HIGH : LOW;
+    setMultiplexerI2Cbus(IO_EXPANDER_FOR_LED_ARRAYS);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(
+        Wall::ledArrayPin(array, section), pinValue);
 }
 
 int Wall::motorControlPin1(wall_motor motor)
