@@ -5,7 +5,6 @@
 #define _ADAFRUIT_PWMServoDriver_H
 
 #include <gmock/gmock.h>
-#include "../arduino-mock/Arduino.h"
 
 #define PCA9685_SUBADR1 0x2
 #define PCA9685_SUBADR2 0x3
@@ -24,19 +23,22 @@
 #define ALLLED_OFF_L 0xFC
 #define ALLLED_OFF_H 0xFD
 
-class Adafruit_PWMServoDriver {
+class Adafruit_PWMServoDriver 
+{
 public:
     Adafruit_PWMServoDriver(uint8_t addr = 0x40) {}
-    void begin(void);
-    void reset(void);
-    void setPWMFreq(float freq);
-    void setPWM(uint8_t num, uint16_t on, uint16_t off);
-    void setPin(uint8_t num, uint16_t val, bool invert = false);
+    virtual void begin(void) = 0;
+    virtual void reset(void) = 0;
+    virtual void setPWMFreq(float freq) = 0;
+    virtual void setPWM(uint8_t num, uint16_t on, uint16_t off) = 0;
+    virtual void setPin(uint8_t num, uint16_t val, bool invert = false) = 0;
 };
 
 
-class MockAdafruit_PWMServoDriver : public Adafruit_PWMServoDriver {
+class Adafruit_PWMServoDriverMock : public Adafruit_PWMServoDriver 
+{
 public:
+    Adafruit_PWMServoDriverMock(uint8_t addr) {}
     MOCK_METHOD0(begin, void (void));
     MOCK_METHOD0(reset, void (void));
     MOCK_METHOD1(setPWMFreq, void (float freq));
@@ -45,7 +47,7 @@ public:
 };
 
 
-MockAdafruit_PWMServoDriver* Adafruit_PWMServoDriverMockInstance(uint8_t addr);
-void releaseAdafruit_PWMServoDriverMock();
+Adafruit_PWMServoDriverMock* Adafruit_PWMServoDriverMockInstance(uint8_t addr);
+void releaseAdafruit_PWMServoDriverMock(Adafruit_PWMServoDriverMock *mock);
 
 #endif

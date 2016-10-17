@@ -3,11 +3,11 @@
 
 #include "Adafruit_PWMServoDriver.h"
 
-MockAdafruit_PWMServoDriver* Adafruit_PWMServoDriverMockInstance(uint8_t addr)
+Adafruit_PWMServoDriverMock* Adafruit_PWMServoDriverMockInstance(uint8_t addr)
 {
-    return new MockAdafruit_PWMServoDriver();
+    return new Adafruit_PWMServoDriverMock(addr);
 }
-void releaseAdafruit_PWMServoDriverMock()
+void releaseAdafruit_PWMServoDriverMock(Adafruit_PWMServoDriverMock *mock)
 {
-    
+    delete mock;
 }
