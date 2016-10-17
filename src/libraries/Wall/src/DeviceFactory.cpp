@@ -7,3 +7,8 @@ SX1509* DeviceFactory::createSX1509Instance(void)
 {
     return new SX1509;
 }
+
+Adafruit_PWMServoDriver* DeviceFactory::createPWMinstance(uint8_t addr)
+{
+    return new Adafruit_PWMServoDriver(addr);
+}

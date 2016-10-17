@@ -18,6 +18,7 @@ const int Wall::IODeviceAddress[NUMBER_OF_SX1509_DEVICES] = {
 Wall::Wall(FactoryInterface *io) {
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
         this->io_expander[device] = io->createSX1509Instance();
+    this->pwm = io->createPWMinstance(ADAFRUIT_PWM_I2C_ADDRESS);
 }
 
 int Wall::setMultiplexerI2Cbus(int device) {
@@ -149,3 +150,12 @@ void Wall::setMotorSpeed(wall_motor motor, uint8_t speed)
     setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
     io_expander[IO_EXPANDER_FOR_MOTORS]->analogWrite(motorPWMpin(motor), speed);
 }
+
+// Sound methods
+void Wall::turnOnTransducer(void)
+{
+    setMultiplexerI2Cbus(IO_EXPANDER_FOR_MOTORS);
+    pwm->setPWMFreq(2000.0);
+    pwm->setPWM(OUTPUT_TRANSDUCER, 2048, 4095);
+}
+

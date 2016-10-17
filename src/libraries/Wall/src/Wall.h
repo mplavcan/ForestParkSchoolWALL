@@ -29,6 +29,7 @@ public:
     void setMotorDirectionCounterClockwise(wall_motor motor);
     void setMotorSpeed(wall_motor motor, uint8_t speed);
     void stopMotor(wall_motor motor);
+    void turnOnTransducer(void);
     static const int IODeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int IODeviceAddress[NUMBER_OF_SX1509_DEVICES];
 
@@ -42,6 +43,7 @@ public:
 
 private:
     SX1509 *io_expander[NUMBER_OF_SX1509_DEVICES];
+    Adafruit_PWMServoDriver *pwm;
 
     bool ledArrayIsActiveLow(led_array array);
 

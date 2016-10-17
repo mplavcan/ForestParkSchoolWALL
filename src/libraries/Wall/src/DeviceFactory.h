@@ -9,6 +9,7 @@
 class DeviceFactory : public FactoryInterface
 {
     SX1509* createSX1509Instance();
+    Adafruit_PWMServoDriver* createPWMinstance(uint8_t addr);
 };
 
 #endif

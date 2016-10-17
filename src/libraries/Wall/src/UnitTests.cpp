@@ -199,6 +199,19 @@ INSTANTIATE_TEST_CASE_P(MotorTests, MotorFixture, Values(
     ORANGE_MOTOR)
 );
 
+// Transducer test
+class SoundFixture : public WallFixture {
+};
+TEST_F(SoundFixture, TestTransducerOn)
+{
+    const float frequency = 2000.0;
+    InSequence make_sound;
+    expectMultiplexerSelectedBus(ADAFRUIT_PWM_I2C_BUS);
+    EXPECT_CALL(*io->accessPWM(), setPWMFreq(frequency));
+    EXPECT_CALL(*io->accessPWM(), setPWM(OUTPUT_TRANSDUCER, 2048, 4095));
+    wall->turnOnTransducer();
+}
+
 }; // namespace
 
 // Entry point for Google Test
