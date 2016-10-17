@@ -75,7 +75,7 @@ TEST_P(MuxFixture, TestMultiplexerSelection)
 }
 INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
 
-// LED array tests
+// Active-High LED array tests
 class LEDHighFixture : public WallFixture, 
     public ::testing::WithParamInterface<tuple<led_array, led_section>> {
 };
@@ -109,7 +109,7 @@ INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDHighFixture, Values(
     )
 );
 
-// LED array tests
+// Active Low LED array tests
 class LEDLowFixture : public WallFixture, public ::testing::WithParamInterface<tuple<led_array, led_section>> {
 };
 TEST_P(LEDLowFixture, TurnOnLEDArray)
