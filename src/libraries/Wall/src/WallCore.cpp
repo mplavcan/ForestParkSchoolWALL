@@ -37,7 +37,7 @@ bool Wall::resetIO(int device)
     if (device >= NUMBER_OF_SX1509_DEVICES)
         return false;
     setMultiplexerForIOexpander(device);
-    return io_expander[device]->begin(IODeviceAddress[device]);
+    return (io_expander[device]->begin(IODeviceAddress[device]) != 0);
 }
 
 bool Wall::initialize()
@@ -156,7 +156,6 @@ void Wall::setMotorSpeed(wall_motor motor, uint8_t speed)
     io_expander[IO_EXPANDER_FOR_MOTORS]->analogWrite(motorPWMpin(motor), speed);
 }
 
-// Sound methods
 void Wall::turnTransducerOn(void)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
