@@ -57,10 +57,11 @@
 #define WHITE_LED_PIN                  14
 
 // LED Indicators for input and output hexes
+#define ADAFRUIT_PWM_NUM_OUTPUTS       16
 #define INDICATOR_I2C_DEVICE           ADAFRUIT_PWM_I2C_ADDRESS
 #define INDICATOR_LED_ARRAY_WHITE       0
 #define INDICATOR_MOTOR_2               1
-#define INDICATOR_LEDARRAY_3            2
+#define INDICATOR_LED_ARRAY_RED         2
 #define INDICATOR_MOTOR_1               3
 #define INDICATOR_TRANSDUCER            4
 #define INDICATOR_LED_ARRAY_GREEN       5

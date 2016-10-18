@@ -107,17 +107,8 @@ TEST_F(InitFixture, TestMotorPinModes)
         pinMode(OUTPUT_MOTOR2_IN1, OUTPUT));
     EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
         pinMode(OUTPUT_MOTOR2_IN2, OUTPUT));
-   
 
     wall->initializeMotorOutputs();
-}
-
-TEST_F(InitFixture, TestPWMpinModes)
-{
-    expectMultiplexerSelectedBus(ADAFRUIT_PWM_I2C_BUS);
-    EXPECT_CALL(*io->accessMockPWM(),
-        setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_FULL_DUTY_CYCLE));
-    wall->initializePWMOutputs();
 }
 
 // I2C multiplexer select vectors
@@ -255,7 +246,7 @@ INSTANTIATE_TEST_CASE_P(MotorTests, MotorFixture, Values(
     ORANGE_MOTOR)
 );
 
-// Transducer test
+// Transducer tests
 class SoundFixture : public WallFixture {
 };
 TEST_F(SoundFixture, TestTransducerOn)
@@ -274,6 +265,48 @@ TEST_F(SoundFixture, TestTransducerOff)
         setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_FULL_DUTY_CYCLE));
     wall->turnTransducerOff();
 }
+
+class IndicatorFixture : public WallFixture, public ::testing::WithParamInterface<indicator_led> {
+};
+TEST_P(IndicatorFixture, TurnOnIndicator)
+{
+    indicator_led lamp = GetParam();
+
+    InSequence lamp_on;
+    expectMultiplexerSelectedBusforIOexpander(ADAFRUIT_PWM_I2C_BUS);
+    EXPECT_CALL(*io->accessMockPWM(),
+        setPin(lamp, PWM_INDICATOR_ON_VALUE, FALSE));
+    wall->turnIndicatorOn(lamp);
+}
+TEST_P(IndicatorFixture, TurnOffIndicator)
+{
+    indicator_led lamp = GetParam();
+
+    InSequence lamp_off;
+    expectMultiplexerSelectedBusforIOexpander(ADAFRUIT_PWM_I2C_BUS);
+    EXPECT_CALL(*io->accessMockPWM(),
+        setPin(lamp, PWM_INDICATOR_OFF_VALUE, FALSE));
+    wall->turnIndicatorOff(lamp);
+} 
+INSTANTIATE_TEST_CASE_P(IndicatorTests, IndicatorFixture, Values(
+    INDICATE_WHITE_LED,
+    INDICATE_RED_LED,
+    INDICATE_GREEN_LED,
+    INDICATE_BLUE_MOTOR,
+    INDICATE_ORANGE_MOTOR,
+    INDICATE_TRANSDUCER,
+    INDICATE_TOGGLES,
+    INDICATE_JOYSTICK,
+    INDICATE_KNOB,
+    INDICATE_SLIDER,
+    INDICATE_PHOTO_SENSOR,
+    INDICATE_PRESSURE_SENSOR,
+    INDICATE_POSITIVE_POLE,
+    INDICATE_NEGATIVE_POLE
+    )
+);
+
+
 
 }; // namespace
 

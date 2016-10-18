@@ -89,6 +89,21 @@ void Wall::initializeMotorOutputs(void)
 
 void Wall::initializePWMOutputs(void)
 {
+    pwm->setPWMFreq(PWM_FREQUENCY);
+    turnIndicatorOff(INDICATE_WHITE_LED);
+    turnIndicatorOff(INDICATE_RED_LED);
+    turnIndicatorOff(INDICATE_GREEN_LED);
+    turnIndicatorOff(INDICATE_BLUE_MOTOR);
+    turnIndicatorOff(INDICATE_ORANGE_MOTOR);
+    turnIndicatorOff(INDICATE_TRANSDUCER);
+    turnIndicatorOff(INDICATE_TOGGLES);
+    turnIndicatorOff(INDICATE_JOYSTICK);
+    turnIndicatorOff(INDICATE_KNOB);
+    turnIndicatorOff(INDICATE_SLIDER);
+    turnIndicatorOff(INDICATE_PHOTO_SENSOR);
+    turnIndicatorOff(INDICATE_PRESSURE_SENSOR);
+    turnIndicatorOff(INDICATE_POSITIVE_POLE);
+    turnIndicatorOff(INDICATE_NEGATIVE_POLE);
     turnTransducerOff();
 }
 
@@ -137,7 +152,6 @@ int Wall::ledArrayPin(led_array array, led_section section)
     return 0;
 }
 
-
 void Wall::turnOnLEDarray(led_array array, led_section section)
 {
     int pinValue = ledArrayIsActiveLow(array) ? LOW : HIGH;
@@ -145,7 +159,6 @@ void Wall::turnOnLEDarray(led_array array, led_section section)
     io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(
         Wall::ledArrayPin(array, section), pinValue);
 }
-
 void Wall::turnOffLEDarray(led_array array, led_section section)
 {
     int pinValue = ledArrayIsActiveLow(array) ? HIGH : LOW;
@@ -209,5 +222,16 @@ void Wall::turnTransducerOff(void)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_FULL_DUTY_CYCLE);
+}
+
+void Wall::turnIndicatorOn(indicator_led lamp)
+{
+    setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
+    pwm->setPin(lamp, PWM_INDICATOR_ON_VALUE, FALSE);
+}
+void Wall::turnIndicatorOff(indicator_led lamp)
+{
+    setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
+    pwm->setPin(lamp, PWM_INDICATOR_OFF_VALUE, FALSE);
 }
 
