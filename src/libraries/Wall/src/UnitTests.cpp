@@ -11,6 +11,7 @@
 namespace testing {
 
 using testing::StrictMock;
+
 class WallFixture : public Test {
 protected:
     
@@ -211,7 +212,7 @@ TEST_F(SoundFixture, TestTransducerOn)
 {
     InSequence make_sound;
     expectMultiplexerSelectedBusforIOexpander(ADAFRUIT_PWM_I2C_BUS);
-    EXPECT_CALL(*io->accessPWM(), 
+    EXPECT_CALL(*io->accessMockPWM(),
         setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_HALF_DUTY_CYCLE-1));
     wall->turnTransducerOn();
 }
@@ -219,7 +220,7 @@ TEST_F(SoundFixture, TestTransducerOff)
 {
     InSequence no_sound;
     expectMultiplexerSelectedBusforIOexpander(ADAFRUIT_PWM_I2C_BUS);
-    EXPECT_CALL(*io->accessPWM(), 
+    EXPECT_CALL(*io->accessMockPWM(),
         setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_START_OF_DUTY_CYCLE));
     wall->turnTransducerOff();
 }

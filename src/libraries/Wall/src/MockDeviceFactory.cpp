@@ -7,30 +7,30 @@
 
 namespace testing  {
 
-SX1509* MockDeviceFactory::createSX1509Instance()
+using testing::StrictMock;
+    
+SX1509* MockDeviceFactory::createSX1509Instance(void)
 {
-    StrictMock<SX1509Mock>* newDevice = static_cast<StrictMock<SX1509Mock>*>(SX1509MockInstance());
-    deviceList[deviceCount] = newDevice;
-    deviceCount++;
-    return static_cast<SX1509*>(newDevice);
-}
-
-StrictMock<SX1509Mock>* MockDeviceFactory::accessMockSX1509(int index)
-{
-    return static_cast<StrictMock<SX1509Mock>*>(deviceList[index]);
+    SX1509Mock* newDevice = SX1509MockInstance();
+    ioExpanderDeviceList[ioExpanderDeviceCount] = static_cast<StrictMock<SX1509Mock>*>(newDevice);
+    ioExpanderDeviceCount++;
+    return newDevice;
 }
 
 Adafruit_PWMServoDriver* MockDeviceFactory::createPWMinstance(uint8_t addr)
 {
-    StrictMock<Adafruit_PWMServoDriverMock>* newDevice =
-        static_cast<StrictMock<Adafruit_PWMServoDriverMock>*>(Adafruit_PWMServoDriverMockInstance(addr));
-    pwm = newDevice;
-    return static_cast<Adafruit_PWMServoDriver*>(newDevice);
+    pwmDevice = static_cast<StrictMock<Adafruit_PWMServoDriverMock>*>(Adafruit_PWMServoDriverMockInstance(addr));
+    return pwmDevice;
 }
 
-StrictMock<Adafruit_PWMServoDriverMock>* MockDeviceFactory::accessPWM()
+SX1509Mock* MockDeviceFactory::accessMockSX1509(int index)
 {
-    return static_cast<StrictMock<Adafruit_PWMServoDriverMock>*>(pwm);
+    return ioExpanderDeviceList[index];
+}
+
+Adafruit_PWMServoDriverMock* MockDeviceFactory::accessMockPWM(void)
+{
+    return pwmDevice;
 }
 
 }; // namespace
