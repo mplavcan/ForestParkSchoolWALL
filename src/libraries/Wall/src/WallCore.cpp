@@ -1,6 +1,8 @@
 // Wall hardware abstraction layer object
 // Forest Park School Wall Project 
 //
+#define LOW 0
+#define HIGH 1
 
 const int Wall::IODeviceBus[NUMBER_OF_SX1509_DEVICES] = {
     SPARKFUN_SX1509_FIRST_I2C_BUS,

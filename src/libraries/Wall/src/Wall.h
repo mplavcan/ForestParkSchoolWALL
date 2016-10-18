@@ -4,9 +4,6 @@
 #include "Wall_IO_pins.h"
 #include "FactoryInterface.h"
 
-#define LOW 0
-#define HIGH 1
-
 #define NUMBER_OF_SX1509_DEVICES 4
 
 #define IO_EXPANDER_FOR_MOTORS 0
