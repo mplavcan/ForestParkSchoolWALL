@@ -11,6 +11,9 @@
 
 #define IO_EXPANDER_FOR_MOTORS 0
 #define IO_EXPANDER_FOR_LED_ARRAYS 1
+#define PWM_START_OF_DUTY_CYCLE 0
+#define PWM_FULL_DUTY_CYCLE 4096
+#define PWM_HALF_DUTY_CYCLE (PWM_FULL_DUTY_CYCLE / 2)
 
 typedef enum { BLUE_MOTOR, ORANGE_MOTOR } wall_motor;
 typedef enum { GREEN_LED, WHITE_LED, RED_LED } led_array;

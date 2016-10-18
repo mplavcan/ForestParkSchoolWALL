@@ -160,12 +160,11 @@ void Wall::setMotorSpeed(wall_motor motor, uint8_t speed)
 void Wall::turnTransducerOn(void)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
-    pwm->setPWMFreq(2000.0);
-    pwm->setPWM(OUTPUT_TRANSDUCER, 2048, 4095);
+    pwm->setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_HALF_DUTY_CYCLE - 1);
 }
 void Wall::turnTransducerOff(void)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
-    pwm->setPWM(OUTPUT_TRANSDUCER, 0, 0);
+    pwm->setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_START_OF_DUTY_CYCLE);
 }
 
