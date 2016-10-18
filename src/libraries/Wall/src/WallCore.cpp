@@ -4,6 +4,10 @@
 #define LOW 0
 #define HIGH 1
 
+#define INPUT 0x0
+#define OUTPUT 0x1
+#define INPUT_PULLUP 0x2
+
 const int Wall::IODeviceBus[NUMBER_OF_SX1509_DEVICES] = {
     SPARKFUN_SX1509_FIRST_I2C_BUS,
     SPARKFUN_SX1509_SECOND_I2C_BUS,
@@ -42,12 +46,50 @@ bool Wall::resetIO(int device)
     return (io_expander[device]->begin(IODeviceAddress[device]) != 0);
 }
 
-bool Wall::initialize()
+bool Wall::initialize(void)
+{
+    if(!initializeIOexpanders())
+        return false;
+    initializeLEDarrayOutputs();
+    initializeMotorOutputs();
+    return true;
+}
+
+bool Wall::initializeIOexpanders(void)
 {
     bool result = true;
     for(int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
         result = result && resetIO(device);
     return result;
+}
+
+void Wall::initializeLEDarrayOutputs(void)
+{
+    setMultiplexerForIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_GREEN_LEFT, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_GREEN_RIGHT, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_WHITE_LEFT, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_WHITE_RIGHT, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_1, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_2, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_3, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_4, OUTPUT);
+}
+
+void Wall::initializeMotorOutputs(void)
+{
+    setMultiplexerForIOexpander(IO_EXPANDER_FOR_MOTORS);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR1_PWM, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR1_IN1, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR1_IN2, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR2_PWM, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR2_IN1, OUTPUT);
+    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR2_IN2, OUTPUT);
+}
+
+void Wall::initializePWMOutputs(void)
+{
+    turnTransducerOff();
 }
 
 bool Wall::ledArrayIsActiveLow(led_array array)
@@ -166,6 +208,6 @@ void Wall::turnTransducerOn(void)
 void Wall::turnTransducerOff(void)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
-    pwm->setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_START_OF_DUTY_CYCLE);
+    pwm->setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_FULL_DUTY_CYCLE);
 }
 

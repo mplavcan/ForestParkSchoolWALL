@@ -64,11 +64,61 @@ TEST_P(InitFixture, TestFailedIOExpanderInitialization)
         if (device == failingDevice)
             break;
     }
-
+    
     bool noDeviceWillFail = (failingDevice < 0) || (failingDevice >= NUMBER_OF_SX1509_DEVICES);
-    ASSERT_EQ(wall->initialize(), noDeviceWillFail);
+    ASSERT_EQ(wall->initializeIOexpanders(), noDeviceWillFail);
 }
 INSTANTIATE_TEST_CASE_P(InitalizationTests, InitFixture, Values(-1, 0, 1, 2, 3));
+
+TEST_F(InitFixture, TestLEDpinModes)
+{
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        pinMode(OUTPUT_LED_ARRAY_GREEN_LEFT, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        pinMode(OUTPUT_LED_ARRAY_GREEN_RIGHT, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        pinMode(OUTPUT_LED_ARRAY_WHITE_LEFT, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        pinMode(OUTPUT_LED_ARRAY_WHITE_RIGHT, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        pinMode(OUTPUT_LED_ARRAY_RED_QUAD_1, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        pinMode(OUTPUT_LED_ARRAY_RED_QUAD_2, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        pinMode(OUTPUT_LED_ARRAY_RED_QUAD_3, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+        pinMode(OUTPUT_LED_ARRAY_RED_QUAD_4, OUTPUT));
+
+    wall->initializeLEDarrayOutputs();
+}
+TEST_F(InitFixture, TestMotorPinModes)
+{
+    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        pinMode(OUTPUT_MOTOR1_PWM, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        pinMode(OUTPUT_MOTOR1_IN1, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        pinMode(OUTPUT_MOTOR1_IN2, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        pinMode(OUTPUT_MOTOR2_PWM, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        pinMode(OUTPUT_MOTOR2_IN1, OUTPUT));
+    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+        pinMode(OUTPUT_MOTOR2_IN2, OUTPUT));
+   
+
+    wall->initializeMotorOutputs();
+}
+
+TEST_F(InitFixture, TestPWMpinModes)
+{
+    expectMultiplexerSelectedBus(ADAFRUIT_PWM_I2C_BUS);
+    EXPECT_CALL(*io->accessMockPWM(),
+        setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_FULL_DUTY_CYCLE));
+    wall->initializePWMOutputs();
+}
 
 // I2C multiplexer select vectors
 class MuxFixture : public WallFixture, public ::testing::WithParamInterface<int> {
@@ -219,9 +269,9 @@ TEST_F(SoundFixture, TestTransducerOn)
 TEST_F(SoundFixture, TestTransducerOff)
 {
     InSequence no_sound;
-    expectMultiplexerSelectedBusforIOexpander(ADAFRUIT_PWM_I2C_BUS);
+    expectMultiplexerSelectedBus(ADAFRUIT_PWM_I2C_BUS);
     EXPECT_CALL(*io->accessMockPWM(),
-        setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_START_OF_DUTY_CYCLE));
+        setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_FULL_DUTY_CYCLE));
     wall->turnTransducerOff();
 }
 

@@ -12,6 +12,9 @@
 #define PWM_FULL_DUTY_CYCLE 4096
 #define PWM_HALF_DUTY_CYCLE (PWM_FULL_DUTY_CYCLE / 2)
 
+#define FALSE   (0)
+#define TRUE    (!FALSE)
+
 typedef enum { BLUE_MOTOR, ORANGE_MOTOR } wall_motor;
 typedef enum { GREEN_LED, WHITE_LED, RED_LED } led_array;
 typedef enum { LEFT_SIDE, RIGHT_SIDE, LOWER_LEFT_SIDE, LOWER_RIGHT_SIDE } led_section;
@@ -21,6 +24,11 @@ class Wall
 public:
     Wall(FactoryInterface *io);
     bool initialize(void);
+    bool initializeIOexpanders(void);
+    void initializeLEDarrayOutputs(void);
+    void initializeMotorOutputs(void);
+    void initializePWMOutputs(void);
+
     int setMultiplexerForIOexpander(int device);
     int setMultiplexerI2CBus(int bus);
     bool resetIO(int device);
