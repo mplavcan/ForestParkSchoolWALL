@@ -83,17 +83,17 @@ class Adafruit_ADS1015
 {
   public:
     Adafruit_ADS1015(uint8_t i2cAddress = ADS1015_ADDRESS) {}
-    void begin(void);
-    uint16_t  readADC_SingleEnded(uint8_t channel);
-    int16_t   readADC_Differential_0_1(void);
-    int16_t   readADC_Differential_2_3(void);
-    void      startComparator_SingleEnded(uint8_t channel, int16_t threshold);
-    int16_t   getLastConversionResults(void);
-    void      setGain(adsGain_t gain);
-    adsGain_t getGain(void);
+    virtual void begin(void) = 0;
+    virtual uint16_t  readADC_SingleEnded(uint8_t channel) = 0;
+    virtual int16_t   readADC_Differential_0_1(void) = 0;
+    virtual int16_t   readADC_Differential_2_3(void) = 0;
+    virtual void      startComparator_SingleEnded(uint8_t channel, int16_t threshold) = 0;
+    virtual int16_t   getLastConversionResults(void) = 0;
+    virtual void      setGain(adsGain_t gain) = 0;
+    virtual adsGain_t getGain(void) = 0;
 };
 
-class MockAdafruit_ADS1015 : public Adafruit_ADS1015
+class Adafruit_ADS1015Mock : public Adafruit_ADS1015
 {
   public:
     MOCK_METHOD0(begin, void (void));
@@ -106,7 +106,7 @@ class MockAdafruit_ADS1015 : public Adafruit_ADS1015
     MOCK_METHOD0(getGain, adsGain_t (void));
 };
 
-MockAdafruit_ADS1015* Adafruit_ADS1015MockInstance(uint8_t i2cAddress);
-void releaseAdafruit_ADS1015Mock();
+Adafruit_ADS1015Mock* Adafruit_ADS1015MockInstance(uint8_t i2cAddress);
+void releaseAdafruit_ADS1015Mock(Adafruit_ADS1015Mock *mock);
 
 #endif   // _ADAFRUIT_ADS1015_H
