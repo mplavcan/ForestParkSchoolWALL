@@ -23,6 +23,14 @@ Adafruit_PWMServoDriver* MockDeviceFactory::createPWMinstance(uint8_t addr)
     return pwmDevice;
 }
 
+Adafruit_ADS1015* MockDeviceFactory::createADS1015Instance(uint8_t addr)
+{
+    Adafruit_ADS1015Mock* newDevice = Adafruit_ADS1015MockInstance(addr);
+    analogExpanderDeviceList[analogExpanderDeviceCount] = static_cast<StrictMock<Adafruit_ADS1015Mock>*>(newDevice);
+    analogExpanderDeviceCount++;
+    return newDevice;
+}
+
 SX1509Mock* MockDeviceFactory::accessMockSX1509(int index)
 {
     return ioExpanderDeviceList[index];
@@ -31,6 +39,11 @@ SX1509Mock* MockDeviceFactory::accessMockSX1509(int index)
 Adafruit_PWMServoDriverMock* MockDeviceFactory::accessMockPWM(void)
 {
     return pwmDevice;
+}
+
+Adafruit_ADS1015Mock* MockDeviceFactory::accessMockADS1015(int index)
+{
+    return analogExpanderDeviceList[index];
 }
 
 }; // namespace

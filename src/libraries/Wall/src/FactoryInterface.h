@@ -9,6 +9,7 @@ class FactoryInterface
 {
 public:
     virtual SX1509* createSX1509Instance() = 0;
+    virtual Adafruit_ADS1015* createADS1015Instance(uint8_t addr) = 0;
     virtual Adafruit_PWMServoDriver* createPWMinstance(uint8_t addr) = 0;
     virtual ~FactoryInterface() {};
 };
