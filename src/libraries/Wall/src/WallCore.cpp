@@ -65,26 +65,26 @@ bool Wall::initializeIOexpanders(void)
 
 void Wall::initializeLEDarrayOutputs(void)
 {
-    setMultiplexerForIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_GREEN_LEFT, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_GREEN_RIGHT, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_WHITE_LEFT, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_WHITE_RIGHT, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_1, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_2, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_3, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_4, OUTPUT);
+    setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_GREEN_LEFT, OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_GREEN_RIGHT, OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_WHITE_LEFT, OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_WHITE_RIGHT, OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_1, OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_2, OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_3, OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_4, OUTPUT);
 }
 
 void Wall::initializeMotorOutputs(void)
 {
-    setMultiplexerForIOexpander(IO_EXPANDER_FOR_MOTORS);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR1_PWM, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR1_IN1, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR1_IN2, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR2_PWM, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR2_IN1, OUTPUT);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->pinMode(OUTPUT_MOTOR2_IN2, OUTPUT);
+    setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->pinMode(OUTPUT_MOTOR1_PWM, OUTPUT);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->pinMode(OUTPUT_MOTOR1_IN1, OUTPUT);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->pinMode(OUTPUT_MOTOR1_IN2, OUTPUT);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->pinMode(OUTPUT_MOTOR2_PWM, OUTPUT);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->pinMode(OUTPUT_MOTOR2_IN1, OUTPUT);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->pinMode(OUTPUT_MOTOR2_IN2, OUTPUT);
 }
 
 void Wall::initializePWMOutputs(void)
@@ -155,15 +155,15 @@ int Wall::ledArrayPin(led_array array, led_section section)
 void Wall::turnOnLEDarray(led_array array, led_section section)
 {
     int pinValue = ledArrayIsActiveLow(array) ? LOW : HIGH;
-    setMultiplexerForIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(
+    setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->digitalWrite(
         Wall::ledArrayPin(array, section), pinValue);
 }
 void Wall::turnOffLEDarray(led_array array, led_section section)
 {
     int pinValue = ledArrayIsActiveLow(array) ? HIGH : LOW;
-    setMultiplexerForIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
-    io_expander[IO_EXPANDER_FOR_LED_ARRAYS]->digitalWrite(
+    setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->digitalWrite(
         Wall::ledArrayPin(array, section), pinValue);
 }
 
@@ -191,26 +191,26 @@ int Wall::motorPWMpin(wall_motor motor)
 //
 void Wall::setMotorDirectionClockwise(wall_motor motor)
 {
-    setMultiplexerForIOexpander(IO_EXPANDER_FOR_MOTORS);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), HIGH);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), LOW);
+    setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin1(motor), HIGH);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin2(motor), LOW);
 }
 void Wall::setMotorDirectionCounterClockwise(wall_motor motor)
 {
-    setMultiplexerForIOexpander(IO_EXPANDER_FOR_MOTORS);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), LOW);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), HIGH);
+    setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin1(motor), LOW);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin2(motor), HIGH);
 }
 void Wall::stopMotor(wall_motor motor)
 {
-    setMultiplexerForIOexpander(IO_EXPANDER_FOR_MOTORS);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin1(motor), LOW);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->digitalWrite(motorControlPin2(motor), LOW);
+    setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin1(motor), LOW);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin2(motor), LOW);
 }
 void Wall::setMotorSpeed(wall_motor motor, uint8_t speed)
 {
-    setMultiplexerForIOexpander(IO_EXPANDER_FOR_MOTORS);
-    io_expander[IO_EXPANDER_FOR_MOTORS]->analogWrite(motorPWMpin(motor), speed);
+    setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    io_expander[OUTPUT_MOTOR_I2C_DEVICE]->analogWrite(motorPWMpin(motor), speed);
 }
 
 void Wall::turnTransducerOn(void)
@@ -234,4 +234,5 @@ void Wall::turnIndicatorOff(indicator_led lamp)
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPin(lamp, PWM_INDICATOR_OFF_VALUE, FALSE);
 }
+
 

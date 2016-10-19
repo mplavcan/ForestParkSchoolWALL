@@ -4,11 +4,6 @@
 #include "Wall_IO_pins.h"
 #include "FactoryInterface.h"
 
-#define NUMBER_OF_SX1509_DEVICES 4
-
-#define IO_EXPANDER_FOR_MOTORS 0
-#define IO_EXPANDER_FOR_LED_ARRAYS 1
-
 #define PWM_FREQUENCY 2000.0  // Hz
 #define PWM_START_OF_DUTY_CYCLE 0
 #define PWM_FULL_DUTY_CYCLE 4096

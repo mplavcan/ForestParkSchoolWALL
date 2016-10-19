@@ -72,40 +72,40 @@ INSTANTIATE_TEST_CASE_P(InitalizationTests, InitFixture, Values(-1, 0, 1, 2, 3))
 
 TEST_F(InitFixture, TestLEDpinModes)
 {
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         pinMode(OUTPUT_LED_ARRAY_GREEN_LEFT, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         pinMode(OUTPUT_LED_ARRAY_GREEN_RIGHT, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         pinMode(OUTPUT_LED_ARRAY_WHITE_LEFT, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         pinMode(OUTPUT_LED_ARRAY_WHITE_RIGHT, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         pinMode(OUTPUT_LED_ARRAY_RED_QUAD_1, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         pinMode(OUTPUT_LED_ARRAY_RED_QUAD_2, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         pinMode(OUTPUT_LED_ARRAY_RED_QUAD_3, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         pinMode(OUTPUT_LED_ARRAY_RED_QUAD_4, OUTPUT));
 
     wall->initializeLEDarrayOutputs();
 }
 TEST_F(InitFixture, TestMotorPinModes)
 {
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         pinMode(OUTPUT_MOTOR1_PWM, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         pinMode(OUTPUT_MOTOR1_IN1, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         pinMode(OUTPUT_MOTOR1_IN2, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         pinMode(OUTPUT_MOTOR2_PWM, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         pinMode(OUTPUT_MOTOR2_IN1, OUTPUT));
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         pinMode(OUTPUT_MOTOR2_IN2, OUTPUT));
 
     wall->initializeMotorOutputs();
@@ -132,8 +132,8 @@ TEST_P(LEDHighFixture, TurnOnLEDArray)
     led_section section = get<1>(GetParam());
 
     InSequence led_on;
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         digitalWrite(Wall::ledArrayPin(array, section), HIGH)).Times(1);
     wall->turnOnLEDarray(array, section);
 }
@@ -143,8 +143,8 @@ TEST_P(LEDHighFixture, TurnOffLEDArray)
     led_section section = get<1>(GetParam());
 
     InSequence led_off;
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         digitalWrite(Wall::ledArrayPin(array, section), LOW)).Times(1);
     wall->turnOffLEDarray(array, section);
 }
@@ -165,8 +165,8 @@ TEST_P(LEDLowFixture, TurnOnLEDArray)
     led_section section = get<1>(GetParam());
 
     InSequence led_on;
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         digitalWrite(Wall::ledArrayPin(array, section), LOW)).Times(1);
     wall->turnOnLEDarray(array, section);
 }
@@ -176,8 +176,8 @@ TEST_P(LEDLowFixture, TurnOffLEDArray)
     led_section section = get<1>(GetParam());
 
     InSequence led_off;
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_LED_ARRAYS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_LED_ARRAYS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
         digitalWrite(Wall::ledArrayPin(array, section), HIGH)).Times(1);
     wall->turnOffLEDarray(array, section);
 }
@@ -198,13 +198,13 @@ TEST_P(MotorFixture, TestRunMotorClockwise)
     int speed = 247;
 
     InSequence run_motor;
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         digitalWrite(Wall::motorControlPin1(motor), HIGH)).Times(1);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         digitalWrite(Wall::motorControlPin2(motor), LOW)).Times(1);
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         analogWrite(Wall::motorPWMpin(motor), speed)).Times(1);
 
     wall->setMotorDirectionClockwise(motor);
@@ -216,13 +216,13 @@ TEST_P(MotorFixture, TestRunMotorCounterClockwise)
     int speed = 522;
 
     InSequence run_motor;
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         digitalWrite(Wall::motorControlPin1(motor), LOW)).Times(1);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         digitalWrite(Wall::motorControlPin2(motor), HIGH)).Times(1);
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         analogWrite(Wall::motorPWMpin(motor), speed)).Times(1);
 
     wall->setMotorDirectionCounterClockwise(motor);
@@ -233,10 +233,10 @@ TEST_P(MotorFixture, TestStopMotor)
     wall_motor motor = GetParam();
 
     InSequence stop_motor;
-    expectMultiplexerSelectedBusforIOexpander(IO_EXPANDER_FOR_MOTORS);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         digitalWrite(Wall::motorControlPin1(motor), LOW)).Times(1);
-    EXPECT_CALL(*io->accessMockSX1509(IO_EXPANDER_FOR_MOTORS),
+    EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
         digitalWrite(Wall::motorControlPin2(motor), LOW)).Times(1);
 
     wall->stopMotor(motor);
