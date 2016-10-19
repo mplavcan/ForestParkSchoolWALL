@@ -109,6 +109,9 @@ public:
     uint16_t getTouchSensorValue(force_sensor sensor);
     int readCircuitState(circuit_end end);
     void resetCircuitInputs(void);
+    void setCircuitAsInput(circuit_end end);
+    void setCircuitAsOutput(circuit_end end);
+    bool isCircuitConnected(circuit_end A, circuit_end B);
 
     static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];

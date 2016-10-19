@@ -443,13 +443,31 @@ int Wall::readCircuitState(circuit_end end)
     return io_expander[device]->digitalRead(circuitPin(end));
 }
 
+void Wall::setCircuitAsInput(circuit_end end)
+{
+    int device = circuitDevice(end);
+    setMultiplexerForIOexpander(device);
+    io_expander[device]->pinMode(circuitPin(end), INPUT_PULLUP);
+}
+
+void Wall::setCircuitAsOutput(circuit_end end)
+{
+    int device = circuitDevice(end);
+    setMultiplexerForIOexpander(device);
+    io_expander[device]->pinMode(circuitPin(end), OUTPUT);
+    io_expander[device]->digitalWrite(circuitPin(end), LOW);
+}
+
 void Wall::resetCircuitInputs(void)
 {
     for (int circuit = CIRCUIT_KNOB_LEFT; circuit <= CIRCUIT_NEGATIVE_POLE; circuit++)
-    {
-        int device = circuitDevice(static_cast<circuit_end>(circuit));
-        int pin = circuitPin(static_cast<circuit_end>(circuit));
-        setMultiplexerForIOexpander(device);
-        io_expander[device]->pinMode(pin, INPUT_PULLUP);
-    }
+        setCircuitAsInput(static_cast<circuit_end>(circuit));
+}
+
+bool Wall::isCircuitConnected(circuit_end A, circuit_end B)
+{
+    setCircuitAsOutput(A);
+    bool areConnected = (readCircuitState(B) == LOW);
+    setCircuitAsInput(A);
+    return areConnected;
 }

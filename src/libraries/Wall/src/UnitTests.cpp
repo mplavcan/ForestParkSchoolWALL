@@ -492,7 +492,31 @@ INSTANTIATE_TEST_CASE_P(PressureTests, TouchSensorFixture, Values(
 );
 
 class CircuitConnectionFixture : public WallFixture, public ::testing::WithParamInterface<circuit_end> {
+protected:
+    void expectCircuitIsInput(circuit_end end);
+    void expectCircuitIsOutput(circuit_end end);
 };
+
+void CircuitConnectionFixture::expectCircuitIsInput(circuit_end end)
+{
+    int device = Wall::circuitDevice(end);
+
+    InSequence set_to_input;
+    expectMultiplexerSelectedBusforIOexpander(device);
+    EXPECT_CALL(*io->accessMockSX1509(device),
+        pinMode(Wall::circuitPin(end), INPUT_PULLUP)).Times(1);
+}
+void CircuitConnectionFixture::expectCircuitIsOutput(circuit_end end)
+{
+    int device = Wall::circuitDevice(end);
+    int pin = Wall::circuitPin(end);
+
+    InSequence set_to_output;
+    expectMultiplexerSelectedBusforIOexpander(device);
+    EXPECT_CALL(*io->accessMockSX1509(device), pinMode(pin, OUTPUT)).Times(1);
+    EXPECT_CALL(*io->accessMockSX1509(device), digitalWrite(pin, LOW)).Times(1);
+}
+
 TEST_P(CircuitConnectionFixture, TestCircuitIdle)
 {
     circuit_end end = GetParam();
@@ -515,6 +539,51 @@ TEST_P(CircuitConnectionFixture, TestCircuitEnergized)
         digitalRead(Wall::circuitPin(end))).WillOnce(Return(LOW));
     ASSERT_EQ(wall->readCircuitState(end), LOW);
 }
+TEST_P(CircuitConnectionFixture, TestCircuitInput)
+{
+    circuit_end end = GetParam();
+    expectCircuitIsInput(end);
+    wall->setCircuitAsInput(end);
+}
+TEST_P(CircuitConnectionFixture, TestCircuitOutput)
+{
+    circuit_end end = GetParam();
+    expectCircuitIsOutput(end);
+    wall->setCircuitAsOutput(end);
+}
+TEST_F(CircuitConnectionFixture, TestCircuitsConnected)
+{
+    circuit_end sink = CIRCUIT_BLUE_MOTOR_LEFT;
+    circuit_end source = CIRCUIT_NEGATIVE_POLE;
+
+    InSequence check_connection;
+    int sink_device = Wall::circuitDevice(sink);
+    
+    expectCircuitIsOutput(source);
+    expectMultiplexerSelectedBusforIOexpander(sink_device);
+    EXPECT_CALL(*io->accessMockSX1509(sink_device),
+        digitalRead(Wall::circuitPin(sink))).WillOnce(Return(LOW));
+    expectCircuitIsInput(source);
+
+    ASSERT_TRUE(wall->isCircuitConnected(source, sink));
+}
+TEST_F(CircuitConnectionFixture, TestCircuitsNotConnected)
+{
+    circuit_end sink = CIRCUIT_JOYSTICK_LEFT;
+    circuit_end source = CIRCUIT_POSITIVE_POLE;
+
+    InSequence check_connection;
+    int sink_device = Wall::circuitDevice(sink);
+
+    expectCircuitIsOutput(source);
+    expectMultiplexerSelectedBusforIOexpander(sink_device);
+    EXPECT_CALL(*io->accessMockSX1509(sink_device),
+        digitalRead(Wall::circuitPin(sink))).WillOnce(Return(HIGH));
+    expectCircuitIsInput(source);
+
+    ASSERT_FALSE(wall->isCircuitConnected(source, sink));
+}
+
 INSTANTIATE_TEST_CASE_P(ConnectionTests, CircuitConnectionFixture, Values(
     CIRCUIT_KNOB_LEFT,
     CIRCUIT_KNOB_RIGHT,
