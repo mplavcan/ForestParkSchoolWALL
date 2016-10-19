@@ -18,6 +18,8 @@ typedef enum { BLUE_MOTOR, ORANGE_MOTOR } wall_motor;
 typedef enum { GREEN_LED, WHITE_LED, RED_LED } led_array;
 typedef enum { LEFT_SIDE, RIGHT_SIDE, LOWER_LEFT_SIDE, LOWER_RIGHT_SIDE } led_section;
 typedef enum { LEFT_TOGGLE, CENTER_TOGGLE, RIGHT_TOGGLE } toggle_switch;
+typedef enum { LEFT_PHOTO, CENTER_PHOTO, RIGHT_PHOTO } photo_sensor;
+typedef enum { LEFT_PRESSURE, BOTTOM_PRESSURE, RIGHT_PRESSURE } force_sensor;
 typedef enum
 {
     INDICATE_WHITE_LED       = INDICATOR_LED_ARRAY_WHITE,
@@ -35,6 +37,7 @@ typedef enum
     INDICATE_PRESSURE_SENSOR = INDICATOR_FORCE_SENSOR,
     INDICATE_POSITIVE_POLE   = INDICATOR_BATTERY_POSITIVE
 } indicator_led;
+
 
 class Wall
 {
@@ -72,6 +75,8 @@ public:
     bool isJoystickRight(void);
     uint16_t getKnobPosition(void);
     uint16_t getSliderPosition(void);
+    uint16_t getPhotoSensorValue(photo_sensor sensor);
+    uint16_t getTouchSensorValue(force_sensor sensor);
 
     static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];
@@ -86,6 +91,8 @@ public:
     static int whiteLEDarrayPin(led_section section);
     static int redLEDarrayPin(led_section section);
     static int toggleSwitchPin(toggle_switch toggle);
+    static int photoSensorPin(photo_sensor sensor);
+    static int forceSensorPin(force_sensor sensor);
 
 private:
     SX1509 *io_expander[NUMBER_OF_SX1509_DEVICES];

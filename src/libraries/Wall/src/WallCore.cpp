@@ -331,3 +331,37 @@ uint16_t Wall::getSliderPosition(void)
     setMultiplexerForAnalog(INPUT_LINEAR_POT_I2C_DEVICE);
     return analog_expander[INPUT_LINEAR_POT_I2C_DEVICE]->readADC_SingleEnded(INPUT_LINEAR_POT);
 }
+
+int Wall::photoSensorPin(photo_sensor sensor)
+{
+    switch (sensor)
+    {
+        case LEFT_PHOTO:   return INPUT_PHOTO_SENSOR_1;
+        case CENTER_PHOTO: return INPUT_PHOTO_SENSOR_2;
+        case RIGHT_PHOTO:  return INPUT_PHOTO_SENSOR_3;
+        default: return 0;
+    }
+}
+
+uint16_t Wall::getPhotoSensorValue(photo_sensor sensor)
+{
+    setMultiplexerForAnalog(INPUT_PHOTO_SENSOR_I2C_DEVICE);
+    return analog_expander[INPUT_PHOTO_SENSOR_I2C_DEVICE]->readADC_SingleEnded(photoSensorPin(sensor));
+}
+
+int Wall::forceSensorPin(force_sensor sensor)
+{
+    switch (sensor)
+    {
+        case LEFT_PRESSURE:   return INPUT_FORCE_SENSOR_1;
+        case BOTTOM_PRESSURE: return INPUT_FORCE_SENSOR_2;
+        case RIGHT_PRESSURE:  return INPUT_FORCE_SENSOR_3;
+        default: return 0;
+    }
+}
+
+uint16_t Wall::getTouchSensorValue(force_sensor sensor)
+{
+    setMultiplexerForAnalog(INPUT_FORCE_SENSOR_I2C_DEVICE);
+    return analog_expander[INPUT_FORCE_SENSOR_I2C_DEVICE]->readADC_SingleEnded(forceSensorPin(sensor));
+}

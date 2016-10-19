@@ -451,6 +451,47 @@ TEST_F(PotentiometerFixture, TestReadSliderValue)
     ASSERT_EQ(wall->getSliderPosition(), sliderPosition);
 }
 
+class LightSensorFixture : public WallFixture, public ::testing::WithParamInterface<photo_sensor> {
+};
+TEST_P(LightSensorFixture, TestReadBrightnessValue)
+{
+    photo_sensor sensor = GetParam();
+    uint16_t brightness = 133 * sensor;
+
+    InSequence read_photo_sensor;
+    expectMultiplexerSelectedBusforAnalog(INPUT_PHOTO_SENSOR_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockADS1015(INPUT_PHOTO_SENSOR_I2C_DEVICE),
+        readADC_SingleEnded(Wall::photoSensorPin(sensor))).WillOnce(Return(brightness));
+    ASSERT_EQ(wall->getPhotoSensorValue(sensor), brightness);
+}
+INSTANTIATE_TEST_CASE_P(PhotoresistorTests, LightSensorFixture, Values(
+    LEFT_PHOTO,
+    CENTER_PHOTO,
+    RIGHT_PHOTO
+    )
+);
+
+class TouchSensorFixture : public WallFixture, public ::testing::WithParamInterface<force_sensor> {
+};
+TEST_P(TouchSensorFixture, TestReadPressureValue)
+{
+    force_sensor sensor = GetParam();
+    uint16_t force = 186 * sensor;
+
+    InSequence read_force_sensor;
+    expectMultiplexerSelectedBusforAnalog(INPUT_FORCE_SENSOR_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockADS1015(INPUT_FORCE_SENSOR_I2C_DEVICE),
+        readADC_SingleEnded(Wall::forceSensorPin(sensor))).WillOnce(Return(force));
+    ASSERT_EQ(wall->getTouchSensorValue(sensor), force);
+}
+INSTANTIATE_TEST_CASE_P(PressureTests, TouchSensorFixture, Values(
+    LEFT_PRESSURE,
+    BOTTOM_PRESSURE,
+    RIGHT_PRESSURE
+)
+);
+
+
 }; // namespace
 
 // Entry point for Google Test
