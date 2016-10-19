@@ -45,6 +45,7 @@ public:
     void initializeLEDarrayOutputs(void);
     void initializeMotorOutputs(void);
     void initializePWMOutputs(void);
+    void initializeToggleInputs(void);  
 
     int setMultiplexerForIOexpander(int device);
     int setMultiplexerI2CBus(int bus);

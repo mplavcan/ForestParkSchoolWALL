@@ -107,6 +107,15 @@ void Wall::initializePWMOutputs(void)
     turnTransducerOff();
 }
 
+void Wall::initializeToggleInputs(void)
+{
+    setMultiplexerForIOexpander(INPUT_TOGGLE_I2C_DEVICE);
+    io_expander[INPUT_TOGGLE_I2C_DEVICE]->pinMode(LEFT_TOGGLE, INPUT_PULLUP);
+    io_expander[INPUT_TOGGLE_I2C_DEVICE]->pinMode(CENTER_TOGGLE, INPUT_PULLUP);
+    io_expander[INPUT_TOGGLE_I2C_DEVICE]->pinMode(RIGHT_TOGGLE, INPUT_PULLUP);
+}
+
+
 bool Wall::ledArrayIsActiveLow(led_array array)
 {
     return (array == RED_LED);

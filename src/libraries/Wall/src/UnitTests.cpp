@@ -110,6 +110,17 @@ TEST_F(InitFixture, TestMotorPinModes)
 
     wall->initializeMotorOutputs();
 }
+TEST_F(InitFixture, TestTogglePinModes)
+{
+    expectMultiplexerSelectedBusforIOexpander(INPUT_TOGGLE_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
+        pinMode(INPUT_TOGGLE_1, INPUT_PULLUP));
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
+        pinMode(INPUT_TOGGLE_2, INPUT_PULLUP));
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
+        pinMode(INPUT_TOGGLE_3, INPUT_PULLUP));
+    wall->initializeToggleInputs();
+}
 
 // I2C multiplexer select vectors
 class MuxFixture : public WallFixture, public ::testing::WithParamInterface<int> {
