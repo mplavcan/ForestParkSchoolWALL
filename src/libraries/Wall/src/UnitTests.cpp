@@ -121,6 +121,19 @@ TEST_F(InitFixture, TestTogglePinModes)
         pinMode(INPUT_TOGGLE_3, INPUT_PULLUP));
     wall->initializeToggleInputs();
 }
+TEST_F(InitFixture, TestJoystickPinModes)
+{
+    expectMultiplexerSelectedBusforIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
+        pinMode(INPUT_JOYSTICK_DOWN, INPUT_PULLUP));
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
+        pinMode(INPUT_JOYSTICK_LEFT, INPUT_PULLUP));
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
+        pinMode(INPUT_JOYSTICK_UP, INPUT_PULLUP));
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
+        pinMode(INPUT_JOYSTICK_RIGHT, INPUT_PULLUP));
+    wall->initializeJoystickInputs();
+}
 
 // I2C multiplexer select vectors
 class MuxFixture : public WallFixture, public ::testing::WithParamInterface<int> {
@@ -279,7 +292,7 @@ TEST_F(SoundFixture, TestTransducerOff)
 
 class IndicatorFixture : public WallFixture, public ::testing::WithParamInterface<indicator_led> {
 };
-TEST_P(IndicatorFixture, TurnOnIndicator)
+TEST_P(IndicatorFixture, TestTurnOnIndicator)
 {
     indicator_led lamp = GetParam();
 
@@ -289,7 +302,7 @@ TEST_P(IndicatorFixture, TurnOnIndicator)
         setPin(lamp, PWM_INDICATOR_ON_VALUE, FALSE));
     wall->turnIndicatorOn(lamp);
 }
-TEST_P(IndicatorFixture, TurnOffIndicator)
+TEST_P(IndicatorFixture, TestTurnOffIndicator)
 {
     indicator_led lamp = GetParam();
 
@@ -319,7 +332,7 @@ INSTANTIATE_TEST_CASE_P(IndicatorTests, IndicatorFixture, Values(
 
 class SwitchFixture : public WallFixture, public ::testing::WithParamInterface<toggle_switch> {
 };
-TEST_P(SwitchFixture, ReadSwitchOn)
+TEST_P(SwitchFixture, TestReadSwitchOn)
 {
     toggle_switch toggle = GetParam();
 
@@ -329,7 +342,7 @@ TEST_P(SwitchFixture, ReadSwitchOn)
         digitalRead(Wall::toggleSwitchPin(toggle))).WillOnce(Return(LOW));
     ASSERT_TRUE(wall->isToggleOn(toggle));
 }
-TEST_P(SwitchFixture, ReadSwitchOff)
+TEST_P(SwitchFixture, TestReadSwitchOff)
 {
     toggle_switch toggle = GetParam();
 
@@ -344,6 +357,74 @@ INSTANTIATE_TEST_CASE_P(ToggleSwitchTests, SwitchFixture, Values(
     CENTER_TOGGLE,
     RIGHT_TOGGLE)
 );
+
+class JoystickFixture : public WallFixture {
+};
+TEST_F(JoystickFixture, TestReadJoystickIsUp)
+{
+    InSequence is_joystick_up;
+    expectMultiplexerSelectedBusforIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_JOYSTICK_I2C_DEVICE),
+        digitalRead(INPUT_JOYSTICK_UP)).WillOnce(Return(LOW));
+    ASSERT_TRUE(wall->isJoystickUp());
+}
+TEST_F(JoystickFixture, TestReadJoystickIsNotUp)
+{
+    InSequence is_joystick_up;
+    expectMultiplexerSelectedBusforIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_JOYSTICK_I2C_DEVICE),
+        digitalRead(INPUT_JOYSTICK_UP)).WillOnce(Return(HIGH));
+    ASSERT_FALSE(wall->isJoystickUp());
+}
+TEST_F(JoystickFixture, TestReadJoystickIsDown)
+{
+    InSequence is_joystick_down;
+    expectMultiplexerSelectedBusforIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_JOYSTICK_I2C_DEVICE),
+        digitalRead(INPUT_JOYSTICK_DOWN)).WillOnce(Return(LOW));
+    ASSERT_TRUE(wall->isJoystickDown());
+}
+TEST_F(JoystickFixture, TestReadJoystickIsNotDown)
+{
+    InSequence is_joystick_down;
+    expectMultiplexerSelectedBusforIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_JOYSTICK_I2C_DEVICE),
+        digitalRead(INPUT_JOYSTICK_DOWN)).WillOnce(Return(HIGH));
+    ASSERT_FALSE(wall->isJoystickDown());
+}
+TEST_F(JoystickFixture, TestReadJoystickIsLeft)
+{
+    InSequence is_joystick_left;
+    expectMultiplexerSelectedBusforIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_JOYSTICK_I2C_DEVICE),
+        digitalRead(INPUT_JOYSTICK_LEFT)).WillOnce(Return(LOW));
+    ASSERT_TRUE(wall->isJoystickLeft());
+}
+TEST_F(JoystickFixture, TestReadJoystickIsNotLeft)
+{
+    InSequence is_joystick_left;
+    expectMultiplexerSelectedBusforIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_JOYSTICK_I2C_DEVICE),
+        digitalRead(INPUT_JOYSTICK_LEFT)).WillOnce(Return(HIGH));
+    ASSERT_FALSE(wall->isJoystickLeft());
+}
+TEST_F(JoystickFixture, TestReadJoystickIsRight)
+{
+    InSequence is_joystick_right;
+    expectMultiplexerSelectedBusforIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_JOYSTICK_I2C_DEVICE),
+        digitalRead(INPUT_JOYSTICK_RIGHT)).WillOnce(Return(LOW));
+    ASSERT_TRUE(wall->isJoystickRight());
+}
+TEST_F(JoystickFixture, TestReadJoystickIsNotRight)
+{
+    InSequence is_joystick_right;
+    expectMultiplexerSelectedBusforIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_JOYSTICK_I2C_DEVICE),
+        digitalRead(INPUT_JOYSTICK_RIGHT)).WillOnce(Return(HIGH));
+    ASSERT_FALSE(wall->isJoystickRight());
+}
+
 
 }; // namespace
 

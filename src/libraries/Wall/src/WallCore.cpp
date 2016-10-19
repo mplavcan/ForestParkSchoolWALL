@@ -115,6 +115,15 @@ void Wall::initializeToggleInputs(void)
     io_expander[INPUT_TOGGLE_I2C_DEVICE]->pinMode(RIGHT_TOGGLE, INPUT_PULLUP);
 }
 
+void Wall::initializeJoystickInputs(void)
+{
+    setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_DOWN, INPUT_PULLUP);
+    io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_UP, INPUT_PULLUP);
+    io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_LEFT, INPUT_PULLUP);
+    io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_RIGHT, INPUT_PULLUP);
+}
+
 
 bool Wall::ledArrayIsActiveLow(led_array array)
 {
@@ -256,10 +265,32 @@ int Wall::toggleSwitchPin(toggle_switch toggle)
 }
 
 // Toggle switches are active low: 
-//    Input pins have internal pullup, and toggle connects it to ground
+//    Input pins have internal pullup, and toggle connect them to ground
 bool Wall::isToggleOn(toggle_switch toggle)
 {
     setMultiplexerForIOexpander(INPUT_TOGGLE_I2C_DEVICE);
     return (io_expander[INPUT_TOGGLE_I2C_DEVICE]->digitalRead(toggleSwitchPin(toggle)) == LOW);
 }
 
+// Joysitck directions are active low: 
+//    Input pins have internal pullup, and switches connect them to ground
+bool Wall::isJoystickUp(void)
+{
+    setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_UP) == LOW);
+}
+bool Wall::isJoystickDown(void)
+{
+    setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_DOWN) == LOW);
+}
+bool Wall::isJoystickLeft(void)
+{
+    setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_LEFT) == LOW);
+}
+bool Wall::isJoystickRight(void)
+{
+    setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
+    return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_RIGHT) == LOW);
+}

@@ -46,6 +46,7 @@ public:
     void initializeMotorOutputs(void);
     void initializePWMOutputs(void);
     void initializeToggleInputs(void);  
+    void initializeJoystickInputs(void);  
 
     int setMultiplexerForIOexpander(int device);
     int setMultiplexerI2CBus(int bus);
@@ -61,6 +62,11 @@ public:
     void turnIndicatorOn(indicator_led lamp);
     void turnIndicatorOff(indicator_led lamp);
     bool isToggleOn(toggle_switch toggle);
+    bool isJoystickUp(void);
+    bool isJoystickDown(void);
+    bool isJoystickLeft(void);
+    bool isJoystickRight(void);
+
     static const int IODeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int IODeviceAddress[NUMBER_OF_SX1509_DEVICES];
 
