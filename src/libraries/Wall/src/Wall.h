@@ -21,6 +21,18 @@ typedef enum { LEFT_TOGGLE, CENTER_TOGGLE, RIGHT_TOGGLE } toggle_switch;
 typedef enum { LEFT_PHOTO, CENTER_PHOTO, RIGHT_PHOTO } photo_sensor;
 typedef enum { LEFT_PRESSURE, BOTTOM_PRESSURE, RIGHT_PRESSURE } force_sensor;
 typedef enum { BLUE_BUTTON, YELLOW_BUTTON, GREEN_BUTTON, RED_BUTTON, WHITE_BUTTON } large_button;
+typedef enum 
+{ 
+    RED_WIRE_ONE    = RED_EL_1,
+    RED_WIRE_TWO    = RED_EL_2,
+    GREEN_WIRE_ONE  = GREEN_EL_1,
+    GREEN_WIRE_TWO  = GREEN_EL_2,
+    YELLOW_WIRE     = YELLOW_EL,
+    WHITE_WIRE      = WHITE_EL,
+    BLUE_WIRE_ONE   = BLUE_EL_1,
+    BLUE_WIRE_TWO   = BLUE_EL_2
+} EL_wire;
+
 typedef enum
 {
     INDICATE_WHITE_LED       = INDICATOR_LED_ARRAY_WHITE,
@@ -116,6 +128,8 @@ public:
     bool isButtonDepressed(large_button button);
     void illuminateButton(large_button button);
     void extinguishButton(large_button button);
+    void illuminateELWire(EL_wire line);
+    void extinguishELWire(EL_wire line);
 
     static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];
@@ -137,7 +151,8 @@ public:
     static int buttonDevice(large_button button);
     static int buttonPin(large_button button);
     static int buttonLEDpin(large_button button);
-
+    static int elWirePin(EL_wire line);
+ 
 private:
     SX1509 *io_expander[NUMBER_OF_SX1509_DEVICES];
     Adafruit_ADS1015 *analog_expander[NUMBER_OF_ADS1015_DEVICES];

@@ -78,6 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\libraries\Wall\src\FactoryInterface.h" />
+    <ClInclude Include="..\libraries\Wall\src\Wall.h" />
+    <ClInclude Include="..\libraries\Wall\src\Wall_IO_pins.h" />
     <ClInclude Include="__vm\.Main.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>

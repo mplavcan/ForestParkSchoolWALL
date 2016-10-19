@@ -2,5 +2,6 @@
 #include "../../MockDevices/Adafruit_PWMServoDriver.h"
 #include "../../MockDevices/Adafruit_ADS1015.h"
 #include "../../arduino-mock/Wire.h"
+#include "../../arduino-mock/Arduino.h"
 #include "Wall.h"
 #include "WallCore.cpp"

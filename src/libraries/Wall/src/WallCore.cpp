@@ -453,7 +453,6 @@ void Wall::setCircuitAsInput(circuit_end end)
     setMultiplexerForIOexpander(device);
     io_expander[device]->pinMode(circuitPin(end), INPUT_PULLUP);
 }
-
 void Wall::setCircuitAsOutput(circuit_end end)
 {
     int device = circuitDevice(end);
@@ -461,7 +460,6 @@ void Wall::setCircuitAsOutput(circuit_end end)
     io_expander[device]->pinMode(circuitPin(end), OUTPUT);
     io_expander[device]->digitalWrite(circuitPin(end), LOW);
 }
-
 void Wall::resetCircuitInputs(void)
 {
     for (int circuit = CIRCUIT_KNOB_LEFT; circuit <= CIRCUIT_NEGATIVE_POLE; circuit++)
@@ -531,4 +529,15 @@ void Wall::extinguishButton(large_button button)
     io_expander[device]->digitalWrite(buttonLEDpin(button), LOW);
 }
 
-
+int Wall::elWirePin(EL_wire line)
+{
+    return line;
+}
+void Wall::illuminateELWire(EL_wire line)
+{
+    digitalWrite(elWirePin(line), HIGH);
+}
+void Wall::extinguishELWire(EL_wire line)
+{
+    digitalWrite(elWirePin(line), LOW);
+}

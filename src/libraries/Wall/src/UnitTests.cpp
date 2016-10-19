@@ -15,12 +15,14 @@ using testing::StrictMock;
 class WallFixture : public Test {
 protected:
     
+    ArduinoMock *Intel101;
     MockDeviceFactory *io;
-    StrictMock<WireMock> *mock_i2c;
+    StrictMock<WireMock> *i2c;
     Wall *wall;    
 
     WallFixture() {
-        mock_i2c = static_cast<StrictMock<WireMock> *>(WireMockInstance());
+        Intel101 = arduinoMockInstance();
+        i2c = static_cast<StrictMock<WireMock> *>(WireMockInstance());
         io = new MockDeviceFactory;
         wall = new Wall(io);
     }
@@ -29,6 +31,7 @@ protected:
         releaseWireMock();
         delete io;
         delete wall;
+        releaseArduinoMock();
     }
 
     void WallFixture::expectMultiplexerSelectedBusforIOexpander(int device);
@@ -48,9 +51,9 @@ void WallFixture::expectMultiplexerSelectedBus(int bus)
 {
     int expected_bus_vector = 1 << bus;
     InSequence mux_bus_selection;
-    EXPECT_CALL(*mock_i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
-    EXPECT_CALL(*mock_i2c, write(expected_bus_vector));
-    EXPECT_CALL(*mock_i2c, endTransmission()).WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
+    EXPECT_CALL(*i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
+    EXPECT_CALL(*i2c, write(expected_bus_vector));
+    EXPECT_CALL(*i2c, endTransmission()).WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
 }
 
 // Wall setup and DeviceFactory initialization tests
@@ -652,7 +655,7 @@ TEST_P(ButtonFixture, TestButtonDarkened)
 {
     large_button button = GetParam();
 
-    InSequence illuminate_button;
+    InSequence darken_button;
     int device = Wall::buttonDevice(button);
     expectMultiplexerSelectedBusforIOexpander(device);
     EXPECT_CALL(*io->accessMockSX1509(device),
@@ -665,6 +668,38 @@ INSTANTIATE_TEST_CASE_P(ButtonTests, ButtonFixture, Values(
     GREEN_BUTTON, 
     RED_BUTTON, 
     WHITE_BUTTON
+    )
+);
+
+class WireFixture : public WallFixture, public ::testing::WithParamInterface<EL_wire> {
+};
+TEST_P(WireFixture, TestWireIlluminated)
+{
+    EL_wire line = GetParam();
+
+    InSequence illuminate_wire;
+    EXPECT_CALL(*Intel101,
+        digitalWrite(Wall::elWirePin(line), HIGH)).Times(1);
+    wall->illuminateELWire(line);
+}
+TEST_P(WireFixture, TestWireDarkened)
+{
+    EL_wire line = GetParam();
+
+    InSequence illuminate_wire;
+    EXPECT_CALL(*Intel101,
+        digitalWrite(Wall::elWirePin(line), LOW)).Times(1);
+    wall->extinguishELWire(line);
+}
+INSTANTIATE_TEST_CASE_P(WireTests, WireFixture, Values(
+    RED_WIRE_ONE,
+    RED_WIRE_TWO,
+    GREEN_WIRE_ONE,
+    GREEN_WIRE_TWO,
+    YELLOW_WIRE,
+    WHITE_WIRE,
+    BLUE_WIRE_ONE,
+    BLUE_WIRE_TWO
     )
 );
 
