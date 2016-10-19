@@ -179,8 +179,8 @@ int Wall::redLEDarrayPin(led_section section)
     {
         case LEFT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_1;
         case RIGHT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_2;
-        case LOWER_LEFT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_1;
-        case LOWER_RIGHT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_2;
+        case LOWER_LEFT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_3;
+        case LOWER_RIGHT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_4;
         default: return 0;
     }
 }
