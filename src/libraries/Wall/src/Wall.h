@@ -71,6 +71,7 @@ public:
     bool isJoystickLeft(void);
     bool isJoystickRight(void);
     uint16_t getKnobPosition(void);
+    uint16_t getSliderPosition(void);
 
     static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];

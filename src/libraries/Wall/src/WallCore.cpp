@@ -322,6 +322,12 @@ bool Wall::isJoystickRight(void)
 
 uint16_t Wall::getKnobPosition(void)
 {
-    setMultiplexerI2CBus(INPUT_ROTARY_POT_I2C_DEVICE);
+    setMultiplexerForAnalog(INPUT_ROTARY_POT_I2C_DEVICE);
     return analog_expander[INPUT_ROTARY_POT_I2C_DEVICE]->readADC_SingleEnded(INPUT_ROTARY_POT);
+}
+
+uint16_t Wall::getSliderPosition(void)
+{
+    setMultiplexerForAnalog(INPUT_LINEAR_POT_I2C_DEVICE);
+    return analog_expander[INPUT_LINEAR_POT_I2C_DEVICE]->readADC_SingleEnded(INPUT_LINEAR_POT);
 }

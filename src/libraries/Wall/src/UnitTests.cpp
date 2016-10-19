@@ -32,12 +32,17 @@ protected:
     }
 
     void WallFixture::expectMultiplexerSelectedBusforIOexpander(int device);
+    void WallFixture::expectMultiplexerSelectedBusforAnalog(int device);
     void WallFixture::expectMultiplexerSelectedBus(int bus);
 };
 
 void WallFixture::expectMultiplexerSelectedBusforIOexpander(int device)
 {
     expectMultiplexerSelectedBus(Wall::ioDeviceBus[device]);
+}
+void WallFixture::expectMultiplexerSelectedBusforAnalog(int device)
+{
+    expectMultiplexerSelectedBus(Wall::analogDeviceBus[device]);
 }
 void WallFixture::expectMultiplexerSelectedBus(int bus)
 {
@@ -425,16 +430,25 @@ TEST_F(JoystickFixture, TestReadJoystickIsNotRight)
     ASSERT_FALSE(wall->isJoystickRight());
 }
 
-class KnobFixture : public WallFixture {
+class PotentiometerFixture : public WallFixture {
 };
-TEST_F(KnobFixture, TestReadKnobValue)
+TEST_F(PotentiometerFixture, TestReadKnobValue)
 {
-    uint16_t knob_position = 147;
-    InSequence is_joystick_up;
-    expectMultiplexerSelectedBus(INPUT_ROTARY_POT_I2C_DEVICE);
+    uint16_t knobPosition = 147;
+    InSequence read_knob;
+    expectMultiplexerSelectedBusforAnalog(INPUT_ROTARY_POT_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockADS1015(INPUT_ROTARY_POT_I2C_DEVICE),
-        readADC_SingleEnded(INPUT_ROTARY_POT)).WillOnce(Return(knob_position));
-    ASSERT_EQ(wall->getKnobPosition(), knob_position);
+        readADC_SingleEnded(INPUT_ROTARY_POT)).WillOnce(Return(knobPosition));
+    ASSERT_EQ(wall->getKnobPosition(), knobPosition);
+}
+TEST_F(PotentiometerFixture, TestReadSliderValue)
+{
+    uint16_t sliderPosition = 926;
+    InSequence read_slider;
+    expectMultiplexerSelectedBusforAnalog(INPUT_LINEAR_POT_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockADS1015(INPUT_LINEAR_POT_I2C_DEVICE),
+        readADC_SingleEnded(INPUT_LINEAR_POT)).WillOnce(Return(sliderPosition));
+    ASSERT_EQ(wall->getSliderPosition(), sliderPosition);
 }
 
 }; // namespace
