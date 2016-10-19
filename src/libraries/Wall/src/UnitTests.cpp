@@ -306,6 +306,33 @@ INSTANTIATE_TEST_CASE_P(IndicatorTests, IndicatorFixture, Values(
     )
 );
 
+class SwitchFixture : public WallFixture, public ::testing::WithParamInterface<toggle_switch> {
+};
+TEST_P(SwitchFixture, ReadSwitchOn)
+{
+    toggle_switch toggle = GetParam();
+
+    InSequence is_switch_on;
+    expectMultiplexerSelectedBusforIOexpander(INPUT_TOGGLE_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
+        digitalRead(Wall::toggleSwitchPin(toggle))).WillOnce(Return(LOW));
+    ASSERT_TRUE(wall->isToggleOn(toggle));
+}
+TEST_P(SwitchFixture, ReadSwitchOff)
+{
+    toggle_switch toggle = GetParam();
+
+    InSequence is_switch_off;
+    expectMultiplexerSelectedBusforIOexpander(INPUT_TOGGLE_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
+        digitalRead(Wall::toggleSwitchPin(toggle))).WillOnce(Return(HIGH));
+    ASSERT_FALSE(wall->isToggleOn(toggle));
+}
+INSTANTIATE_TEST_CASE_P(ToggleSwitchTests, SwitchFixture, Values(
+    LEFT_TOGGLE,
+    CENTER_TOGGLE,
+    RIGHT_TOGGLE)
+);
 
 }; // namespace
 

@@ -17,6 +17,7 @@
 typedef enum { BLUE_MOTOR, ORANGE_MOTOR } wall_motor;
 typedef enum { GREEN_LED, WHITE_LED, RED_LED } led_array;
 typedef enum { LEFT_SIDE, RIGHT_SIDE, LOWER_LEFT_SIDE, LOWER_RIGHT_SIDE } led_section;
+typedef enum { LEFT_TOGGLE, CENTER_TOGGLE, RIGHT_TOGGLE } toggle_switch;
 typedef enum
 {
     INDICATE_WHITE_LED       = INDICATOR_LED_ARRAY_WHITE,
@@ -58,6 +59,7 @@ public:
     void turnTransducerOff(void);
     void turnIndicatorOn(indicator_led lamp);
     void turnIndicatorOff(indicator_led lamp);
+    bool isToggleOn(toggle_switch toggle);
     static const int IODeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int IODeviceAddress[NUMBER_OF_SX1509_DEVICES];
 
@@ -68,6 +70,7 @@ public:
     static int greenLEDarrayPin(led_section section);
     static int whiteLEDarrayPin(led_section section);
     static int redLEDarrayPin(led_section section);
+    static int toggleSwitchPin(toggle_switch toggle);
 
 private:
     SX1509 *io_expander[NUMBER_OF_SX1509_DEVICES];

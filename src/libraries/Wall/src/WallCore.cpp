@@ -235,4 +235,22 @@ void Wall::turnIndicatorOff(indicator_led lamp)
     pwm->setPin(lamp, PWM_INDICATOR_OFF_VALUE, FALSE);
 }
 
+int Wall::toggleSwitchPin(toggle_switch toggle)
+{
+    switch (toggle)
+    {
+        case LEFT_TOGGLE:   return INPUT_TOGGLE_1;
+        case CENTER_TOGGLE: return INPUT_TOGGLE_2;
+        case RIGHT_TOGGLE:  return INPUT_TOGGLE_3;
+        default: return 0;
+    }
+}
+
+// Toggle switches are active low: 
+//    Input pins have internal pullup, and toggle connects it to ground
+bool Wall::isToggleOn(toggle_switch toggle)
+{
+    setMultiplexerForIOexpander(INPUT_TOGGLE_I2C_DEVICE);
+    return (io_expander[INPUT_TOGGLE_I2C_DEVICE]->digitalRead(toggleSwitchPin(toggle)) == LOW);
+}
 
