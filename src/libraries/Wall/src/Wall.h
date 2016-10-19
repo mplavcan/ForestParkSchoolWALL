@@ -96,6 +96,8 @@ public:
     void initializeJoystickInputs(void);  
     bool resetDigitalIO(int device);
     void resetAnalogIO(int device);
+    void initializeButtonInOuts(void);
+    void initalizeELwireOutputs(void);
 
     int setMultiplexerForIOexpander(int device);
     int setMultiplexerForAnalog(int device);

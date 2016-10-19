@@ -142,6 +142,53 @@ TEST_F(InitFixture, TestJoystickPinModes)
         pinMode(INPUT_JOYSTICK_RIGHT, INPUT_PULLUP));
     wall->initializeJoystickInputs();
 }
+TEST_F(InitFixture, TestLargeButtonPinModes)
+{
+    InSequence initialize_button_pins;
+    expectMultiplexerSelectedBusforIOexpander(BLUE_BUTTON_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(BLUE_BUTTON_I2C_DEVICE),
+        pinMode(BLUE_BUTTON_PIN, INPUT_PULLUP));
+    EXPECT_CALL(*io->accessMockSX1509(BLUE_BUTTON_I2C_DEVICE),
+        pinMode(BLUE_LED_PIN, OUTPUT));
+
+    expectMultiplexerSelectedBusforIOexpander(YELLOW_BUTTON_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(YELLOW_BUTTON_I2C_DEVICE),
+        pinMode(YELLOW_BUTTON_PIN, INPUT_PULLUP));
+    EXPECT_CALL(*io->accessMockSX1509(YELLOW_BUTTON_I2C_DEVICE),
+        pinMode(YELLOW_LED_PIN, OUTPUT));
+
+    expectMultiplexerSelectedBusforIOexpander(GREEN_BUTTON_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(GREEN_BUTTON_I2C_DEVICE),
+        pinMode(GREEN_BUTTON_PIN, INPUT_PULLUP));
+    EXPECT_CALL(*io->accessMockSX1509(GREEN_BUTTON_I2C_DEVICE),
+        pinMode(GREEN_LED_PIN, OUTPUT));
+
+    expectMultiplexerSelectedBusforIOexpander(RED_BUTTON_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(RED_BUTTON_I2C_DEVICE),
+        pinMode(RED_BUTTON_PIN, INPUT_PULLUP));
+    EXPECT_CALL(*io->accessMockSX1509(RED_BUTTON_I2C_DEVICE),
+        pinMode(RED_LED_PIN, OUTPUT));
+
+    expectMultiplexerSelectedBusforIOexpander(WHITE_BUTTON_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockSX1509(WHITE_BUTTON_I2C_DEVICE),
+        pinMode(WHITE_BUTTON_PIN, INPUT_PULLUP));
+    EXPECT_CALL(*io->accessMockSX1509(WHITE_BUTTON_I2C_DEVICE),
+        pinMode(WHITE_LED_PIN, OUTPUT));
+
+    wall->initializeButtonInOuts();
+}
+TEST_F(InitFixture, TestELwirePinModes)
+{
+    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(RED_WIRE_ONE), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(RED_WIRE_TWO), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(GREEN_WIRE_ONE), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(GREEN_WIRE_TWO), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(YELLOW_WIRE), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(WHITE_WIRE), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(BLUE_WIRE_ONE), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(BLUE_WIRE_TWO), OUTPUT)).Times(1);
+    wall->initalizeELwireOutputs();
+}
 
 // I2C multiplexer select vectors
 class MuxFixture : public WallFixture, public ::testing::WithParamInterface<int> {

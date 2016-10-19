@@ -78,6 +78,8 @@ bool Wall::initialize(void)
     initializePWMOutputs();
     initializeToggleInputs();
     initializeJoystickInputs();
+    initializeButtonInOuts();
+    initalizeELwireOutputs();
     resetCircuitInputs();
     return true;
 }
@@ -155,6 +157,24 @@ void Wall::initializeJoystickInputs(void)
     io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_UP, INPUT_PULLUP);
     io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_LEFT, INPUT_PULLUP);
     io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_RIGHT, INPUT_PULLUP);
+}
+
+void Wall::initializeButtonInOuts(void)
+{
+    for(int b = BLUE_BUTTON; b <= WHITE_BUTTON; b++)
+    {
+        large_button button = static_cast<large_button>(b);
+        int device = buttonDevice(button);
+        setMultiplexerForIOexpander(device);
+        io_expander[device]->pinMode(buttonPin(button), INPUT_PULLUP);
+        io_expander[device]->pinMode(buttonLEDpin(button), OUTPUT);
+    }
+}
+
+void Wall::initalizeELwireOutputs(void)
+{
+    for (int el = RED_WIRE_ONE; el <= BLUE_EL_2; el++)
+        pinMode(elWirePin(static_cast<EL_wire>(el)), OUTPUT);
 }
 
 bool Wall::ledArrayIsActiveLow(led_array array)
