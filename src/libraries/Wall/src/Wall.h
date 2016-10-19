@@ -114,6 +114,8 @@ public:
     void setCircuitAsOutput(circuit_end end);
     bool isCircuitConnected(circuit_end A, circuit_end B);
     bool isButtonDepressed(large_button button);
+    void illuminateButton(large_button button);
+    void extinguishButton(large_button button);
 
     static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];
@@ -134,7 +136,8 @@ public:
     static int circuitPin(circuit_end end);
     static int buttonDevice(large_button button);
     static int buttonPin(large_button button);
-    
+    static int buttonLEDpin(large_button button);
+
 private:
     SX1509 *io_expander[NUMBER_OF_SX1509_DEVICES];
     Adafruit_ADS1015 *analog_expander[NUMBER_OF_ADS1015_DEVICES];

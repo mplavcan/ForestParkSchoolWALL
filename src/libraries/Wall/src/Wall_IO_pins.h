@@ -47,23 +47,18 @@
 
 // Large LED buttons
 #define BLUE_BUTTON_I2C_DEVICE         THIRD_SX1509_INDEX 
-#define BLUE_LED_I2C_DEVICE            THIRD_SX1509_INDEX
 #define BLUE_BUTTON_PIN                 8
 #define BLUE_LED_PIN                    9
 #define YELLOW_BUTTON_I2C_DEVICE       FOURTH_SX1509_INDEX
-#define YELLOW_LED_I2C_DEVICE          FOURTH_SX1509_INDEX
 #define YELLOW_BUTTON_PIN              10
 #define YELLOW_LED_PIN                 11
 #define GREEN_BUTTON_I2C_DEVICE        SECOND_SX1509_INDEX
-#define GREEN_LED_I2C_DEVICE           SECOND_SX1509_INDEX
 #define GREEN_BUTTON_PIN                7
 #define GREEN_LED_PIN                   6
 #define RED_BUTTON_I2C_DEVICE          SECOND_SX1509_INDEX
-#define RED_LED_I2C_DEVICE             SECOND_SX1509_INDEX
 #define RED_BUTTON_PIN                  5
 #define RED_LED_PIN                     4
 #define WHITE_BUTTON_I2C_DEVICE        FIRST_SX1509_INDEX
-#define WHITE_LED_I2C_DEVICE           FIRST_SX1509_INDEX
 #define WHITE_BUTTON_PIN               15
 #define WHITE_LED_PIN                  14
 

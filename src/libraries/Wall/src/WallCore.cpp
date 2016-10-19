@@ -484,7 +484,6 @@ int Wall::buttonDevice(large_button button)
         default: return 0;
     }
 }
-
 int Wall::buttonPin(large_button button)
 {
     switch (button)
@@ -497,11 +496,35 @@ int Wall::buttonPin(large_button button)
         default: return 0;
     }
 }
-
+int Wall::buttonLEDpin(large_button button)
+{
+    switch (button)
+    {
+        case BLUE_BUTTON:   return BLUE_LED_PIN;
+        case YELLOW_BUTTON: return YELLOW_LED_PIN;
+        case GREEN_BUTTON:  return GREEN_LED_PIN;
+        case RED_BUTTON:    return RED_LED_PIN;
+        case WHITE_BUTTON:  return WHITE_LED_PIN;
+        default: return 0;
+    }
+}
 bool Wall::isButtonDepressed(large_button button)
 {
     int device = buttonDevice(button);
     setMultiplexerForIOexpander(device);
     return (io_expander[device]->digitalRead(buttonPin(button)) == LOW);
 }
+void Wall::illuminateButton(large_button button)
+{
+    int device = buttonDevice(button);
+    setMultiplexerForIOexpander(device);
+    io_expander[device]->digitalWrite(buttonLEDpin(button), HIGH);
+}
+void Wall::extinguishButton(large_button button)
+{
+    int device = buttonDevice(button);
+    setMultiplexerForIOexpander(device);
+    io_expander[device]->digitalWrite(buttonLEDpin(button), LOW);
+}
+
 

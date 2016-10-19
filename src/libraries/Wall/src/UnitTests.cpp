@@ -496,7 +496,6 @@ protected:
     void expectCircuitIsInput(circuit_end end);
     void expectCircuitIsOutput(circuit_end end);
 };
-
 void CircuitConnectionFixture::expectCircuitIsInput(circuit_end end)
 {
     int device = Wall::circuitDevice(end);
@@ -615,9 +614,6 @@ INSTANTIATE_TEST_CASE_P(ConnectionTests, CircuitConnectionFixture, Values(
 );
 
 class ButtonFixture : public WallFixture, public ::testing::WithParamInterface<large_button> {
-protected:
-    void expectCircuitIsInput(circuit_end end);
-    void expectCircuitIsOutput(circuit_end end);
 };
 TEST_P(ButtonFixture, TestButtonDepressed)
 {
@@ -640,6 +636,28 @@ TEST_P(ButtonFixture, TestButtonNotDepressed)
     EXPECT_CALL(*io->accessMockSX1509(device),
         digitalRead(Wall::buttonPin(button))).WillOnce(Return(HIGH));
     ASSERT_FALSE(wall->isButtonDepressed(button));
+}
+TEST_P(ButtonFixture, TestButtonIlluminated)
+{
+    large_button button = GetParam();
+
+    InSequence illuminate_button;
+    int device = Wall::buttonDevice(button);
+    expectMultiplexerSelectedBusforIOexpander(device);
+    EXPECT_CALL(*io->accessMockSX1509(device),
+        digitalWrite(Wall::buttonLEDpin(button), HIGH)).Times(1);
+    wall->illuminateButton(button);
+}
+TEST_P(ButtonFixture, TestButtonDarkened)
+{
+    large_button button = GetParam();
+
+    InSequence illuminate_button;
+    int device = Wall::buttonDevice(button);
+    expectMultiplexerSelectedBusforIOexpander(device);
+    EXPECT_CALL(*io->accessMockSX1509(device),
+        digitalWrite(Wall::buttonLEDpin(button), LOW)).Times(1);
+    wall->extinguishButton(button);
 }
 INSTANTIATE_TEST_CASE_P(ButtonTests, ButtonFixture, Values(
     BLUE_BUTTON, 
