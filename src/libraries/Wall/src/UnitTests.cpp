@@ -488,9 +488,62 @@ INSTANTIATE_TEST_CASE_P(PressureTests, TouchSensorFixture, Values(
     LEFT_PRESSURE,
     BOTTOM_PRESSURE,
     RIGHT_PRESSURE
-)
+    )    
 );
 
+class CircuitConnectionFixture : public WallFixture, public ::testing::WithParamInterface<circuit_end> {
+};
+TEST_P(CircuitConnectionFixture, TestCircuitIdle)
+{
+    circuit_end end = GetParam();
+ 
+    InSequence read_connection_value;
+    int device = Wall::circuitDevice(end);
+    expectMultiplexerSelectedBusforIOexpander(device);
+    EXPECT_CALL(*io->accessMockSX1509(device),
+        digitalRead(Wall::circuitPin(end))).WillOnce(Return(HIGH));
+    ASSERT_EQ(wall->readCircuitState(end), HIGH);
+}
+TEST_P(CircuitConnectionFixture, TestCircuitEnergized)
+{
+    circuit_end end = GetParam();
+
+    InSequence read_connection_value;
+    int device = Wall::circuitDevice(end);
+    expectMultiplexerSelectedBusforIOexpander(device);
+    EXPECT_CALL(*io->accessMockSX1509(device),
+        digitalRead(Wall::circuitPin(end))).WillOnce(Return(LOW));
+    ASSERT_EQ(wall->readCircuitState(end), LOW);
+}
+INSTANTIATE_TEST_CASE_P(ConnectionTests, CircuitConnectionFixture, Values(
+    CIRCUIT_KNOB_LEFT,
+    CIRCUIT_KNOB_RIGHT,
+    CIRCUIT_SLIDER_LEFT,
+    CIRCUIT_SLIDER_RIGHT,
+    CIRCUIT_PHOTO_LEFT,
+    CIRCUIT_PHOTO_RIGHT,
+    CIRCUIT_JOYSTICK_LEFT,
+    CIRCUIT_JOYSTICK_RIGHT,
+    CIRCUIT_TOGGLE_LEFT,
+    CIRCUIT_TOGGLE_RIGHT,
+    CIRCUIT_TOUCH_LEFT,
+    CIRCUIT_TOUCH_RIGHT,
+    CIRCUIT_BLUE_MOTOR_LEFT,
+    CIRCUIT_BLUE_MOTOR_RIGHT,
+    CIRCUIT_ORANGE_MOTOR_LEFT,
+    CIRCUIT_ORANGE_MOTOR_RIGHT,
+    CIRCUIT_TRANSDUCER_LEFT,
+    CIRCUIT_TRANSDUCER_RIGHT,
+    CIRCUIT_WHITE_LED_LEFT,
+    CIRCUIT_WHITE_LED_RIGHT,
+    CIRCUIT_GREEN_LED_LEFT,
+    CIRCUIT_GREEN_LED_RIGHT,
+    CIRCUIT_RED_LED_LEFT,
+    CIRCUIT_RED_LED_RIGHT,
+    CIRCUIT_POSITIVE_POLE,
+    CIRCUIT_NEGATIVE_POLE
+    )
+);
 
 }; // namespace
 

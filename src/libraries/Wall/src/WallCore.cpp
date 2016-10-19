@@ -71,6 +71,10 @@ bool Wall::initialize(void)
     initializeAnalogExpanders();
     initializeLEDarrayOutputs();
     initializeMotorOutputs();
+    initializePWMOutputs();
+    initializeToggleInputs();
+    initializeJoystickInputs();
+    resetCircuitInputs();
     return true;
 }
 
@@ -148,7 +152,6 @@ void Wall::initializeJoystickInputs(void)
     io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_LEFT, INPUT_PULLUP);
     io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_RIGHT, INPUT_PULLUP);
 }
-
 
 bool Wall::ledArrayIsActiveLow(led_array array)
 {
@@ -364,4 +367,89 @@ uint16_t Wall::getTouchSensorValue(force_sensor sensor)
 {
     setMultiplexerForAnalog(INPUT_FORCE_SENSOR_I2C_DEVICE);
     return analog_expander[INPUT_FORCE_SENSOR_I2C_DEVICE]->readADC_SingleEnded(forceSensorPin(sensor));
+}
+
+int Wall::circuitDevice(circuit_end end)
+{
+    switch(end)
+    {
+        case CIRCUIT_KNOB_LEFT: return GRID_ROTARY_POT_I2C_DEVICE;
+        case CIRCUIT_KNOB_RIGHT: return GRID_ROTARY_POT_I2C_DEVICE;
+        case CIRCUIT_SLIDER_LEFT: return GRID_LINEAR_POT_I2C_DEVICE;
+        case CIRCUIT_SLIDER_RIGHT: return GRID_LINEAR_POT_I2C_DEVICE;
+        case CIRCUIT_PHOTO_LEFT: return GRID_PHOTO_SENSOR_I2C_DEVICE;
+        case CIRCUIT_PHOTO_RIGHT: return GRID_PHOTO_SENSOR_I2C_DEVICE;
+        case CIRCUIT_JOYSTICK_LEFT: return GRID_JOYSTICK_I2C_DEVICE;
+        case CIRCUIT_JOYSTICK_RIGHT: return GRID_JOYSTICK_I2C_DEVICE;
+        case CIRCUIT_TOGGLE_LEFT: return GRID_TOGGLE_SWITCH_I2C_DEVICE;
+        case CIRCUIT_TOGGLE_RIGHT: return GRID_TOGGLE_SWITCH_I2C_DEVICE;
+        case CIRCUIT_TOUCH_LEFT: return GRID_FORCE_SENSOR_I2C_DEVICE;
+        case CIRCUIT_TOUCH_RIGHT: return GRID_FORCE_SENSOR_I2C_DEVICE;
+        case CIRCUIT_BLUE_MOTOR_LEFT: return GRID_MOTOR_1_I2C_DEVICE;
+        case CIRCUIT_BLUE_MOTOR_RIGHT: return GRID_MOTOR_1_I2C_DEVICE;
+        case CIRCUIT_ORANGE_MOTOR_LEFT: return GRID_MOTOR_2_I2C_DEVICE;
+        case CIRCUIT_ORANGE_MOTOR_RIGHT: return GRID_MOTOR_2_I2C_DEVICE;
+        case CIRCUIT_TRANSDUCER_LEFT: return GRID_TRANSDUCER_I2C_DEVICE;
+        case CIRCUIT_TRANSDUCER_RIGHT: return GRID_TRANSDUCER_I2C_DEVICE;
+        case CIRCUIT_WHITE_LED_LEFT: return GRID_LED_ARRAY_WHITE_I2C_DEVICE;
+        case CIRCUIT_WHITE_LED_RIGHT: return GRID_LED_ARRAY_WHITE_I2C_DEVICE;
+        case CIRCUIT_GREEN_LED_LEFT: return GRID_LED_ARRAY_GREEN_I2C_DEVICE;
+        case CIRCUIT_GREEN_LED_RIGHT: return GRID_LED_ARRAY_GREEN_I2C_DEVICE;
+        case CIRCUIT_RED_LED_LEFT: return GRID_LED_ARRAY_RED_I2C_DEVICE;
+        case CIRCUIT_RED_LED_RIGHT: return GRID_LED_ARRAY_RED_I2C_DEVICE;
+        case CIRCUIT_POSITIVE_POLE: return GRID_BATTERY_I2C_DEVICE;
+        case CIRCUIT_NEGATIVE_POLE: return GRID_BATTERY_I2C_DEVICE;
+        default: return 0;
+    };
+}
+int Wall::circuitPin(circuit_end end)
+{
+    switch (end)
+    {
+        case CIRCUIT_KNOB_LEFT: return GRID_ROTARY_POT_LEFT;
+        case CIRCUIT_KNOB_RIGHT: return GRID_ROTARY_POT_RIGHT;
+        case CIRCUIT_SLIDER_LEFT: return GRID_LINEAR_POT_LEFT;
+        case CIRCUIT_SLIDER_RIGHT: return GRID_LINEAR_POT_RIGHT;
+        case CIRCUIT_PHOTO_LEFT: return GRID_PHOTO_SENSOR_LEFT;
+        case CIRCUIT_PHOTO_RIGHT: return GRID_PHOTO_SENSOR_RIGHT;
+        case CIRCUIT_JOYSTICK_LEFT: return GRID_JOYSTICK_LEFT;
+        case CIRCUIT_JOYSTICK_RIGHT: return GRID_JOYSTICK_RIGHT;
+        case CIRCUIT_TOGGLE_LEFT: return GRID_TOGGLE_SWITCH_LEFT;
+        case CIRCUIT_TOGGLE_RIGHT: return GRID_TOGGLE_SWITCH_RIGHT;
+        case CIRCUIT_TOUCH_LEFT: return GRID_FORCE_SENSOR_LEFT;
+        case CIRCUIT_TOUCH_RIGHT: return GRID_FORCE_SENSOR_RIGHT;
+        case CIRCUIT_BLUE_MOTOR_LEFT: return GRID_MOTOR_1_LEFT;
+        case CIRCUIT_BLUE_MOTOR_RIGHT: return GRID_MOTOR_1_RIGHT;
+        case CIRCUIT_ORANGE_MOTOR_LEFT: return GRID_MOTOR_2_LEFT;
+        case CIRCUIT_ORANGE_MOTOR_RIGHT: return GRID_MOTOR_2_RIGHT;
+        case CIRCUIT_TRANSDUCER_LEFT: return GRID_TRANSDUCER_LEFT;
+        case CIRCUIT_TRANSDUCER_RIGHT: return GRID_TRANSDUCER_RIGHT;
+        case CIRCUIT_WHITE_LED_LEFT: return GRID_LED_ARRAY_WHITE_LEFT;
+        case CIRCUIT_WHITE_LED_RIGHT: return GRID_LED_ARRAY_WHITE_RIGHT;
+        case CIRCUIT_GREEN_LED_LEFT: return GRID_LED_ARRAY_GREEN_LEFT;
+        case CIRCUIT_GREEN_LED_RIGHT: return GRID_LED_ARRAY_GREEN_RIGHT;
+        case CIRCUIT_RED_LED_LEFT: return GRID_LED_ARRAY_RED_LEFT;
+        case CIRCUIT_RED_LED_RIGHT: return GRID_LED_ARRAY_RED_RIGHT;
+        case CIRCUIT_POSITIVE_POLE: return GRID_BATTERY_POSTIVE;
+        case CIRCUIT_NEGATIVE_POLE: return GRID_BATTERY_NEGATIVE;
+        default: return 0;
+    };
+}
+
+int Wall::readCircuitState(circuit_end end)
+{
+    int device = circuitDevice(end);
+    setMultiplexerForIOexpander(device);
+    return io_expander[device]->digitalRead(circuitPin(end));
+}
+
+void Wall::resetCircuitInputs(void)
+{
+    for (int circuit = CIRCUIT_KNOB_LEFT; circuit <= CIRCUIT_NEGATIVE_POLE; circuit++)
+    {
+        int device = circuitDevice(static_cast<circuit_end>(circuit));
+        int pin = circuitPin(static_cast<circuit_end>(circuit));
+        setMultiplexerForIOexpander(device);
+        io_expander[device]->pinMode(pin, INPUT_PULLUP);
+    }
 }

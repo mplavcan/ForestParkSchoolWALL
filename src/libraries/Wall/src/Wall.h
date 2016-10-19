@@ -38,6 +38,36 @@ typedef enum
     INDICATE_POSITIVE_POLE   = INDICATOR_BATTERY_POSITIVE
 } indicator_led;
 
+typedef enum
+{
+    CIRCUIT_KNOB_LEFT,
+    CIRCUIT_KNOB_RIGHT,
+    CIRCUIT_SLIDER_LEFT,
+    CIRCUIT_SLIDER_RIGHT,
+    CIRCUIT_PHOTO_LEFT,
+    CIRCUIT_PHOTO_RIGHT,
+    CIRCUIT_JOYSTICK_LEFT,
+    CIRCUIT_JOYSTICK_RIGHT,
+    CIRCUIT_TOGGLE_LEFT,
+    CIRCUIT_TOGGLE_RIGHT,
+    CIRCUIT_TOUCH_LEFT,
+    CIRCUIT_TOUCH_RIGHT,
+    CIRCUIT_BLUE_MOTOR_LEFT,
+    CIRCUIT_BLUE_MOTOR_RIGHT,
+    CIRCUIT_ORANGE_MOTOR_LEFT,
+    CIRCUIT_ORANGE_MOTOR_RIGHT,
+    CIRCUIT_TRANSDUCER_LEFT,
+    CIRCUIT_TRANSDUCER_RIGHT,
+    CIRCUIT_WHITE_LED_LEFT,
+    CIRCUIT_WHITE_LED_RIGHT,
+    CIRCUIT_GREEN_LED_LEFT,
+    CIRCUIT_GREEN_LED_RIGHT,
+    CIRCUIT_RED_LED_LEFT,
+    CIRCUIT_RED_LED_RIGHT,
+    CIRCUIT_POSITIVE_POLE,
+    CIRCUIT_NEGATIVE_POLE
+} circuit_end;
+
 
 class Wall
 {
@@ -77,6 +107,8 @@ public:
     uint16_t getSliderPosition(void);
     uint16_t getPhotoSensorValue(photo_sensor sensor);
     uint16_t getTouchSensorValue(force_sensor sensor);
+    int readCircuitState(circuit_end end);
+    void resetCircuitInputs(void);
 
     static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];
@@ -93,6 +125,8 @@ public:
     static int toggleSwitchPin(toggle_switch toggle);
     static int photoSensorPin(photo_sensor sensor);
     static int forceSensorPin(force_sensor sensor);
+    static int circuitDevice(circuit_end end);
+    static int circuitPin(circuit_end end);
 
 private:
     SX1509 *io_expander[NUMBER_OF_SX1509_DEVICES];
