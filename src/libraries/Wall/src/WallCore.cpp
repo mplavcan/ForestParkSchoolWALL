@@ -471,3 +471,37 @@ bool Wall::isCircuitConnected(circuit_end A, circuit_end B)
     setCircuitAsInput(A);
     return areConnected;
 }
+
+int Wall::buttonDevice(large_button button)
+{
+    switch(button)
+    {
+        case BLUE_BUTTON:   return BLUE_BUTTON_I2C_DEVICE;
+        case YELLOW_BUTTON: return YELLOW_BUTTON_I2C_DEVICE;
+        case GREEN_BUTTON:  return GREEN_BUTTON_I2C_DEVICE;
+        case RED_BUTTON:    return RED_BUTTON_I2C_DEVICE;
+        case WHITE_BUTTON:  return WHITE_BUTTON_I2C_DEVICE;
+        default: return 0;
+    }
+}
+
+int Wall::buttonPin(large_button button)
+{
+    switch (button)
+    {
+        case BLUE_BUTTON:   return BLUE_BUTTON_PIN;
+        case YELLOW_BUTTON: return YELLOW_BUTTON_PIN;
+        case GREEN_BUTTON:  return GREEN_BUTTON_PIN;
+        case RED_BUTTON:    return RED_BUTTON_PIN;
+        case WHITE_BUTTON:  return WHITE_BUTTON_PIN;
+        default: return 0;
+    }
+}
+
+bool Wall::isButtonDepressed(large_button button)
+{
+    int device = buttonDevice(button);
+    setMultiplexerForIOexpander(device);
+    return (io_expander[device]->digitalRead(buttonPin(button)) == LOW);
+}
+

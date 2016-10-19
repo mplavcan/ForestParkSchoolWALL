@@ -614,6 +614,42 @@ INSTANTIATE_TEST_CASE_P(ConnectionTests, CircuitConnectionFixture, Values(
     )
 );
 
+class ButtonFixture : public WallFixture, public ::testing::WithParamInterface<large_button> {
+protected:
+    void expectCircuitIsInput(circuit_end end);
+    void expectCircuitIsOutput(circuit_end end);
+};
+TEST_P(ButtonFixture, TestButtonDepressed)
+{
+    large_button button = GetParam();
+
+    InSequence check_button_depressed;
+    int device = Wall::buttonDevice(button);
+    expectMultiplexerSelectedBusforIOexpander(device);
+    EXPECT_CALL(*io->accessMockSX1509(device),
+        digitalRead(Wall::buttonPin(button))).WillOnce(Return(LOW));
+    ASSERT_TRUE(wall->isButtonDepressed(button));
+}
+TEST_P(ButtonFixture, TestButtonNotDepressed)
+{
+    large_button button = GetParam();
+
+    InSequence check_button_depressed;
+    int device = Wall::buttonDevice(button);
+    expectMultiplexerSelectedBusforIOexpander(device);
+    EXPECT_CALL(*io->accessMockSX1509(device),
+        digitalRead(Wall::buttonPin(button))).WillOnce(Return(HIGH));
+    ASSERT_FALSE(wall->isButtonDepressed(button));
+}
+INSTANTIATE_TEST_CASE_P(ButtonTests, ButtonFixture, Values(
+    BLUE_BUTTON, 
+    YELLOW_BUTTON, 
+    GREEN_BUTTON, 
+    RED_BUTTON, 
+    WHITE_BUTTON
+    )
+);
+
 }; // namespace
 
 // Entry point for Google Test
