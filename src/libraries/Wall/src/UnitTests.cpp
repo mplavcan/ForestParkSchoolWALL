@@ -252,7 +252,7 @@ class SoundFixture : public WallFixture {
 TEST_F(SoundFixture, TestTransducerOn)
 {
     InSequence make_sound;
-    expectMultiplexerSelectedBusforIOexpander(ADAFRUIT_PWM_I2C_BUS);
+    expectMultiplexerSelectedBus(ADAFRUIT_PWM_I2C_BUS);
     EXPECT_CALL(*io->accessMockPWM(),
         setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_HALF_DUTY_CYCLE-1));
     wall->turnTransducerOn();
@@ -273,7 +273,7 @@ TEST_P(IndicatorFixture, TurnOnIndicator)
     indicator_led lamp = GetParam();
 
     InSequence lamp_on;
-    expectMultiplexerSelectedBusforIOexpander(ADAFRUIT_PWM_I2C_BUS);
+    expectMultiplexerSelectedBus(ADAFRUIT_PWM_I2C_BUS);
     EXPECT_CALL(*io->accessMockPWM(),
         setPin(lamp, PWM_INDICATOR_ON_VALUE, FALSE));
     wall->turnIndicatorOn(lamp);
@@ -305,7 +305,6 @@ INSTANTIATE_TEST_CASE_P(IndicatorTests, IndicatorFixture, Values(
     INDICATE_NEGATIVE_POLE
     )
 );
-
 
 
 }; // namespace
