@@ -33,6 +33,9 @@
     <ClCompile Include="..\..\MockDevices\Adafruit_PWMServoDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\MockDevices\Adafruit_ADS1015.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

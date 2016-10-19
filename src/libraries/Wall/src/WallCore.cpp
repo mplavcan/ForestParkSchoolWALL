@@ -8,27 +8,42 @@
 #define OUTPUT 0x1
 #define INPUT_PULLUP 0x2
 
-const int Wall::IODeviceBus[NUMBER_OF_SX1509_DEVICES] = {
+const int Wall::ioDeviceBus[NUMBER_OF_SX1509_DEVICES] = {
     SPARKFUN_SX1509_FIRST_I2C_BUS,
     SPARKFUN_SX1509_SECOND_I2C_BUS,
     SPARKFUN_SX1509_THIRD_I2C_BUS,
     SPARKFUN_SX1509_FOURTH_I2C_BUS
 };
-const int Wall::IODeviceAddress[NUMBER_OF_SX1509_DEVICES] = {
+const int Wall::ioDeviceAddress[NUMBER_OF_SX1509_DEVICES] = {
     SPARKFUN_SX1509_FIRST_I2C_ADDRESS,
     SPARKFUN_SX1509_SECOND_I2C_ADDRESS,
     SPARKFUN_SX1509_THIRD_I2C_ADDRESS,
     SPARKFUN_SX1509_FOURTH_I2C_ADDRESS
 };
+const int Wall::analogDeviceAddress[NUMBER_OF_ADS1015_DEVICES] = {
+    ADAFRUIT_ANALOG_FIRST_I2C_ADDRESS,
+    ADAFRUIT_ANALOG_SECOND_I2C_ADDRESS
+};
+const int Wall::analogDeviceBus[NUMBER_OF_ADS1015_DEVICES] = {
+    ADAFRUIT_ANALOG_FIRST_I2C_BUS,
+    ADAFRUIT_ANALOG_SECOND_I2C_BUS
+};
+
 
 Wall::Wall(FactoryInterface *io) {
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
         this->io_expander[device] = io->createSX1509Instance();
+    for (int device = 0; device < NUMBER_OF_ADS1015_DEVICES; device++)
+        this->analog_expander[device] = io->createADS1015Instance(analogDeviceAddress[device]);
     this->pwm = io->createPWMinstance(ADAFRUIT_PWM_I2C_ADDRESS);
 }
 
 int Wall::setMultiplexerForIOexpander(int device) {
-    return setMultiplexerI2CBus(IODeviceBus[device]);
+    return setMultiplexerI2CBus(ioDeviceBus[device]);
+}
+
+int Wall::setMultiplexerForAnalog(int device) {
+    return setMultiplexerI2CBus(analogDeviceBus[device]);
 }
 
 int Wall::setMultiplexerI2CBus(int bus) {
@@ -38,18 +53,22 @@ int Wall::setMultiplexerI2CBus(int bus) {
 }
 
 
-bool Wall::resetIO(int device)
+bool Wall::resetDigitalIO(int device)
 {
-    if (device >= NUMBER_OF_SX1509_DEVICES)
-        return false;
     setMultiplexerForIOexpander(device);
-    return (io_expander[device]->begin(IODeviceAddress[device]) != 0);
+    return (io_expander[device]->begin(ioDeviceAddress[device]) != 0);
+}
+void Wall::resetAnalogIO(int device)
+{
+    setMultiplexerForAnalog(device);
+    analog_expander[device]->begin();
 }
 
 bool Wall::initialize(void)
 {
     if(!initializeIOexpanders())
         return false;
+    initializeAnalogExpanders();
     initializeLEDarrayOutputs();
     initializeMotorOutputs();
     return true;
@@ -59,8 +78,14 @@ bool Wall::initializeIOexpanders(void)
 {
     bool result = true;
     for(int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
-        result = result && resetIO(device);
+        result = result && resetDigitalIO(device);
     return result;
+}
+
+void Wall::initializeAnalogExpanders(void)
+{
+    for (int device = 0; device < NUMBER_OF_ADS1015_DEVICES; device++)
+        resetAnalogIO(device);
 }
 
 void Wall::initializeLEDarrayOutputs(void)
@@ -272,7 +297,7 @@ bool Wall::isToggleOn(toggle_switch toggle)
     return (io_expander[INPUT_TOGGLE_I2C_DEVICE]->digitalRead(toggleSwitchPin(toggle)) == LOW);
 }
 
-// Joysitck directions are active low: 
+// Joystick directions are active low: 
 //    Input pins have internal pullup, and switches connect them to ground
 bool Wall::isJoystickUp(void)
 {
@@ -293,4 +318,10 @@ bool Wall::isJoystickRight(void)
 {
     setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
     return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_RIGHT) == LOW);
+}
+
+uint16_t Wall::getKnobPosition(void)
+{
+    setMultiplexerI2CBus(INPUT_ROTARY_POT_I2C_DEVICE);
+    return analog_expander[INPUT_ROTARY_POT_I2C_DEVICE]->readADC_SingleEnded(INPUT_ROTARY_POT);
 }

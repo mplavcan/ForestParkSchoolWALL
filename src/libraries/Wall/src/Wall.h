@@ -42,15 +42,19 @@ public:
     Wall(FactoryInterface *io);
     bool initialize(void);
     bool initializeIOexpanders(void);
+    void initializeAnalogExpanders(void);
     void initializeLEDarrayOutputs(void);
     void initializeMotorOutputs(void);
     void initializePWMOutputs(void);
     void initializeToggleInputs(void);  
     void initializeJoystickInputs(void);  
+    bool resetDigitalIO(int device);
+    void resetAnalogIO(int device);
 
     int setMultiplexerForIOexpander(int device);
+    int setMultiplexerForAnalog(int device);
     int setMultiplexerI2CBus(int bus);
-    bool resetIO(int device);
+    
     void turnOnLEDarray(led_array array, led_section section);
     void turnOffLEDarray(led_array array, led_section section);
     void setMotorDirectionClockwise(wall_motor motor);
@@ -66,9 +70,12 @@ public:
     bool isJoystickDown(void);
     bool isJoystickLeft(void);
     bool isJoystickRight(void);
+    uint16_t getKnobPosition(void);
 
-    static const int IODeviceBus[NUMBER_OF_SX1509_DEVICES];
-    static const int IODeviceAddress[NUMBER_OF_SX1509_DEVICES];
+    static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
+    static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];
+    static const int analogDeviceAddress[NUMBER_OF_ADS1015_DEVICES];
+    static const int analogDeviceBus[NUMBER_OF_ADS1015_DEVICES];
 
     static int motorControlPin1(wall_motor motor);
     static int motorControlPin2(wall_motor motor);
@@ -81,6 +88,7 @@ public:
 
 private:
     SX1509 *io_expander[NUMBER_OF_SX1509_DEVICES];
+    Adafruit_ADS1015 *analog_expander[NUMBER_OF_ADS1015_DEVICES];
     Adafruit_PWMServoDriver *pwm;
 
     bool ledArrayIsActiveLow(led_array array);

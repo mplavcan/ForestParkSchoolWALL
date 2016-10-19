@@ -37,7 +37,7 @@ protected:
 
 void WallFixture::expectMultiplexerSelectedBusforIOexpander(int device)
 {
-    expectMultiplexerSelectedBus(Wall::IODeviceBus[device]);
+    expectMultiplexerSelectedBus(Wall::ioDeviceBus[device]);
 }
 void WallFixture::expectMultiplexerSelectedBus(int bus)
 {
@@ -59,7 +59,7 @@ TEST_P(InitFixture, TestFailedIOExpanderInitialization)
     {
         expectMultiplexerSelectedBusforIOexpander(device);
         EXPECT_CALL(*io->accessMockSX1509(device),
-            begin(Wall::IODeviceAddress[device], SPARKFUN_SX1509_RESET_PIN))
+            begin(Wall::ioDeviceAddress[device], SPARKFUN_SX1509_RESET_PIN))
             .WillOnce(Return(device != failingDevice));
         if (device == failingDevice)
             break;
@@ -425,6 +425,17 @@ TEST_F(JoystickFixture, TestReadJoystickIsNotRight)
     ASSERT_FALSE(wall->isJoystickRight());
 }
 
+class KnobFixture : public WallFixture {
+};
+TEST_F(KnobFixture, TestReadKnobValue)
+{
+    uint16_t knob_position = 147;
+    InSequence is_joystick_up;
+    expectMultiplexerSelectedBus(INPUT_ROTARY_POT_I2C_DEVICE);
+    EXPECT_CALL(*io->accessMockADS1015(INPUT_ROTARY_POT_I2C_DEVICE),
+        readADC_SingleEnded(INPUT_ROTARY_POT)).WillOnce(Return(knob_position));
+    ASSERT_EQ(wall->getKnobPosition(), knob_position);
+}
 
 }; // namespace
 
