@@ -1,8 +1,12 @@
 // Wall hardware abstraction layer object
 // Forest Park School Wall Project 
 //
+#ifndef LOW
 #define LOW 0
+#endif
+#ifndef HIGH
 #define HIGH 1
+#endif
 
 #define INPUT 0x0
 #define OUTPUT 0x1
@@ -118,7 +122,7 @@ void Wall::initializeMotorOutputs(void)
 
 void Wall::initializePWMOutputs(void)
 {
-    pwm->setPWMFreq(PWM_FREQUENCY);
+    pwm->setPWMFreq(WALL_PWM_FREQUENCY);
     turnIndicatorOff(INDICATE_WHITE_LED);
     turnIndicatorOff(INDICATE_RED_LED);
     turnIndicatorOff(INDICATE_GREEN_LED);

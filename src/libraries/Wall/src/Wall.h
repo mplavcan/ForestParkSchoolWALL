@@ -4,7 +4,7 @@
 #include "Wall_IO_pins.h"
 #include "FactoryInterface.h"
 
-#define PWM_FREQUENCY 2000.0  // Hz
+#define WALL_PWM_FREQUENCY 2000.0  // Hz
 #define PWM_START_OF_DUTY_CYCLE 0
 #define PWM_FULL_DUTY_CYCLE 4096
 #define PWM_HALF_DUTY_CYCLE (PWM_FULL_DUTY_CYCLE / 2)

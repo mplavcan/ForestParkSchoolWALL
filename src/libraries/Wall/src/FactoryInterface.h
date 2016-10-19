@@ -5,6 +5,10 @@
 #ifndef __FactoryInterface_H__
 #define __FactoryInterface_H__
 
+class SX1509;
+class Adafruit_ADS1015;
+class Adafruit_PWMServoDriver;
+
 class FactoryInterface
 {
 public:
