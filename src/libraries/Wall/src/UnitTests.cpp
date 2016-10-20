@@ -8,6 +8,8 @@
 #include "Wall.h"
 #include <tuple>
 
+#define WIRE_TRANSMIT_SUCCESS 0
+
 namespace testing {
 
 using testing::StrictMock;
