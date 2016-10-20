@@ -1,17 +1,20 @@
 // Basic exercise of all forest Park School Wall components
 //
-
 #include <Arduino.h>
 #include <Wire.h>
 #include <SparkFunSX1509.h>
+#include <Adafruit_PWMServoDriver.h>
+#include <Adafruit_ADS1015.h>
+#include "DeviceFactory.h"
 #include "Wall.h"
 
-// the setup function runs once when you press reset or power the board
-void setup() {
+Wall *wall;
 
+void setup() {
+    DeviceFactory *io = new DeviceFactory();
+    wall = new Wall(io);
 }
 
-// the loop function runs over and over again until power down or reset
 void loop() {
   
 }

@@ -21,18 +21,6 @@
     <ClInclude Include="__vm\.DeviceTest.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libraries\Wall\src\Wall.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libraries\Wall\src\Wall_IO_pins.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libraries\Wall\src\DeviceFactory.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libraries\Wall\src\FactoryInterface.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libraries\Wall\src\Wall.cpp">
