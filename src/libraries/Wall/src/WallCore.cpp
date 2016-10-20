@@ -56,7 +56,7 @@ void Wall::setMultiplexerForAnalog(int device) {
 // a second attempt can be made.  Back-to-back failures have not been observed,
 // but must be assumed to be possible.  Loop until successful.
 void Wall::setMultiplexerI2CBus(int bus) {
-    while (! writeMultiplexerForBus(bus));
+    while (writeMultiplexerForBus(bus));
 }
 
 int Wall::writeMultiplexerForBus(int bus)
