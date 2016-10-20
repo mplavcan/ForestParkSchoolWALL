@@ -99,9 +99,9 @@ public:
     void initializeButtonInOuts(void);
     void initalizeELwireOutputs(void);
 
-    int setMultiplexerForIOexpander(int device);
-    int setMultiplexerForAnalog(int device);
-    int setMultiplexerI2CBus(int bus);
+    void setMultiplexerForIOexpander(int device);
+    void setMultiplexerForAnalog(int device);
+    void setMultiplexerI2CBus(int bus);
     
     void turnOnLEDarray(led_array array, led_section section);
     void turnOffLEDarray(led_array array, led_section section);
@@ -160,6 +160,7 @@ private:
     Adafruit_ADS1015 *analog_expander[NUMBER_OF_ADS1015_DEVICES];
     Adafruit_PWMServoDriver *pwm;
 
+    int writeMultiplexerForBus(int bus);
     bool ledArrayIsActiveLow(led_array array);
 
 };

@@ -42,20 +42,29 @@ Wall::Wall(FactoryInterface *io) {
     this->pwm = io->createPWMinstance(ADAFRUIT_PWM_I2C_ADDRESS);
 }
 
-int Wall::setMultiplexerForIOexpander(int device) {
-    return setMultiplexerI2CBus(ioDeviceBus[device]);
+void Wall::setMultiplexerForIOexpander(int device) {
+    setMultiplexerI2CBus(ioDeviceBus[device]);
 }
 
-int Wall::setMultiplexerForAnalog(int device) {
-    return setMultiplexerI2CBus(analogDeviceBus[device]);
+void Wall::setMultiplexerForAnalog(int device) {
+    setMultiplexerI2CBus(analogDeviceBus[device]);
 }
 
-int Wall::setMultiplexerI2CBus(int bus) {
+// Due to a bug in the Intel101 I2C protocol handling,it is possible that the
+// 101 will not complete the transaction and the Adafruit multiplexer will not
+// select the correct bus.  Luckily this is reported by the Wire protocol, and
+// a second attempt can be made.  Back-to-back failures have not been observed,
+// but must be assumed to be possible.  Loop until successful.
+void Wall::setMultiplexerI2CBus(int bus) {
+    while (! writeMultiplexerForBus(bus));
+}
+
+int Wall::writeMultiplexerForBus(int bus)
+{
     Wire.beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS);
     Wire.write(1 << bus);
     return Wire.endTransmission();
 }
-
 
 bool Wall::resetDigitalIO(int device)
 {

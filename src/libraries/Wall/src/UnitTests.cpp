@@ -49,10 +49,10 @@ void WallFixture::expectMultiplexerSelectedBusforAnalog(int device)
 }
 void WallFixture::expectMultiplexerSelectedBus(int bus)
 {
-    int expected_bus_vector = 1 << bus;
+    int expectedBusVector = 1 << bus;
     InSequence mux_bus_selection;
     EXPECT_CALL(*i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
-    EXPECT_CALL(*i2c, write(expected_bus_vector));
+    EXPECT_CALL(*i2c, write(expectedBusVector));
     EXPECT_CALL(*i2c, endTransmission()).WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
 }
 
@@ -198,6 +198,31 @@ TEST_P(MuxFixture, TestMultiplexerSelection)
     int deviceIndex = GetParam(); 
     expectMultiplexerSelectedBusforIOexpander(deviceIndex);
     wall->setMultiplexerForIOexpander(deviceIndex);
+}
+// Due to a bug in the Intel101 I2C protocol handling,it is possible that the
+// 101 will not complete the transaction and the Adafruit multiplexer will not
+// select the correct bus.  Luckily this is reported by the Wire protocol, and
+// a second attempt can be made.  Back-to-back failures have not been observed,
+// but must be assumed to be possible.
+TEST_F(MuxFixture, TestMuxCommunicationFailure)
+{
+    int targetBus = 3;
+    int expectedBusVector = 1 << targetBus;
+    InSequence mux_bus_selection;
+
+    EXPECT_CALL(*i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
+    EXPECT_CALL(*i2c, write(expectedBusVector));
+    EXPECT_CALL(*i2c, endTransmission()).WillOnce(Return(!WIRE_TRANSMIT_SUCCESS));
+
+    EXPECT_CALL(*i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
+    EXPECT_CALL(*i2c, write(expectedBusVector));
+    EXPECT_CALL(*i2c, endTransmission()).WillOnce(Return(!WIRE_TRANSMIT_SUCCESS));
+
+    EXPECT_CALL(*i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
+    EXPECT_CALL(*i2c, write(expectedBusVector));
+    EXPECT_CALL(*i2c, endTransmission()).WillOnce(Return(WIRE_TRANSMIT_SUCCESS));
+
+    wall->setMultiplexerI2CBus(targetBus);
 }
 INSTANTIATE_TEST_CASE_P(MuxSelectionTests, MuxFixture, Values(0,1,2));
 
