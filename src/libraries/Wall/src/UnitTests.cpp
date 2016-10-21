@@ -29,9 +29,9 @@ protected:
     }
 
     virtual ~WallFixture() {
-        releaseWireMock();
         delete io;
         delete wall;
+        releaseWireMock();
         releaseArduinoMock();
     }
 
