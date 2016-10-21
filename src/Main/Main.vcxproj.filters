@@ -24,10 +24,10 @@
     <ClInclude Include="..\libraries\Wall\src\DeviceFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libraries\Wall\src\Wall.h">
+    <ClInclude Include="..\libraries\Wall\src\FactoryInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libraries\Wall\src\FactoryInterface.h">
+    <ClInclude Include="..\libraries\Wall\src\Wall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libraries\Wall\src\Wall_IO_pins.h">
@@ -35,10 +35,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\libraries\Wall\src\Wall.cpp">
+    <ClCompile Include="..\libraries\Wall\src\DeviceFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\libraries\Wall\src\DeviceFactory.cpp">
+    <ClCompile Include="..\libraries\Wall\src\Wall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

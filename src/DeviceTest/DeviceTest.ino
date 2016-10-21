@@ -15,7 +15,9 @@ rgb_lcd lcd;
 unsigned int counter = 0;
 
 void setup() {
+    delay(1000);
     Serial.begin(115200);
+    Serial.println("Forest Park Circuit Wall Setup");
 
     DeviceFactory *io = new DeviceFactory();
     wall = new Wall(io);

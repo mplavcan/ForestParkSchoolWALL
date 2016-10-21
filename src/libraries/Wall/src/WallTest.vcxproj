@@ -75,7 +75,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src\libraries\arduino-mock;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\libraries\arduino-mock;$(SolutionDir)\libraries\MockDevices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -92,7 +92,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src\libraries\arduino-mock;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\libraries\arduino-mock;$(SolutionDir)\libraries\MockDevices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -119,11 +119,18 @@
     <ClCompile Include="..\..\MockDevices\Adafruit_PWMServoDriver.cpp" />
     <ClCompile Include="..\..\MockDevices\SparkFunSX1509.cpp" />
     <ClCompile Include="MockDeviceFactory.cpp" />
-    <ClCompile Include="MockedWall.cpp" />
     <ClCompile Include="UnitTests.cpp" />
+    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\arduino-mock\Arduino.h" />
+    <ClInclude Include="..\..\arduino-mock\Wire.h" />
+    <ClInclude Include="..\..\MockDevices\Adafruit_ADS1015.h" />
+    <ClInclude Include="..\..\MockDevices\Adafruit_PWMServoDriver.h" />
+    <ClInclude Include="..\..\MockDevices\SparkFunSX1509.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
@@ -137,4 +144,9 @@
     <Error Condition="!Exists('..\..\..\packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googletest.v140.windesktop.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googletest.v140.windesktop.static.rt-dyn.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googlemock.v140.windesktop.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googlemock.v140.windesktop.static.rt-dyn.targets'))" />
   </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties VM.DebugTextMessages.SerialWindow="1" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
