@@ -183,7 +183,7 @@ void Wall::initializeButtonInOuts(void)
 
 void Wall::initalizeELwireOutputs(void)
 {
-    for (int el = RED_WIRE_ONE; el <= BLUE_EL_2; el++)
+    for (int el = RED_WIRE_ONE; el <= BLUE_WIRE_TWO; el++)
         pinMode(elWirePin(static_cast<EL_wire>(el)), OUTPUT);
 }
 
@@ -561,7 +561,18 @@ void Wall::extinguishButton(large_button button)
 
 int Wall::elWirePin(EL_wire line)
 {
-    return line;
+    switch (line)
+    {
+        case RED_WIRE_ONE: return RED_EL_1;
+        case RED_WIRE_TWO: return RED_EL_2;
+        case GREEN_WIRE_ONE: return GREEN_EL_1;
+        case GREEN_WIRE_TWO: return GREEN_EL_2;
+        case YELLOW_WIRE: return YELLOW_EL;
+        case WHITE_WIRE: return WHITE_EL;
+        case BLUE_WIRE_ONE: return BLUE_EL_1;
+        case BLUE_WIRE_TWO: return BLUE_EL_2;
+        default: return 0;
+    }
 }
 void Wall::illuminateELWire(EL_wire line)
 {

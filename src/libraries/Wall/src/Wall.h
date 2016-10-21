@@ -23,14 +23,14 @@ typedef enum { LEFT_PRESSURE, BOTTOM_PRESSURE, RIGHT_PRESSURE } force_sensor;
 typedef enum { BLUE_BUTTON, YELLOW_BUTTON, GREEN_BUTTON, RED_BUTTON, WHITE_BUTTON } large_button;
 typedef enum 
 { 
-    RED_WIRE_ONE    = RED_EL_1,
-    RED_WIRE_TWO    = RED_EL_2,
-    GREEN_WIRE_ONE  = GREEN_EL_1,
-    GREEN_WIRE_TWO  = GREEN_EL_2,
-    YELLOW_WIRE     = YELLOW_EL,
-    WHITE_WIRE      = WHITE_EL,
-    BLUE_WIRE_ONE   = BLUE_EL_1,
-    BLUE_WIRE_TWO   = BLUE_EL_2
+    RED_WIRE_ONE,
+    RED_WIRE_TWO,
+    GREEN_WIRE_ONE,
+    GREEN_WIRE_TWO,
+    YELLOW_WIRE,
+    WHITE_WIRE,
+    BLUE_WIRE_ONE,
+    BLUE_WIRE_TWO
 } EL_wire;
 
 typedef enum
