@@ -79,6 +79,7 @@ void Wall::resetAnalogIO(int device)
 
 bool Wall::initialize(void)
 {
+    Wire.begin();
     if(!initializeIOexpanders())
         return false;
     initializeAnalogExpanders();
