@@ -82,10 +82,10 @@ typedef enum
 } circuit_end;
 
 
-class Wall
+class WallImplementation
 {
 public:
-    Wall(FactoryInterface *io);
+    WallImplementation(FactoryInterface *io);
     bool initialize(void);
     bool initializeIOexpanders(void);
     void initializeAnalogExpanders(void);
@@ -162,5 +162,43 @@ private:
 
     int writeMultiplexerForBus(int bus);
     bool ledArrayIsActiveLow(led_array array);
+};
 
+
+class Wall: private WallImplementation
+{
+public:
+    Wall(FactoryInterface *io): WallImplementation(io) {}
+    using WallImplementation::initialize;
+    using WallImplementation::turnOnLEDarray;
+    using WallImplementation::turnOffLEDarray;
+    using WallImplementation::setMotorDirectionClockwise;
+    using WallImplementation::setMotorDirectionCounterClockwise;
+    using WallImplementation::setMotorSpeed;
+    using WallImplementation::stopMotor;
+    using WallImplementation::turnTransducerOn;
+    using WallImplementation::turnTransducerOff;
+    using WallImplementation::turnIndicatorOn;
+    using WallImplementation::turnIndicatorOff;
+    using WallImplementation::isToggleOn;
+    using WallImplementation::isJoystickUp;
+    using WallImplementation::isJoystickDown;
+    using WallImplementation::isJoystickLeft;
+    using WallImplementation::isJoystickRight;
+    using WallImplementation::getKnobPosition;
+    using WallImplementation::getSliderPosition;
+    using WallImplementation::getPhotoSensorValue;
+    using WallImplementation::getTouchSensorValue;
+    using WallImplementation::readCircuitState;
+    using WallImplementation::resetCircuitInputs;
+    using WallImplementation::setCircuitAsInput;
+    using WallImplementation::setCircuitAsOutput;
+    using WallImplementation::isCircuitConnected;
+    using WallImplementation::isButtonDepressed;
+    using WallImplementation::illuminateButton;
+    using WallImplementation::extinguishButton;
+    using WallImplementation::illuminateELWire;
+    using WallImplementation::extinguishELWire;
+
+    using WallImplementation::setMultiplexerI2CBus;
 };

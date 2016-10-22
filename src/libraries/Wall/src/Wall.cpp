@@ -8,29 +8,29 @@
 #include <Wire.h>
 #include "Wall.h"
 
-const int Wall::ioDeviceBus[NUMBER_OF_SX1509_DEVICES] = {
+const int WallImplementation::ioDeviceBus[NUMBER_OF_SX1509_DEVICES] = {
     SPARKFUN_SX1509_FIRST_I2C_BUS,
     SPARKFUN_SX1509_SECOND_I2C_BUS,
     SPARKFUN_SX1509_THIRD_I2C_BUS,
     SPARKFUN_SX1509_FOURTH_I2C_BUS
 };
-const int Wall::ioDeviceAddress[NUMBER_OF_SX1509_DEVICES] = {
+const int WallImplementation::ioDeviceAddress[NUMBER_OF_SX1509_DEVICES] = {
     SPARKFUN_SX1509_FIRST_I2C_ADDRESS,
     SPARKFUN_SX1509_SECOND_I2C_ADDRESS,
     SPARKFUN_SX1509_THIRD_I2C_ADDRESS,
     SPARKFUN_SX1509_FOURTH_I2C_ADDRESS
 };
-const int Wall::analogDeviceAddress[NUMBER_OF_ADS1015_DEVICES] = {
+const int WallImplementation::analogDeviceAddress[NUMBER_OF_ADS1015_DEVICES] = {
     ADAFRUIT_ANALOG_FIRST_I2C_ADDRESS,
     ADAFRUIT_ANALOG_SECOND_I2C_ADDRESS
 };
-const int Wall::analogDeviceBus[NUMBER_OF_ADS1015_DEVICES] = {
+const int WallImplementation::analogDeviceBus[NUMBER_OF_ADS1015_DEVICES] = {
     ADAFRUIT_ANALOG_FIRST_I2C_BUS,
     ADAFRUIT_ANALOG_SECOND_I2C_BUS
 };
 
 
-Wall::Wall(FactoryInterface *io) {
+WallImplementation::WallImplementation(FactoryInterface *io) {
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
         this->io_expander[device] = io->createSX1509Instance();
     for (int device = 0; device < NUMBER_OF_ADS1015_DEVICES; device++)
@@ -38,11 +38,11 @@ Wall::Wall(FactoryInterface *io) {
     this->pwm = io->createPWMinstance(ADAFRUIT_PWM_I2C_ADDRESS);
 }
 
-void Wall::setMultiplexerForIOexpander(int device) {
+void WallImplementation::setMultiplexerForIOexpander(int device) {
     setMultiplexerI2CBus(ioDeviceBus[device]);
 }
 
-void Wall::setMultiplexerForAnalog(int device) {
+void WallImplementation::setMultiplexerForAnalog(int device) {
     setMultiplexerI2CBus(analogDeviceBus[device]);
 }
 
@@ -51,29 +51,29 @@ void Wall::setMultiplexerForAnalog(int device) {
 // select the correct bus.  Luckily this is reported by the Wire protocol, and
 // a second attempt can be made.  Back-to-back failures have not been observed,
 // but must be assumed to be possible.  Loop until successful.
-void Wall::setMultiplexerI2CBus(int bus) {
+void WallImplementation::setMultiplexerI2CBus(int bus) {
     while (writeMultiplexerForBus(bus));
 }
 
-int Wall::writeMultiplexerForBus(int bus)
+int WallImplementation::writeMultiplexerForBus(int bus)
 {
     Wire.beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS);
     Wire.write(1 << bus);
     return Wire.endTransmission();
 }
 
-bool Wall::resetDigitalIO(int device)
+bool WallImplementation::resetDigitalIO(int device)
 {
     setMultiplexerForIOexpander(device);
     return (io_expander[device]->begin(ioDeviceAddress[device]) != 0);
 }
-void Wall::resetAnalogIO(int device)
+void WallImplementation::resetAnalogIO(int device)
 {
     setMultiplexerForAnalog(device);
     analog_expander[device]->begin();
 }
 
-bool Wall::initialize(void)
+bool WallImplementation::initialize(void)
 {
     Wire.begin();
     if(!initializeIOexpanders())
@@ -90,7 +90,7 @@ bool Wall::initialize(void)
     return true;
 }
 
-bool Wall::initializeIOexpanders(void)
+bool WallImplementation::initializeIOexpanders(void)
 {
     bool result = true;
     for(int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
@@ -98,13 +98,13 @@ bool Wall::initializeIOexpanders(void)
     return result;
 }
 
-void Wall::initializeAnalogExpanders(void)
+void WallImplementation::initializeAnalogExpanders(void)
 {
     for (int device = 0; device < NUMBER_OF_ADS1015_DEVICES; device++)
         resetAnalogIO(device);
 }
 
-void Wall::initializeLEDarrayOutputs(void)
+void WallImplementation::initializeLEDarrayOutputs(void)
 {
     setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
     io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_GREEN_LEFT, OUTPUT);
@@ -117,7 +117,7 @@ void Wall::initializeLEDarrayOutputs(void)
     io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_4, OUTPUT);
 }
 
-void Wall::initializeMotorOutputs(void)
+void WallImplementation::initializeMotorOutputs(void)
 {
     setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->pinMode(OUTPUT_MOTOR1_PWM, OUTPUT);
@@ -128,7 +128,7 @@ void Wall::initializeMotorOutputs(void)
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->pinMode(OUTPUT_MOTOR2_IN2, OUTPUT);
 }
 
-void Wall::initializePWMOutputs(void)
+void WallImplementation::initializePWMOutputs(void)
 {
     pwm->setPWMFreq(WALL_PWM_FREQUENCY);
     turnIndicatorOff(INDICATE_WHITE_LED);
@@ -148,7 +148,7 @@ void Wall::initializePWMOutputs(void)
     turnTransducerOff();
 }
 
-void Wall::initializeToggleInputs(void)
+void WallImplementation::initializeToggleInputs(void)
 {
     setMultiplexerForIOexpander(INPUT_TOGGLE_I2C_DEVICE);
     io_expander[INPUT_TOGGLE_I2C_DEVICE]->pinMode(LEFT_TOGGLE, INPUT_PULLUP);
@@ -156,7 +156,7 @@ void Wall::initializeToggleInputs(void)
     io_expander[INPUT_TOGGLE_I2C_DEVICE]->pinMode(RIGHT_TOGGLE, INPUT_PULLUP);
 }
 
-void Wall::initializeJoystickInputs(void)
+void WallImplementation::initializeJoystickInputs(void)
 {
     setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
     io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_DOWN, INPUT_PULLUP);
@@ -165,7 +165,7 @@ void Wall::initializeJoystickInputs(void)
     io_expander[INPUT_JOYSTICK_I2C_DEVICE]->pinMode(INPUT_JOYSTICK_RIGHT, INPUT_PULLUP);
 }
 
-void Wall::initializeButtonInOuts(void)
+void WallImplementation::initializeButtonInOuts(void)
 {
     for(int b = BLUE_BUTTON; b <= WHITE_BUTTON; b++)
     {
@@ -177,18 +177,18 @@ void Wall::initializeButtonInOuts(void)
     }
 }
 
-void Wall::initalizeELwireOutputs(void)
+void WallImplementation::initalizeELwireOutputs(void)
 {
     for (int el = RED_WIRE_ONE; el <= BLUE_WIRE_TWO; el++)
         pinMode(elWirePin(static_cast<EL_wire>(el)), OUTPUT);
 }
 
-bool Wall::ledArrayIsActiveLow(led_array array)
+bool WallImplementation::ledArrayIsActiveLow(led_array array)
 {
     return (array == RED_LED);
 }
 
-int Wall::greenLEDarrayPin(led_section section)
+int WallImplementation::greenLEDarrayPin(led_section section)
 {
     switch (section)
     {
@@ -197,7 +197,7 @@ int Wall::greenLEDarrayPin(led_section section)
         default: return 0;
     }
 }
-int Wall::whiteLEDarrayPin(led_section section)
+int WallImplementation::whiteLEDarrayPin(led_section section)
 {
     switch (section)
     {
@@ -206,7 +206,7 @@ int Wall::whiteLEDarrayPin(led_section section)
         default: return 0;
     }
 }
-int Wall::redLEDarrayPin(led_section section)
+int WallImplementation::redLEDarrayPin(led_section section)
 {
     switch (section)
     {
@@ -217,7 +217,7 @@ int Wall::redLEDarrayPin(led_section section)
         default: return 0;
     }
 }
-int Wall::ledArrayPin(led_array array, led_section section)
+int WallImplementation::ledArrayPin(led_array array, led_section section)
 {
     if (array == GREEN_LED)
         return greenLEDarrayPin(section);
@@ -228,30 +228,30 @@ int Wall::ledArrayPin(led_array array, led_section section)
     return 0;
 }
 
-void Wall::turnOnLEDarray(led_array array, led_section section)
+void WallImplementation::turnOnLEDarray(led_array array, led_section section)
 {
     int pinValue = ledArrayIsActiveLow(array) ? LOW : HIGH;
     setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
     io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->digitalWrite(
-        Wall::ledArrayPin(array, section), pinValue);
+        WallImplementation::ledArrayPin(array, section), pinValue);
 }
-void Wall::turnOffLEDarray(led_array array, led_section section)
+void WallImplementation::turnOffLEDarray(led_array array, led_section section)
 {
     int pinValue = ledArrayIsActiveLow(array) ? HIGH : LOW;
     setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
     io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->digitalWrite(
-        Wall::ledArrayPin(array, section), pinValue);
+        WallImplementation::ledArrayPin(array, section), pinValue);
 }
 
-int Wall::motorControlPin1(wall_motor motor)
+int WallImplementation::motorControlPin1(wall_motor motor)
 {
     return (motor = BLUE_MOTOR) ? OUTPUT_MOTOR1_IN1 : OUTPUT_MOTOR2_IN1;
 }
-int Wall::motorControlPin2(wall_motor motor)
+int WallImplementation::motorControlPin2(wall_motor motor)
 {
     return (motor = BLUE_MOTOR) ? OUTPUT_MOTOR1_IN2 : OUTPUT_MOTOR2_IN2;
 }
-int Wall::motorPWMpin(wall_motor motor)
+int WallImplementation::motorPWMpin(wall_motor motor)
 {
     return (motor = BLUE_MOTOR) ? OUTPUT_MOTOR1_PWM : OUTPUT_MOTOR2_PWM;
 }
@@ -265,53 +265,53 @@ int Wall::motorPWMpin(wall_motor motor)
 //   HIGH  LOW     Clockwise
 //   HIGH  HIGH    Brake
 //
-void Wall::setMotorDirectionClockwise(wall_motor motor)
+void WallImplementation::setMotorDirectionClockwise(wall_motor motor)
 {
     setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin1(motor), HIGH);
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin2(motor), LOW);
 }
-void Wall::setMotorDirectionCounterClockwise(wall_motor motor)
+void WallImplementation::setMotorDirectionCounterClockwise(wall_motor motor)
 {
     setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin1(motor), LOW);
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin2(motor), HIGH);
 }
-void Wall::stopMotor(wall_motor motor)
+void WallImplementation::stopMotor(wall_motor motor)
 {
     setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin1(motor), LOW);
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin2(motor), LOW);
 }
-void Wall::setMotorSpeed(wall_motor motor, uint8_t speed)
+void WallImplementation::setMotorSpeed(wall_motor motor, uint8_t speed)
 {
     setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->analogWrite(motorPWMpin(motor), speed);
 }
 
-void Wall::turnTransducerOn(void)
+void WallImplementation::turnTransducerOn(void)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_HALF_DUTY_CYCLE - 1);
 }
-void Wall::turnTransducerOff(void)
+void WallImplementation::turnTransducerOff(void)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_FULL_DUTY_CYCLE);
 }
 
-void Wall::turnIndicatorOn(indicator_led lamp)
+void WallImplementation::turnIndicatorOn(indicator_led lamp)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPin(lamp, PWM_INDICATOR_ON_VALUE, FALSE);
 }
-void Wall::turnIndicatorOff(indicator_led lamp)
+void WallImplementation::turnIndicatorOff(indicator_led lamp)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPin(lamp, PWM_INDICATOR_OFF_VALUE, FALSE);
 }
 
-int Wall::toggleSwitchPin(toggle_switch toggle)
+int WallImplementation::toggleSwitchPin(toggle_switch toggle)
 {
     switch (toggle)
     {
@@ -324,7 +324,7 @@ int Wall::toggleSwitchPin(toggle_switch toggle)
 
 // Toggle switches are active low: 
 //    Input pins have internal pullup, and toggle connect them to ground
-bool Wall::isToggleOn(toggle_switch toggle)
+bool WallImplementation::isToggleOn(toggle_switch toggle)
 {
     setMultiplexerForIOexpander(INPUT_TOGGLE_I2C_DEVICE);
     return (io_expander[INPUT_TOGGLE_I2C_DEVICE]->digitalRead(toggleSwitchPin(toggle)) == LOW);
@@ -332,40 +332,40 @@ bool Wall::isToggleOn(toggle_switch toggle)
 
 // Joystick directions are active low: 
 //    Input pins have internal pullup, and switches connect them to ground
-bool Wall::isJoystickUp(void)
+bool WallImplementation::isJoystickUp(void)
 {
     setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
     return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_UP) == LOW);
 }
-bool Wall::isJoystickDown(void)
+bool WallImplementation::isJoystickDown(void)
 {
     setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
     return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_DOWN) == LOW);
 }
-bool Wall::isJoystickLeft(void)
+bool WallImplementation::isJoystickLeft(void)
 {
     setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
     return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_LEFT) == LOW);
 }
-bool Wall::isJoystickRight(void)
+bool WallImplementation::isJoystickRight(void)
 {
     setMultiplexerForIOexpander(INPUT_JOYSTICK_I2C_DEVICE);
     return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_RIGHT) == LOW);
 }
 
-uint16_t Wall::getKnobPosition(void)
+uint16_t WallImplementation::getKnobPosition(void)
 {
     setMultiplexerForAnalog(INPUT_ROTARY_POT_I2C_DEVICE);
     return analog_expander[INPUT_ROTARY_POT_I2C_DEVICE]->readADC_SingleEnded(INPUT_ROTARY_POT);
 }
 
-uint16_t Wall::getSliderPosition(void)
+uint16_t WallImplementation::getSliderPosition(void)
 {
     setMultiplexerForAnalog(INPUT_LINEAR_POT_I2C_DEVICE);
     return analog_expander[INPUT_LINEAR_POT_I2C_DEVICE]->readADC_SingleEnded(INPUT_LINEAR_POT);
 }
 
-int Wall::photoSensorPin(photo_sensor sensor)
+int WallImplementation::photoSensorPin(photo_sensor sensor)
 {
     switch (sensor)
     {
@@ -376,13 +376,13 @@ int Wall::photoSensorPin(photo_sensor sensor)
     }
 }
 
-uint16_t Wall::getPhotoSensorValue(photo_sensor sensor)
+uint16_t WallImplementation::getPhotoSensorValue(photo_sensor sensor)
 {
     setMultiplexerForAnalog(INPUT_PHOTO_SENSOR_I2C_DEVICE);
     return analog_expander[INPUT_PHOTO_SENSOR_I2C_DEVICE]->readADC_SingleEnded(photoSensorPin(sensor));
 }
 
-int Wall::forceSensorPin(force_sensor sensor)
+int WallImplementation::forceSensorPin(force_sensor sensor)
 {
     switch (sensor)
     {
@@ -393,13 +393,13 @@ int Wall::forceSensorPin(force_sensor sensor)
     }
 }
 
-uint16_t Wall::getTouchSensorValue(force_sensor sensor)
+uint16_t WallImplementation::getTouchSensorValue(force_sensor sensor)
 {
     setMultiplexerForAnalog(INPUT_FORCE_SENSOR_I2C_DEVICE);
     return analog_expander[INPUT_FORCE_SENSOR_I2C_DEVICE]->readADC_SingleEnded(forceSensorPin(sensor));
 }
 
-int Wall::circuitDevice(circuit_end end)
+int WallImplementation::circuitDevice(circuit_end end)
 {
     switch(end)
     {
@@ -432,7 +432,7 @@ int Wall::circuitDevice(circuit_end end)
         default: return 0;
     };
 }
-int Wall::circuitPin(circuit_end end)
+int WallImplementation::circuitPin(circuit_end end)
 {
     switch (end)
     {
@@ -466,33 +466,33 @@ int Wall::circuitPin(circuit_end end)
     };
 }
 
-int Wall::readCircuitState(circuit_end end)
+int WallImplementation::readCircuitState(circuit_end end)
 {
     int device = circuitDevice(end);
     setMultiplexerForIOexpander(device);
     return io_expander[device]->digitalRead(circuitPin(end));
 }
 
-void Wall::setCircuitAsInput(circuit_end end)
+void WallImplementation::setCircuitAsInput(circuit_end end)
 {
     int device = circuitDevice(end);
     setMultiplexerForIOexpander(device);
     io_expander[device]->pinMode(circuitPin(end), INPUT_PULLUP);
 }
-void Wall::setCircuitAsOutput(circuit_end end)
+void WallImplementation::setCircuitAsOutput(circuit_end end)
 {
     int device = circuitDevice(end);
     setMultiplexerForIOexpander(device);
     io_expander[device]->pinMode(circuitPin(end), OUTPUT);
     io_expander[device]->digitalWrite(circuitPin(end), LOW);
 }
-void Wall::resetCircuitInputs(void)
+void WallImplementation::resetCircuitInputs(void)
 {
     for (int circuit = CIRCUIT_KNOB_LEFT; circuit <= CIRCUIT_NEGATIVE_POLE; circuit++)
         setCircuitAsInput(static_cast<circuit_end>(circuit));
 }
 
-bool Wall::isCircuitConnected(circuit_end A, circuit_end B)
+bool WallImplementation::isCircuitConnected(circuit_end A, circuit_end B)
 {
     setCircuitAsOutput(A);
     bool areConnected = (readCircuitState(B) == LOW);
@@ -500,7 +500,7 @@ bool Wall::isCircuitConnected(circuit_end A, circuit_end B)
     return areConnected;
 }
 
-int Wall::buttonDevice(large_button button)
+int WallImplementation::buttonDevice(large_button button)
 {
     switch(button)
     {
@@ -512,7 +512,7 @@ int Wall::buttonDevice(large_button button)
         default: return 0;
     }
 }
-int Wall::buttonPin(large_button button)
+int WallImplementation::buttonPin(large_button button)
 {
     switch (button)
     {
@@ -524,7 +524,7 @@ int Wall::buttonPin(large_button button)
         default: return 0;
     }
 }
-int Wall::buttonLEDpin(large_button button)
+int WallImplementation::buttonLEDpin(large_button button)
 {
     switch (button)
     {
@@ -536,26 +536,26 @@ int Wall::buttonLEDpin(large_button button)
         default: return 0;
     }
 }
-bool Wall::isButtonDepressed(large_button button)
+bool WallImplementation::isButtonDepressed(large_button button)
 {
     int device = buttonDevice(button);
     setMultiplexerForIOexpander(device);
     return (io_expander[device]->digitalRead(buttonPin(button)) == LOW);
 }
-void Wall::illuminateButton(large_button button)
+void WallImplementation::illuminateButton(large_button button)
 {
     int device = buttonDevice(button);
     setMultiplexerForIOexpander(device);
     io_expander[device]->digitalWrite(buttonLEDpin(button), HIGH);
 }
-void Wall::extinguishButton(large_button button)
+void WallImplementation::extinguishButton(large_button button)
 {
     int device = buttonDevice(button);
     setMultiplexerForIOexpander(device);
     io_expander[device]->digitalWrite(buttonLEDpin(button), LOW);
 }
 
-int Wall::elWirePin(EL_wire line)
+int WallImplementation::elWirePin(EL_wire line)
 {
     switch (line)
     {
@@ -570,11 +570,11 @@ int Wall::elWirePin(EL_wire line)
         default: return 0;
     }
 }
-void Wall::illuminateELWire(EL_wire line)
+void WallImplementation::illuminateELWire(EL_wire line)
 {
     digitalWrite(elWirePin(line), HIGH);
 }
-void Wall::extinguishELWire(EL_wire line)
+void WallImplementation::extinguishELWire(EL_wire line)
 {
     digitalWrite(elWirePin(line), LOW);
 }

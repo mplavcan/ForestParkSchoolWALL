@@ -19,13 +19,13 @@ protected:
     ArduinoMock *Intel101;
     MockDeviceFactory *io;
     StrictMock<WireMock> *i2c;
-    Wall *wall;    
+    WallImplementation *wall;
 
     WallFixture() {
         Intel101 = arduinoMockInstance();
         i2c = static_cast<StrictMock<WireMock> *>(WireMockInstance());
         io = new MockDeviceFactory;
-        wall = new Wall(io);
+        wall = new WallImplementation(io);
     }
 
     virtual ~WallFixture() {
@@ -42,11 +42,11 @@ protected:
 
 void WallFixture::expectMultiplexerSelectedBusforIOexpander(int device)
 {
-    expectMultiplexerSelectedBus(Wall::ioDeviceBus[device]);
+    expectMultiplexerSelectedBus(WallImplementation::ioDeviceBus[device]);
 }
 void WallFixture::expectMultiplexerSelectedBusforAnalog(int device)
 {
-    expectMultiplexerSelectedBus(Wall::analogDeviceBus[device]);
+    expectMultiplexerSelectedBus(WallImplementation::analogDeviceBus[device]);
 }
 void WallFixture::expectMultiplexerSelectedBus(int bus)
 {
@@ -68,7 +68,7 @@ TEST_P(InitFixture, TestFailedIOExpanderInitialization)
     {
         expectMultiplexerSelectedBusforIOexpander(device);
         EXPECT_CALL(*io->accessMockSX1509(device),
-            begin(Wall::ioDeviceAddress[device], SPARKFUN_SX1509_RESET_PIN))
+            begin(WallImplementation::ioDeviceAddress[device], SPARKFUN_SX1509_RESET_PIN))
             .WillOnce(Return(device != failingDevice));
         if (device == failingDevice)
             break;
@@ -180,14 +180,14 @@ TEST_F(InitFixture, TestLargeButtonPinModes)
 }
 TEST_F(InitFixture, TestELwirePinModes)
 {
-    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(RED_WIRE_ONE), OUTPUT)).Times(1);
-    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(RED_WIRE_TWO), OUTPUT)).Times(1);
-    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(GREEN_WIRE_ONE), OUTPUT)).Times(1);
-    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(GREEN_WIRE_TWO), OUTPUT)).Times(1);
-    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(YELLOW_WIRE), OUTPUT)).Times(1);
-    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(WHITE_WIRE), OUTPUT)).Times(1);
-    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(BLUE_WIRE_ONE), OUTPUT)).Times(1);
-    EXPECT_CALL(*Intel101, pinMode(Wall::elWirePin(BLUE_WIRE_TWO), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(RED_WIRE_ONE), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(RED_WIRE_TWO), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(GREEN_WIRE_ONE), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(GREEN_WIRE_TWO), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(YELLOW_WIRE), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(WHITE_WIRE), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(BLUE_WIRE_ONE), OUTPUT)).Times(1);
+    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(BLUE_WIRE_TWO), OUTPUT)).Times(1);
     wall->initalizeELwireOutputs();
 }
 
@@ -239,7 +239,7 @@ TEST_P(LEDHighFixture, TurnOnLEDArray)
     InSequence led_on;
     expectMultiplexerSelectedBusforIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
-        digitalWrite(Wall::ledArrayPin(array, section), HIGH)).Times(1);
+        digitalWrite(WallImplementation::ledArrayPin(array, section), HIGH)).Times(1);
     wall->turnOnLEDarray(array, section);
 }
 TEST_P(LEDHighFixture, TurnOffLEDArray)
@@ -250,7 +250,7 @@ TEST_P(LEDHighFixture, TurnOffLEDArray)
     InSequence led_off;
     expectMultiplexerSelectedBusforIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
-        digitalWrite(Wall::ledArrayPin(array, section), LOW)).Times(1);
+        digitalWrite(WallImplementation::ledArrayPin(array, section), LOW)).Times(1);
     wall->turnOffLEDarray(array, section);
 }
 INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDHighFixture, Values(
@@ -272,7 +272,7 @@ TEST_P(LEDLowFixture, TurnOnLEDArray)
     InSequence led_on;
     expectMultiplexerSelectedBusforIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
-        digitalWrite(Wall::ledArrayPin(array, section), LOW)).Times(1);
+        digitalWrite(WallImplementation::ledArrayPin(array, section), LOW)).Times(1);
     wall->turnOnLEDarray(array, section);
 }
 TEST_P(LEDLowFixture, TurnOffLEDArray)
@@ -283,7 +283,7 @@ TEST_P(LEDLowFixture, TurnOffLEDArray)
     InSequence led_off;
     expectMultiplexerSelectedBusforIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE),
-        digitalWrite(Wall::ledArrayPin(array, section), HIGH)).Times(1);
+        digitalWrite(WallImplementation::ledArrayPin(array, section), HIGH)).Times(1);
     wall->turnOffLEDarray(array, section);
 }
 INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDLowFixture, Values(
@@ -305,12 +305,12 @@ TEST_P(MotorFixture, TestRunMotorClockwise)
     InSequence run_motor;
     expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
-        digitalWrite(Wall::motorControlPin1(motor), HIGH)).Times(1);
+        digitalWrite(WallImplementation::motorControlPin1(motor), HIGH)).Times(1);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
-        digitalWrite(Wall::motorControlPin2(motor), LOW)).Times(1);
+        digitalWrite(WallImplementation::motorControlPin2(motor), LOW)).Times(1);
     expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
-        analogWrite(Wall::motorPWMpin(motor), speed)).Times(1);
+        analogWrite(WallImplementation::motorPWMpin(motor), speed)).Times(1);
 
     wall->setMotorDirectionClockwise(motor);
     wall->setMotorSpeed(motor, speed);
@@ -323,12 +323,12 @@ TEST_P(MotorFixture, TestRunMotorCounterClockwise)
     InSequence run_motor;
     expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
-        digitalWrite(Wall::motorControlPin1(motor), LOW)).Times(1);
+        digitalWrite(WallImplementation::motorControlPin1(motor), LOW)).Times(1);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
-        digitalWrite(Wall::motorControlPin2(motor), HIGH)).Times(1);
+        digitalWrite(WallImplementation::motorControlPin2(motor), HIGH)).Times(1);
     expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
-        analogWrite(Wall::motorPWMpin(motor), speed)).Times(1);
+        analogWrite(WallImplementation::motorPWMpin(motor), speed)).Times(1);
 
     wall->setMotorDirectionCounterClockwise(motor);
     wall->setMotorSpeed(motor, speed);
@@ -340,9 +340,9 @@ TEST_P(MotorFixture, TestStopMotor)
     InSequence stop_motor;
     expectMultiplexerSelectedBusforIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
-        digitalWrite(Wall::motorControlPin1(motor), LOW)).Times(1);
+        digitalWrite(WallImplementation::motorControlPin1(motor), LOW)).Times(1);
     EXPECT_CALL(*io->accessMockSX1509(OUTPUT_MOTOR_I2C_DEVICE),
-        digitalWrite(Wall::motorControlPin2(motor), LOW)).Times(1);
+        digitalWrite(WallImplementation::motorControlPin2(motor), LOW)).Times(1);
 
     wall->stopMotor(motor);
 }
@@ -420,7 +420,7 @@ TEST_P(SwitchFixture, TestReadSwitchOn)
     InSequence is_switch_on;
     expectMultiplexerSelectedBusforIOexpander(INPUT_TOGGLE_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
-        digitalRead(Wall::toggleSwitchPin(toggle))).WillOnce(Return(LOW));
+        digitalRead(WallImplementation::toggleSwitchPin(toggle))).WillOnce(Return(LOW));
     ASSERT_TRUE(wall->isToggleOn(toggle));
 }
 TEST_P(SwitchFixture, TestReadSwitchOff)
@@ -430,7 +430,7 @@ TEST_P(SwitchFixture, TestReadSwitchOff)
     InSequence is_switch_off;
     expectMultiplexerSelectedBusforIOexpander(INPUT_TOGGLE_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockSX1509(INPUT_TOGGLE_I2C_DEVICE),
-        digitalRead(Wall::toggleSwitchPin(toggle))).WillOnce(Return(HIGH));
+        digitalRead(WallImplementation::toggleSwitchPin(toggle))).WillOnce(Return(HIGH));
     ASSERT_FALSE(wall->isToggleOn(toggle));
 }
 INSTANTIATE_TEST_CASE_P(ToggleSwitchTests, SwitchFixture, Values(
@@ -537,7 +537,7 @@ TEST_P(LightSensorFixture, TestReadBrightnessValue)
     InSequence read_photo_sensor;
     expectMultiplexerSelectedBusforAnalog(INPUT_PHOTO_SENSOR_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockADS1015(INPUT_PHOTO_SENSOR_I2C_DEVICE),
-        readADC_SingleEnded(Wall::photoSensorPin(sensor))).WillOnce(Return(brightness));
+        readADC_SingleEnded(WallImplementation::photoSensorPin(sensor))).WillOnce(Return(brightness));
     ASSERT_EQ(wall->getPhotoSensorValue(sensor), brightness);
 }
 INSTANTIATE_TEST_CASE_P(PhotoresistorTests, LightSensorFixture, Values(
@@ -557,7 +557,7 @@ TEST_P(TouchSensorFixture, TestReadPressureValue)
     InSequence read_force_sensor;
     expectMultiplexerSelectedBusforAnalog(INPUT_FORCE_SENSOR_I2C_DEVICE);
     EXPECT_CALL(*io->accessMockADS1015(INPUT_FORCE_SENSOR_I2C_DEVICE),
-        readADC_SingleEnded(Wall::forceSensorPin(sensor))).WillOnce(Return(force));
+        readADC_SingleEnded(WallImplementation::forceSensorPin(sensor))).WillOnce(Return(force));
     ASSERT_EQ(wall->getTouchSensorValue(sensor), force);
 }
 INSTANTIATE_TEST_CASE_P(PressureTests, TouchSensorFixture, Values(
@@ -574,17 +574,17 @@ protected:
 };
 void CircuitConnectionFixture::expectCircuitIsInput(circuit_end end)
 {
-    int device = Wall::circuitDevice(end);
+    int device = WallImplementation::circuitDevice(end);
 
     InSequence set_to_input;
     expectMultiplexerSelectedBusforIOexpander(device);
     EXPECT_CALL(*io->accessMockSX1509(device),
-        pinMode(Wall::circuitPin(end), INPUT_PULLUP)).Times(1);
+        pinMode(WallImplementation::circuitPin(end), INPUT_PULLUP)).Times(1);
 }
 void CircuitConnectionFixture::expectCircuitIsOutput(circuit_end end)
 {
-    int device = Wall::circuitDevice(end);
-    int pin = Wall::circuitPin(end);
+    int device = WallImplementation::circuitDevice(end);
+    int pin = WallImplementation::circuitPin(end);
 
     InSequence set_to_output;
     expectMultiplexerSelectedBusforIOexpander(device);
@@ -597,10 +597,10 @@ TEST_P(CircuitConnectionFixture, TestCircuitIdle)
     circuit_end end = GetParam();
  
     InSequence read_connection_value;
-    int device = Wall::circuitDevice(end);
+    int device = WallImplementation::circuitDevice(end);
     expectMultiplexerSelectedBusforIOexpander(device);
     EXPECT_CALL(*io->accessMockSX1509(device),
-        digitalRead(Wall::circuitPin(end))).WillOnce(Return(HIGH));
+        digitalRead(WallImplementation::circuitPin(end))).WillOnce(Return(HIGH));
     ASSERT_EQ(wall->readCircuitState(end), HIGH);
 }
 TEST_P(CircuitConnectionFixture, TestCircuitEnergized)
@@ -608,10 +608,10 @@ TEST_P(CircuitConnectionFixture, TestCircuitEnergized)
     circuit_end end = GetParam();
 
     InSequence read_connection_value;
-    int device = Wall::circuitDevice(end);
+    int device = WallImplementation::circuitDevice(end);
     expectMultiplexerSelectedBusforIOexpander(device);
     EXPECT_CALL(*io->accessMockSX1509(device),
-        digitalRead(Wall::circuitPin(end))).WillOnce(Return(LOW));
+        digitalRead(WallImplementation::circuitPin(end))).WillOnce(Return(LOW));
     ASSERT_EQ(wall->readCircuitState(end), LOW);
 }
 TEST_P(CircuitConnectionFixture, TestCircuitInput)
@@ -632,12 +632,12 @@ TEST_F(CircuitConnectionFixture, TestCircuitsConnected)
     circuit_end source = CIRCUIT_NEGATIVE_POLE;
 
     InSequence check_connection;
-    int sink_device = Wall::circuitDevice(sink);
+    int sink_device = WallImplementation::circuitDevice(sink);
     
     expectCircuitIsOutput(source);
     expectMultiplexerSelectedBusforIOexpander(sink_device);
     EXPECT_CALL(*io->accessMockSX1509(sink_device),
-        digitalRead(Wall::circuitPin(sink))).WillOnce(Return(LOW));
+        digitalRead(WallImplementation::circuitPin(sink))).WillOnce(Return(LOW));
     expectCircuitIsInput(source);
 
     ASSERT_TRUE(wall->isCircuitConnected(source, sink));
@@ -648,12 +648,12 @@ TEST_F(CircuitConnectionFixture, TestCircuitsNotConnected)
     circuit_end source = CIRCUIT_POSITIVE_POLE;
 
     InSequence check_connection;
-    int sink_device = Wall::circuitDevice(sink);
+    int sink_device = WallImplementation::circuitDevice(sink);
 
     expectCircuitIsOutput(source);
     expectMultiplexerSelectedBusforIOexpander(sink_device);
     EXPECT_CALL(*io->accessMockSX1509(sink_device),
-        digitalRead(Wall::circuitPin(sink))).WillOnce(Return(HIGH));
+        digitalRead(WallImplementation::circuitPin(sink))).WillOnce(Return(HIGH));
     expectCircuitIsInput(source);
 
     ASSERT_FALSE(wall->isCircuitConnected(source, sink));
@@ -696,10 +696,10 @@ TEST_P(ButtonFixture, TestButtonDepressed)
     large_button button = GetParam();
 
     InSequence check_button_depressed;
-    int device = Wall::buttonDevice(button);
+    int device = WallImplementation::buttonDevice(button);
     expectMultiplexerSelectedBusforIOexpander(device);
     EXPECT_CALL(*io->accessMockSX1509(device),
-        digitalRead(Wall::buttonPin(button))).WillOnce(Return(LOW));
+        digitalRead(WallImplementation::buttonPin(button))).WillOnce(Return(LOW));
     ASSERT_TRUE(wall->isButtonDepressed(button));
 }
 TEST_P(ButtonFixture, TestButtonNotDepressed)
@@ -707,10 +707,10 @@ TEST_P(ButtonFixture, TestButtonNotDepressed)
     large_button button = GetParam();
 
     InSequence check_button_depressed;
-    int device = Wall::buttonDevice(button);
+    int device = WallImplementation::buttonDevice(button);
     expectMultiplexerSelectedBusforIOexpander(device);
     EXPECT_CALL(*io->accessMockSX1509(device),
-        digitalRead(Wall::buttonPin(button))).WillOnce(Return(HIGH));
+        digitalRead(WallImplementation::buttonPin(button))).WillOnce(Return(HIGH));
     ASSERT_FALSE(wall->isButtonDepressed(button));
 }
 TEST_P(ButtonFixture, TestButtonIlluminated)
@@ -718,10 +718,10 @@ TEST_P(ButtonFixture, TestButtonIlluminated)
     large_button button = GetParam();
 
     InSequence illuminate_button;
-    int device = Wall::buttonDevice(button);
+    int device = WallImplementation::buttonDevice(button);
     expectMultiplexerSelectedBusforIOexpander(device);
     EXPECT_CALL(*io->accessMockSX1509(device),
-        digitalWrite(Wall::buttonLEDpin(button), HIGH)).Times(1);
+        digitalWrite(WallImplementation::buttonLEDpin(button), HIGH)).Times(1);
     wall->illuminateButton(button);
 }
 TEST_P(ButtonFixture, TestButtonDarkened)
@@ -729,10 +729,10 @@ TEST_P(ButtonFixture, TestButtonDarkened)
     large_button button = GetParam();
 
     InSequence darken_button;
-    int device = Wall::buttonDevice(button);
+    int device = WallImplementation::buttonDevice(button);
     expectMultiplexerSelectedBusforIOexpander(device);
     EXPECT_CALL(*io->accessMockSX1509(device),
-        digitalWrite(Wall::buttonLEDpin(button), LOW)).Times(1);
+        digitalWrite(WallImplementation::buttonLEDpin(button), LOW)).Times(1);
     wall->extinguishButton(button);
 }
 INSTANTIATE_TEST_CASE_P(ButtonTests, ButtonFixture, Values(
@@ -752,7 +752,7 @@ TEST_P(WireFixture, TestWireIlluminated)
 
     InSequence illuminate_wire;
     EXPECT_CALL(*Intel101,
-        digitalWrite(Wall::elWirePin(line), HIGH)).Times(1);
+        digitalWrite(WallImplementation::elWirePin(line), HIGH)).Times(1);
     wall->illuminateELWire(line);
 }
 TEST_P(WireFixture, TestWireDarkened)
@@ -761,7 +761,7 @@ TEST_P(WireFixture, TestWireDarkened)
 
     InSequence illuminate_wire;
     EXPECT_CALL(*Intel101,
-        digitalWrite(Wall::elWirePin(line), LOW)).Times(1);
+        digitalWrite(WallImplementation::elWirePin(line), LOW)).Times(1);
     wall->extinguishELWire(line);
 }
 INSTANTIATE_TEST_CASE_P(WireTests, WireFixture, Values(
