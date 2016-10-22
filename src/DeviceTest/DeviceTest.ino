@@ -10,8 +10,6 @@
 #include "Wall.h"
 
 Wall *wall;
-rgb_lcd lcd;
-
 unsigned int counter = 0;
 
 void setup() {
@@ -24,14 +22,9 @@ void setup() {
 
     if(!wall->initialize())
         Serial.println("Initialization of I2C devices failed");
-    wall->setMultiplexerI2CBus(GROVE_LCD_I2C_BUS);
-    lcd.begin(16, 2);
-    lcd.clear();
-    lcd.setRGB(0, 255, 50);
-    lcd.setCursor(0, 0);
-    lcd.print("Forest Park");
-    lcd.setCursor(0, 1);
-    lcd.print("Elementary");
+    //lcd.setRGB(0, 255, 50);
+    wall->printAt(0, 0, "Forest Park");
+    wall->printAt(0, 1, "Elementary");
 }
 
 
@@ -39,7 +32,7 @@ void lightButtonIfPressed(large_button color)
 {
     if (wall->isButtonDepressed(color))
     {
-        Serial.println(String(color) + "depressed");
+        Serial.println(String(color) + " depressed");
         wall->illuminateButton(color);
     }
     else
