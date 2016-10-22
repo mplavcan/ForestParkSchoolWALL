@@ -4,7 +4,7 @@
 #include <SparkFunSX1509.h>
 #include <Adafruit_PWMServoDriver.h>
 #include <Adafruit_ADS1015.h>
-#include "rgb_lcd.h"
+#include <rgb_lcd.h>
 #include "DeviceFactory.h"
 
 SX1509* DeviceFactory::createSX1509Instance(void)

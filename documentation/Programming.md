@@ -5,11 +5,10 @@ Arduino and Friends
 -------------------
 The Wall is powered by a single [Intel Arduino 101 "Curie"](https://www.arduino.cc/en/Guide/Arduino101)
  assisted by several I/O expansion boards.  The libraries for these  will need to be included in any sketch in order for the Wall to function correctly:
-* Sparkfun SX1509 IO Expander
-* Adafruit ADS1X15
-* Adafruit PWM Servo Driver Library
-* Seeedstudio Grove I2C (It is not currently downloadable in the Libary manager, so the files for are included in libraries directory of this repo.
-
+* [Sparkfun SX1509 IO Expander](https://github.com/sparkfun/SparkFun_SX1509_Arduino_Library)
+* [Adafruit ADS1X15](https://github.com/nipoutch/Adafruit_ADS1015)
+* [Adafruit PWM Servo Driver Library](https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library)
+* [Seeedstudio Grove I2C](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight)
 
 Toolchain
 ---------
