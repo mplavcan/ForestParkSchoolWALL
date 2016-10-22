@@ -1,9 +1,10 @@
 // Wall hardware device generator object
 // Forest Park School Wall 
 //
-#include <SX1509_IO_Expander/src/SparkFunSX1509.h>
-#include <Adafruit_PWM_Servo_Driver_Library/Adafruit_PWMServoDriver.h>
-#include <Adafruit_ADS1X15/Adafruit_ADS1015.h>
+#include <SparkFunSX1509.h>
+#include <Adafruit_PWMServoDriver.h>
+#include <Adafruit_ADS1015.h>
+#include "rgb_lcd.h"
 #include "DeviceFactory.h"
 
 SX1509* DeviceFactory::createSX1509Instance(void)
@@ -20,3 +21,9 @@ Adafruit_PWMServoDriver* DeviceFactory::createPWMinstance(unsigned char addr)
 {
     return new Adafruit_PWMServoDriver(addr);
 }
+
+rgb_lcd* DeviceFactory::createLCDInstance()
+{
+    return new rgb_lcd;
+}
+

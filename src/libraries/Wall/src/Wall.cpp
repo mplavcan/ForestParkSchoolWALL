@@ -78,6 +78,7 @@ void WallImplementation::resetAnalogIO(int device)
 bool WallImplementation::initialize(void)
 {
     Wire.begin();
+    initializeLCD(); // also calls Wire.begin();
     if(!initializeIOexpanders())
         return false;
     initializeAnalogExpanders();
@@ -89,7 +90,6 @@ bool WallImplementation::initialize(void)
     initializeButtonInOuts();
     initalizeELwireOutputs();
     resetCircuitInputs();
-    initializeLCD();
     return true;
 }
 
