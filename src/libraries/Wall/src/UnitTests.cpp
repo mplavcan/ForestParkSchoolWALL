@@ -398,7 +398,7 @@ INSTANTIATE_TEST_CASE_P(IndicatorTests, IndicatorFixture, Values(
     INDICATE_KNOB,
     INDICATE_SLIDER,
     INDICATE_PHOTO_SENSOR,
-    INDICATE_PRESSURE_SENSOR,
+    INDICATE_TOUCH_SENSOR,
     INDICATE_POSITIVE_POLE,
     INDICATE_NEGATIVE_POLE
     )
@@ -532,7 +532,7 @@ INSTANTIATE_TEST_CASE_P(PhotoresistorTests, LightSensorFixture, Values(
 
 class TouchSensorFixture : public WallFixture, public ::testing::WithParamInterface<force_sensor> {
 };
-TEST_P(TouchSensorFixture, TestReadPressureValue)
+TEST_P(TouchSensorFixture, TestReadTOUCHValue)
 {
     force_sensor sensor = GetParam();
     uint16_t force = 186 * sensor;
@@ -543,10 +543,10 @@ TEST_P(TouchSensorFixture, TestReadPressureValue)
         WallImplementation::forceSensorPin(sensor), force);
     ASSERT_EQ(wall->getTouchSensorValue(sensor), force);
 }
-INSTANTIATE_TEST_CASE_P(PressureTests, TouchSensorFixture, Values(
-    LEFT_PRESSURE,
-    BOTTOM_PRESSURE,
-    RIGHT_PRESSURE
+INSTANTIATE_TEST_CASE_P(TOUCHTests, TouchSensorFixture, Values(
+    LEFT_TOUCH,
+    BOTTOM_TOUCH,
+    RIGHT_TOUCH
     )    
 );
 

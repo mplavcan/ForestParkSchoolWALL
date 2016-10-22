@@ -145,7 +145,7 @@ void WallImplementation::initializePWMOutputs(void)
     turnIndicatorOff(INDICATE_KNOB);
     turnIndicatorOff(INDICATE_SLIDER);
     turnIndicatorOff(INDICATE_PHOTO_SENSOR);
-    turnIndicatorOff(INDICATE_PRESSURE_SENSOR);
+    turnIndicatorOff(INDICATE_TOUCH_SENSOR);
     turnIndicatorOff(INDICATE_POSITIVE_POLE);
     turnIndicatorOff(INDICATE_NEGATIVE_POLE);
     turnTransducerOff();
@@ -389,9 +389,9 @@ int WallImplementation::forceSensorPin(force_sensor sensor)
 {
     switch (sensor)
     {
-        case LEFT_PRESSURE:   return INPUT_FORCE_SENSOR_1;
-        case BOTTOM_PRESSURE: return INPUT_FORCE_SENSOR_2;
-        case RIGHT_PRESSURE:  return INPUT_FORCE_SENSOR_3;
+        case LEFT_TOUCH:   return INPUT_FORCE_SENSOR_1;
+        case BOTTOM_TOUCH: return INPUT_FORCE_SENSOR_2;
+        case RIGHT_TOUCH:  return INPUT_FORCE_SENSOR_3;
         default: return 0;
     }
 }
@@ -501,6 +501,40 @@ bool WallImplementation::isCircuitConnected(circuit_end A, circuit_end B)
     bool areConnected = (readCircuitState(B) == LOW);
     setCircuitAsInput(A);
     return areConnected;
+}
+
+indicator_led WallImplementation::indicatorForCircuit(circuit_end point)
+{
+    switch(point)
+    {
+        case CIRCUIT_POSITIVE_POLE: return INDICATE_POSITIVE_POLE;
+        case CIRCUIT_KNOB_LEFT:
+        case CIRCUIT_KNOB_RIGHT: return INDICATE_KNOB;
+        case CIRCUIT_SLIDER_LEFT:
+        case CIRCUIT_SLIDER_RIGHT: return INDICATE_SLIDER;
+        case CIRCUIT_PHOTO_LEFT:
+        case CIRCUIT_PHOTO_RIGHT: return INDICATE_PHOTO_SENSOR;
+        case CIRCUIT_JOYSTICK_LEFT:
+        case CIRCUIT_JOYSTICK_RIGHT: return INDICATE_JOYSTICK;
+        case CIRCUIT_TOGGLE_LEFT:
+        case CIRCUIT_TOGGLE_RIGHT: return INDICATE_TOGGLES;
+        case CIRCUIT_TOUCH_LEFT:
+        case CIRCUIT_TOUCH_RIGHT: return INDICATE_TOUCH_SENSOR;
+        case CIRCUIT_BLUE_MOTOR_LEFT:
+        case CIRCUIT_BLUE_MOTOR_RIGHT: return INDICATE_BLUE_MOTOR;
+        case CIRCUIT_ORANGE_MOTOR_LEFT: 
+        case CIRCUIT_ORANGE_MOTOR_RIGHT: return INDICATE_ORANGE_MOTOR;
+        case CIRCUIT_TRANSDUCER_LEFT:
+        case CIRCUIT_TRANSDUCER_RIGHT: return INDICATE_TRANSDUCER;
+        case CIRCUIT_WHITE_LED_LEFT:
+        case CIRCUIT_WHITE_LED_RIGHT: return INDICATE_WHITE_LED;
+        case CIRCUIT_GREEN_LED_LEFT:
+        case CIRCUIT_GREEN_LED_RIGHT: return INDICATE_GREEN_LED;
+        case CIRCUIT_RED_LED_LEFT:
+        case CIRCUIT_RED_LED_RIGHT: return INDICATE_RED_LED;
+        case CIRCUIT_NEGATIVE_POLE:
+        default:  return INDICATE_NEGATIVE_POLE;
+    }
 }
 
 int WallImplementation::buttonDevice(large_button button)

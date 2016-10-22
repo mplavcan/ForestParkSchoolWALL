@@ -20,6 +20,9 @@ void setup() {
     DeviceFactory *io = new DeviceFactory();
     wall = new Wall(io);
 
+    delay(10000);
+    Serial.println("BOOT BOOT BOOT");
+
     if(!wall->initialize())
         Serial.println("Initialization of I2C devices failed");
     //lcd.setRGB(0, 255, 50);
@@ -47,7 +50,7 @@ void printPhotoValues(photo_sensor sensor)
     Serial.print(String(sensor) + ": "); Serial.println(value);
 }
 
-void printPressureValues(force_sensor sensor)
+void printTouchValues(force_sensor sensor)
 {
     int16_t value = wall->getTouchSensorValue(sensor);
     Serial.print(String(sensor) + ": "); Serial.println(value);
@@ -77,67 +80,31 @@ void ControlMotor(wall_motor motor, int16_t controlValue)
     wall->setMotorSpeed(motor, controlValue >> 5);
 }
 
-void loop() {
-    lightButtonIfPressed(BLUE_BUTTON);
-    lightButtonIfPressed(RED_BUTTON);
-    lightButtonIfPressed(GREEN_BUTTON);
-    lightButtonIfPressed(YELLOW_BUTTON);
-    lightButtonIfPressed(WHITE_BUTTON);
+void turnOffAllLights()
+{
+    wall->turnOffLEDarray(GREEN_LED, LEFT_SIDE);
+    wall->turnOffLEDarray(GREEN_LED, RIGHT_SIDE);
+    wall->turnOffLEDarray(WHITE_LED, LEFT_SIDE);
+    wall->turnOffLEDarray(WHITE_LED, RIGHT_SIDE);
+    wall->turnOffLEDarray(RED_LED, LEFT_SIDE);
+    wall->turnOffLEDarray(RED_LED, RIGHT_SIDE);
+    wall->turnOffLEDarray(RED_LED, LOWER_LEFT_SIDE);
+    wall->turnOffLEDarray(RED_LED, LOWER_RIGHT_SIDE);
+    wall->illuminateELWire(RED_WIRE_ONE);
+    wall->illuminateELWire(RED_WIRE_TWO);
+    wall->illuminateELWire(GREEN_WIRE_ONE);
+    wall->illuminateELWire(GREEN_WIRE_TWO);
+    wall->illuminateELWire(YELLOW_WIRE);
+    wall->illuminateELWire(WHITE_WIRE);
+    wall->illuminateELWire(BLUE_WIRE_ONE);
+    wall->illuminateELWire(BLUE_WIRE_TWO);
+    for (int lamp = INDICATE_WHITE_LED; lamp <= INDICATE_POSITIVE_POLE; lamp++)
+        wall->turnIndicatorOff(static_cast<indicator_led>(lamp));
+}
 
-    printPhotoValues(LEFT_PHOTO);
-    printPhotoValues(CENTER_PHOTO);
-    printPhotoValues(RIGHT_PHOTO);
-
-    printPressureValues(LEFT_PRESSURE);
-    printPressureValues(BOTTOM_PRESSURE);
-    printPressureValues(RIGHT_PRESSURE);
-
-    printToggleState(LEFT_TOGGLE);
-    printToggleState(CENTER_TOGGLE);
-    printToggleState(RIGHT_TOGGLE);
-
-    printJoystickDirection();
-
-    int16_t slider = wall->getSliderPosition();
-    Serial.print("SLIDER: "); Serial.println(slider);
-
-    int16_t knob = wall->getKnobPosition();
-    Serial.print("KNOB: "); Serial.println(knob);
-
-    ControlMotor(BLUE_MOTOR, knob);
-    ControlMotor(ORANGE_MOTOR, slider);
-
-    for(int grid = CIRCUIT_KNOB_LEFT; grid <= CIRCUIT_NEGATIVE_POLE; grid++)
-    {
-        if(wall->readCircuitState(static_cast<circuit_end>(grid)) == LOW)
-        {
-            Serial.println(String(grid) + " triggered LOW");
-            wall->turnTransducerOn();
-        }
-    }
-
-    if(counter == 0)
-    {
-        wall->turnOffLEDarray(GREEN_LED, LEFT_SIDE);
-        wall->turnOffLEDarray(GREEN_LED, RIGHT_SIDE);
-        wall->turnOffLEDarray(WHITE_LED, LEFT_SIDE);
-        wall->turnOffLEDarray(WHITE_LED, RIGHT_SIDE);
-        wall->turnOffLEDarray(RED_LED, LEFT_SIDE);
-        wall->turnOffLEDarray(RED_LED, RIGHT_SIDE);
-        wall->turnOffLEDarray(RED_LED, LOWER_LEFT_SIDE);
-        wall->turnOffLEDarray(RED_LED, LOWER_RIGHT_SIDE);
-        wall->illuminateELWire(RED_WIRE_ONE);
-        wall->illuminateELWire(RED_WIRE_TWO);
-        wall->illuminateELWire(GREEN_WIRE_ONE);
-        wall->illuminateELWire(GREEN_WIRE_TWO);
-        wall->illuminateELWire(YELLOW_WIRE);
-        wall->illuminateELWire(WHITE_WIRE);
-        wall->illuminateELWire(BLUE_WIRE_ONE);
-        wall->illuminateELWire(BLUE_WIRE_TWO);
-        wall->turnTransducerOff();
-    }
-
-    switch (counter)
+void turnOnSelectiveLight(int choice)
+{
+    switch (choice)
     {
         case 1: wall->turnOnLEDarray(GREEN_LED, LEFT_SIDE); break;
         case 2: wall->turnOnLEDarray(GREEN_LED, RIGHT_SIDE); break;
@@ -158,7 +125,61 @@ void loop() {
         case 17: wall->turnTransducerOn(); break;
         default: break;
     }
+}
+
+void indicateCircuitState(circuit_end point)
+{
+    indicator_led lamp = Wall::indicatorForCircuit(point);
+    if (wall->readCircuitState(point) == LOW)
+    {
+        Serial.println(String(point) + " triggered");
+        wall->turnIndicatorOn(lamp);
+        wall->turnTransducerOn();
+    }
+}
+
+void loop() {
+    lightButtonIfPressed(BLUE_BUTTON);
+    lightButtonIfPressed(RED_BUTTON);
+    lightButtonIfPressed(GREEN_BUTTON);
+    lightButtonIfPressed(YELLOW_BUTTON);
+    lightButtonIfPressed(WHITE_BUTTON);
+
+    printPhotoValues(LEFT_PHOTO);
+    printPhotoValues(CENTER_PHOTO);
+    printPhotoValues(RIGHT_PHOTO);
+
+    printTouchValues(LEFT_TOUCH);
+    printTouchValues(BOTTOM_TOUCH);
+    printTouchValues(RIGHT_TOUCH);
+
+    printToggleState(LEFT_TOGGLE);
+    printToggleState(CENTER_TOGGLE);
+    printToggleState(RIGHT_TOGGLE);
+
+    printJoystickDirection();
+
+    int16_t slider = wall->getSliderPosition();
+    Serial.print("SLIDER: "); Serial.println(slider);
+    ControlMotor(ORANGE_MOTOR, slider);
+
+    int16_t knob = wall->getKnobPosition();
+    Serial.print("KNOB: "); Serial.println(knob);
+    ControlMotor(BLUE_MOTOR, knob);
+
+    for (int grid = CIRCUIT_KNOB_LEFT; grid <= CIRCUIT_NEGATIVE_POLE; grid++)
+        indicateCircuitState(static_cast<circuit_end>(grid));
+ 
+    if (counter == 0)
+    {
+        turnOffAllLights();
+        wall->turnTransducerOff();
+    }
+    else
+        turnOnSelectiveLight(counter);
 
     counter++;
+    if (counter == 18)
+        counter = 0;
     delay(100);
 }

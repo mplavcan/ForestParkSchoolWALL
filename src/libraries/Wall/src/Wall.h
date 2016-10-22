@@ -1,6 +1,9 @@
 // Wall hardware abstraction layer object
 // Forest Park School Wall 
 //
+#ifndef _WALL_H_
+#define _WALL_H_
+
 #include "Wall_IO_pins.h"
 #include "FactoryInterface.h"
 
@@ -19,7 +22,7 @@ typedef enum { GREEN_LED, WHITE_LED, RED_LED } led_array;
 typedef enum { LEFT_SIDE, RIGHT_SIDE, LOWER_LEFT_SIDE, LOWER_RIGHT_SIDE } led_section;
 typedef enum { LEFT_TOGGLE, CENTER_TOGGLE, RIGHT_TOGGLE } toggle_switch;
 typedef enum { LEFT_PHOTO, CENTER_PHOTO, RIGHT_PHOTO } photo_sensor;
-typedef enum { LEFT_PRESSURE, BOTTOM_PRESSURE, RIGHT_PRESSURE } force_sensor;
+typedef enum { LEFT_TOUCH, BOTTOM_TOUCH, RIGHT_TOUCH } force_sensor;
 typedef enum { BLUE_BUTTON, YELLOW_BUTTON, GREEN_BUTTON, RED_BUTTON, WHITE_BUTTON } large_button;
 typedef enum 
 { 
@@ -47,7 +50,7 @@ typedef enum
     INDICATE_PHOTO_SENSOR    = INDICATOR_PHOTO_SENSOR,
     INDICATE_JOYSTICK        = INDICATOR_JOYSTICK,
     INDICATE_TOGGLES         = INDICATOR_TOGGLE_SWITCH,
-    INDICATE_PRESSURE_SENSOR = INDICATOR_FORCE_SENSOR,
+    INDICATE_TOUCH_SENSOR    = INDICATOR_FORCE_SENSOR,
     INDICATE_POSITIVE_POLE   = INDICATOR_BATTERY_POSITIVE
 } indicator_led;
 
@@ -135,6 +138,8 @@ public:
     void extinguishELWire(EL_wire line);
     void printAt(uint8_t column, uint8_t row, const char buf[]);
 
+    static indicator_led indicatorForCircuit(circuit_end point);
+
     static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];
     static const int analogDeviceAddress[NUMBER_OF_ADS1015_DEVICES];
@@ -203,4 +208,7 @@ public:
     using WallImplementation::illuminateELWire;
     using WallImplementation::extinguishELWire;
     using WallImplementation::printAt;
+    using WallImplementation::indicatorForCircuit;
 };
+
+#endif // _WALL_H_
