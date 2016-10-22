@@ -5,6 +5,7 @@
 #include <Adafruit_PWMServoDriver.h>
 #include <Adafruit_ADS1015.h>
 #include <Arduino.h>
+#include <rgb_lcd.h>
 #include <Wire.h>
 #include "Wall.h"
 
@@ -36,6 +37,7 @@ WallImplementation::WallImplementation(FactoryInterface *io) {
     for (int device = 0; device < NUMBER_OF_ADS1015_DEVICES; device++)
         this->analog_expander[device] = io->createADS1015Instance(analogDeviceAddress[device]);
     this->pwm = io->createPWMinstance(ADAFRUIT_PWM_I2C_ADDRESS);
+    this->lcd = io->createLCDInstance();
 }
 
 void WallImplementation::setMultiplexerForIOexpander(int device) {
@@ -87,6 +89,7 @@ bool WallImplementation::initialize(void)
     initializeButtonInOuts();
     initalizeELwireOutputs();
     resetCircuitInputs();
+    initializeLCD();
     return true;
 }
 
@@ -578,3 +581,19 @@ void WallImplementation::extinguishELWire(EL_wire line)
 {
     digitalWrite(elWirePin(line), LOW);
 }
+
+void WallImplementation::initializeLCD(void)
+{
+    setMultiplexerI2CBus(GROVE_LCD_I2C_BUS);
+    lcd->begin(16, 2);
+    lcd->clear();
+}
+
+void WallImplementation::printAt(uint8_t column, uint8_t row, const char buf[])
+{
+    setMultiplexerI2CBus(GROVE_LCD_I2C_BUS);
+    lcd->setCursor(column, row);
+    lcd->print(buf);
+}
+
+

@@ -31,6 +31,11 @@ Adafruit_ADS1015* MockDeviceFactory::createADS1015Instance(uint8_t addr)
     return newDevice;
 }
 
+rgb_lcd* MockDeviceFactory::createLCDInstance(void)
+{
+    lcdDevice = static_cast<StrictMock<GroveLCDMock>*>(GroveLCDMockInstance());
+    return lcdDevice;
+}
 SX1509Mock* MockDeviceFactory::accessMockSX1509(int index)
 {
     return ioExpanderDeviceList[index];
@@ -44,6 +49,11 @@ Adafruit_PWMServoDriverMock* MockDeviceFactory::accessMockPWM(void)
 Adafruit_ADS1015Mock* MockDeviceFactory::accessMockADS1015(int index)
 {
     return analogExpanderDeviceList[index];
+}
+
+GroveLCDMock* MockDeviceFactory::accessMockLCD(void)
+{
+    return lcdDevice;
 }
 
 }; // namespace

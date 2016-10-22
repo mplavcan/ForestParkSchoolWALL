@@ -4,6 +4,7 @@
 #include <tuple>
 #include <Arduino.h>
 #include <Wire.h>
+#include <rgb_lcd.h>
 #include "MockDeviceFactory.h"
 #include "Wall.h"
 
@@ -747,6 +748,19 @@ INSTANTIATE_TEST_CASE_P(WireTests, WireFixture, Values(
     BLUE_WIRE_TWO
     )
 );
+
+class DisplayFixture: public WallFixture {};
+TEST_F(DisplayFixture, TestPrintAtLocation)
+{
+    int row = 1;
+    int col = 0;
+    char string[] = "Hello World!";
+    expectMultiplexerSelectedBus(GROVE_LCD_I2C_BUS);
+    EXPECT_CALL(*io->accessMockLCD(), setCursor(col, row));
+    EXPECT_CALL(*io->accessMockLCD(), print(string));
+
+    wall->printAt(col, row, string);
+}
 
 }; // namespace
 

@@ -117,6 +117,7 @@
     <ClCompile Include="..\..\arduino-mock\src\Wire.cc" />
     <ClCompile Include="..\..\MockDevices\Adafruit_ADS1015.cpp" />
     <ClCompile Include="..\..\MockDevices\Adafruit_PWMServoDriver.cpp" />
+    <ClCompile Include="..\..\MockDevices\rgb_lcd.cpp" />
     <ClCompile Include="..\..\MockDevices\SparkFunSX1509.cpp" />
     <ClCompile Include="MockDeviceFactory.cpp" />
     <ClCompile Include="UnitTests.cpp" />
@@ -124,13 +125,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\arduino-mock\Arduino.h" />
-    <ClInclude Include="..\..\arduino-mock\Wire.h" />
-    <ClInclude Include="..\..\MockDevices\Adafruit_ADS1015.h" />
-    <ClInclude Include="..\..\MockDevices\Adafruit_PWMServoDriver.h" />
-    <ClInclude Include="..\..\MockDevices\SparkFunSX1509.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

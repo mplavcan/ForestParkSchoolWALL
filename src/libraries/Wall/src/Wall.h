@@ -98,6 +98,7 @@ public:
     void resetAnalogIO(int device);
     void initializeButtonInOuts(void);
     void initalizeELwireOutputs(void);
+    void initializeLCD(void);
 
     void setMultiplexerForIOexpander(int device);
     void setMultiplexerForAnalog(int device);
@@ -132,6 +133,7 @@ public:
     void extinguishButton(large_button button);
     void illuminateELWire(EL_wire line);
     void extinguishELWire(EL_wire line);
+    void printAt(uint8_t column, uint8_t row, const char buf[]);
 
     static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];
@@ -159,6 +161,7 @@ private:
     SX1509 *io_expander[NUMBER_OF_SX1509_DEVICES];
     Adafruit_ADS1015 *analog_expander[NUMBER_OF_ADS1015_DEVICES];
     Adafruit_PWMServoDriver *pwm;
+    rgb_lcd *lcd;
 
     int writeMultiplexerForBus(int bus);
     bool ledArrayIsActiveLow(led_array array);
@@ -199,6 +202,5 @@ public:
     using WallImplementation::extinguishButton;
     using WallImplementation::illuminateELWire;
     using WallImplementation::extinguishELWire;
-
-    using WallImplementation::setMultiplexerI2CBus;
+    using WallImplementation::printAt;
 };
