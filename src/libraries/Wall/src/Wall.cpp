@@ -313,6 +313,11 @@ void WallImplementation::turnIndicatorOff(indicator_led lamp)
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPin(lamp, PWM_INDICATOR_OFF_VALUE, FALSE);
 }
+void WallImplementation::setIndicatorBrightness(indicator_led lamp, uint16_t value)
+{
+    setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
+    pwm->setPin(lamp, value % PWM_FULL_DUTY_CYCLE, FALSE);
+}
 
 int WallImplementation::toggleSwitchPin(toggle_switch toggle)
 {

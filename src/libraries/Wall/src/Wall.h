@@ -117,6 +117,7 @@ public:
     void turnTransducerOff(void);
     void turnIndicatorOn(indicator_led lamp);
     void turnIndicatorOff(indicator_led lamp);
+    void setIndicatorBrightness(indicator_led lamp, uint16_t value);
     bool isToggleOn(toggle_switch toggle);
     bool isJoystickUp(void);
     bool isJoystickDown(void);
@@ -193,6 +194,7 @@ public:
     using WallImplementation::turnTransducerOff;
     using WallImplementation::turnIndicatorOn;
     using WallImplementation::turnIndicatorOff;
+    using WallImplementation::setIndicatorBrightness;
     using WallImplementation::isToggleOn;
     using WallImplementation::isJoystickUp;
     using WallImplementation::isJoystickDown;
