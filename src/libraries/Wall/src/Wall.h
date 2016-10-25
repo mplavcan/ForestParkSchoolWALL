@@ -136,7 +136,9 @@ public:
     void extinguishButton(large_button button);
     void illuminateELWire(EL_wire line);
     void extinguishELWire(EL_wire line);
-    void printAt(uint8_t column, uint8_t row, const char buf[]);
+    void lcdPrintAt(uint8_t column, uint8_t row, const char buf[]);
+    void lcdSetBacklightColor(uint8_t red, uint8_t green, uint8_t blue);
+    void clearLCDscreen(void);
 
     static indicator_led indicatorForCircuit(circuit_end point);
 
@@ -207,7 +209,10 @@ public:
     using WallImplementation::extinguishButton;
     using WallImplementation::illuminateELWire;
     using WallImplementation::extinguishELWire;
-    using WallImplementation::printAt;
+    using WallImplementation::lcdPrintAt;
+    using WallImplementation::lcdSetBacklightColor;
+    using WallImplementation::clearLCDscreen;
+
     using WallImplementation::indicatorForCircuit;
 };
 

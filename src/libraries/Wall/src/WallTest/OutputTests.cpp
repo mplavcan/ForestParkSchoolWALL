@@ -182,7 +182,7 @@ INSTANTIATE_TEST_CASE_P(WireTests, WireFixture, Values(
 
 // LCD tests
 class DisplayFixture : public WallFixture {};
-TEST_F(DisplayFixture, TestPrintAtLocation)
+TEST_F(DisplayFixture, TestLCDprintAtLocation)
 {
     int row = 1;
     int col = 0;
@@ -191,7 +191,29 @@ TEST_F(DisplayFixture, TestPrintAtLocation)
     EXPECT_CALL(*io->accessMockLCD(), setCursor(col, row));
     EXPECT_CALL(*io->accessMockLCD(), print(string));
 
-    wall->printAt(col, row, string);
+    wall->lcdPrintAt(col, row, string);
+}
+
+TEST_F(DisplayFixture, TestSetLCDbackgroundColor)
+{
+    int red = 145;
+    int green = 35;
+    int blue = 227;
+    expectMultiplexerSelectedBus(GROVE_LCD_I2C_BUS);
+    EXPECT_CALL(*io->accessMockLCD(), clear());
+    
+    wall->clearLCDscreen();
+}
+
+TEST_F(DisplayFixture, TestSetBackgroundColor)
+{
+    int red = 145;
+    int green = 35;
+    int blue = 227;
+    expectMultiplexerSelectedBus(GROVE_LCD_I2C_BUS);
+    EXPECT_CALL(*io->accessMockLCD(), setRGB(red, green, blue));
+
+    wall->lcdSetBacklightColor(red, green, blue);
 }
 
 }; // namespace

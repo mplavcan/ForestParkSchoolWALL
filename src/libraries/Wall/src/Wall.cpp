@@ -4,10 +4,10 @@
 #include <SparkFunSX1509.h>
 #include <Adafruit_PWMServoDriver.h>
 #include <Adafruit_ADS1015.h>
-#include <Arduino.h>
 #include <rgb_lcd.h>
+#include <Arduino.h>
 #include <Wire.h>
-#include "Wall.h"
+#include <Wall.h>
 
 const int WallImplementation::ioDeviceBus[NUMBER_OF_SX1509_DEVICES] = {
     SPARKFUN_SX1509_FIRST_I2C_BUS,
@@ -623,11 +623,24 @@ void WallImplementation::initializeLCD(void)
     lcd->clear();
 }
 
-void WallImplementation::printAt(uint8_t column, uint8_t row, const char buf[])
+void WallImplementation::lcdPrintAt(uint8_t column, uint8_t row, const char buf[])
 {
     setMultiplexerI2CBus(GROVE_LCD_I2C_BUS);
     lcd->setCursor(column, row);
     lcd->print(buf);
 }
+
+void WallImplementation::lcdSetBacklightColor(uint8_t red, uint8_t green, uint8_t blue)
+{
+    setMultiplexerI2CBus(GROVE_LCD_I2C_BUS);
+    lcd->setRGB(red, green, blue);
+}
+
+void WallImplementation::clearLCDscreen(void)
+{
+    setMultiplexerI2CBus(GROVE_LCD_I2C_BUS);
+    lcd->clear();
+}
+
 
 
