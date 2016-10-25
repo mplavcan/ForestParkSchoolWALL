@@ -2,10 +2,10 @@
 //
 #include <Arduino.h>
 #include <Wire.h>
+#include <rgb_lcd.h>
 #include <SparkFunSX1509.h>
 #include <Adafruit_PWMServoDriver.h>
 #include <Adafruit_ADS1015.h>
-#include <rgb_lcd.h>
 #include "DeviceFactory.h"
 #include "Wall.h"
 
@@ -17,17 +17,13 @@ void setup() {
     Serial.begin(115200);
     Serial.println("Forest Park Circuit Wall Setup");
 
-    DeviceFactory *io = new DeviceFactory();
-    wall = new Wall(io);
-
-    delay(10000);
-    Serial.println("BOOT BOOT BOOT");
+    wall = new Wall(new DeviceFactory());
 
     if(!wall->initialize())
         Serial.println("Initialization of I2C devices failed");
-    //lcd.setRGB(0, 255, 50);
-    wall->printAt(0, 0, "Forest Park");
-    wall->printAt(0, 1, "Elementary");
+    wall->lcdSetBacklightColor(140, 220, 10);
+    wall->lcdPrintAt(0, 0, "Wall Interface");
+    wall->lcdPrintAt(0, 1, "Device Test");
 }
 
 

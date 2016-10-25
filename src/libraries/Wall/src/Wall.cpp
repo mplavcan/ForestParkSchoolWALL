@@ -7,7 +7,7 @@
 #include <rgb_lcd.h>
 #include <Arduino.h>
 #include <Wire.h>
-#include <Wall.h>
+#include "Wall.h"
 
 const int WallImplementation::ioDeviceBus[NUMBER_OF_SX1509_DEVICES] = {
     SPARKFUN_SX1509_FIRST_I2C_BUS,
