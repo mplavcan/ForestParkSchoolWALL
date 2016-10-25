@@ -18,29 +18,8 @@
     <ClCompile Include="UnitTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\arduino-mock\src\Wire.cc">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="MockDeviceFactory.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\arduino-mock\src\Arduino.cc">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Wall.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\MockDevices\Adafruit_ADS1015.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\MockDevices\Adafruit_PWMServoDriver.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\MockDevices\SparkFunSX1509.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\MockDevices\rgb_lcd.cpp">
-      <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="CircuitTests.cpp">
       <Filter>Source Files</Filter>
@@ -55,6 +34,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OutputTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\MockDevices\Adafruit_ADS1015.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\MockDevices\Adafruit_PWMServoDriver.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\MockDevices\rgb_lcd.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\MockDevices\SparkFunSX1509.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\arduino-mock\src\Arduino.cc">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\arduino-mock\src\Wire.cc">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Wall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

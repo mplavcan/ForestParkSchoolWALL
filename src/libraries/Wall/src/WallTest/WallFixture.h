@@ -1,12 +1,13 @@
 // Unit tests for Wall object
 //
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <tuple>
 #include <Arduino.h>
 #include <Wire.h>
 #include <rgb_lcd.h>
 #include "MockDeviceFactory.h"
-#include "Wall.h"
+#include <Wall.h>
 
 #define WIRE_TRANSMIT_SUCCESS 0
 
