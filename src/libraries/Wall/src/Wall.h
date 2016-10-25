@@ -147,6 +147,9 @@ public:
     static const int analogDeviceAddress[NUMBER_OF_ADS1015_DEVICES];
     static const int analogDeviceBus[NUMBER_OF_ADS1015_DEVICES];
 
+    static uint16_t normalizedKnobValue(uint16_t sliderValue);
+    static uint16_t normalizedSliderValue(uint16_t sliderValue);
+
     static int motorControlPin1(wall_motor motor);
     static int motorControlPin2(wall_motor motor);
     static int motorPWMpin(wall_motor motor);

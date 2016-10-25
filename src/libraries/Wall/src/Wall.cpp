@@ -356,16 +356,35 @@ bool WallImplementation::isJoystickRight(void)
     return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_RIGHT) == LOW);
 }
 
+// Knob is wired to return high values to the left, low values to the right.
+// To normalize reverse the value by subtracting from maxmium 12-bit value (4095)
+uint16_t WallImplementation::normalizedKnobValue(uint16_t rawKnobValue)
+{
+    return INPUT_ROTARY_POT_LEFT_LIMIT - rawKnobValue;
+}
+
 uint16_t WallImplementation::getKnobPosition(void)
 {
     setMultiplexerForAnalog(INPUT_ROTARY_POT_I2C_DEVICE);
-    return analog_expander[INPUT_ROTARY_POT_I2C_DEVICE]->readADC_SingleEnded(INPUT_ROTARY_POT);
+    return normalizedKnobValue(analog_expander[INPUT_ROTARY_POT_I2C_DEVICE]->
+        readADC_SingleEnded(INPUT_ROTARY_POT));
+}
+
+// When slider is moved all the way left, the contact becomes diengaged from
+// the track, resulting in a maximum value that is not acheivable, even when
+// far right.  If this value is detected, the result must a be safe value 
+// that appears to be far left.
+uint16_t WallImplementation::normalizedSliderValue(uint16_t rawSliderValue)
+{
+    return (rawSliderValue > INPUT_LINEAR_POT_RIGHT_LIMIT) ? 
+        INPUT_LINEAR_POT_LEFT_LIMIT : rawSliderValue;
 }
 
 uint16_t WallImplementation::getSliderPosition(void)
 {
     setMultiplexerForAnalog(INPUT_LINEAR_POT_I2C_DEVICE);
-    return analog_expander[INPUT_LINEAR_POT_I2C_DEVICE]->readADC_SingleEnded(INPUT_LINEAR_POT);
+    return normalizedSliderValue(analog_expander[INPUT_LINEAR_POT_I2C_DEVICE]->
+        readADC_SingleEnded(INPUT_LINEAR_POT));
 }
 
 int WallImplementation::photoSensorPin(photo_sensor sensor)
