@@ -1,6 +1,5 @@
 // Unit tests for Wall object
 //
-#include <gtest/gtest.h>
 #include "MockDeviceFactory.h"
 
 #define MAXIMUM_IO_INSTANCES 10  // arbitrary, must be great than any of "NUMBER_OF_xxxx_DEVICES"

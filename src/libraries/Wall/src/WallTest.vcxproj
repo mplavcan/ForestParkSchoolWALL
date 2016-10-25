@@ -75,7 +75,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\libraries\arduino-mock;$(SolutionDir)\libraries\MockDevices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;$(SolutionDir)packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;$(SolutionDir)packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -83,6 +83,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;$(SolutionDir)packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;$(SolutionDir)packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -92,7 +93,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\libraries\arduino-mock;$(SolutionDir)\libraries\MockDevices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;$(SolutionDir)packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;$(SolutionDir)packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -106,6 +107,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;$(SolutionDir)packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;$(SolutionDir)packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -119,7 +121,12 @@
     <ClCompile Include="..\..\MockDevices\Adafruit_PWMServoDriver.cpp" />
     <ClCompile Include="..\..\MockDevices\rgb_lcd.cpp" />
     <ClCompile Include="..\..\MockDevices\SparkFunSX1509.cpp" />
+    <ClCompile Include="CircuitTests.cpp" />
+    <ClCompile Include="IndicatorTests.cpp" />
+    <ClCompile Include="InitTests.cpp" />
+    <ClCompile Include="InputTests.cpp" />
     <ClCompile Include="MockDeviceFactory.cpp" />
+    <ClCompile Include="OutputTests.cpp" />
     <ClCompile Include="UnitTests.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 // Unit tests for Wall object
 //
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <SparkFunSX1509.h>
 #include <Adafruit_PWMServoDriver.h>
 #include <Adafruit_ADS1015.h>
