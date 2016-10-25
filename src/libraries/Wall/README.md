@@ -5,7 +5,7 @@ Wall Input/Output Object
 
 Wall Interface methods:
 -------------------------
-```
+```C++
     // Create Wall interface
     Wall(FactoryInterface *io);
     // Write all devices to starting state
