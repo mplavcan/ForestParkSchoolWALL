@@ -11,7 +11,7 @@ class InitFixture : public WallFixture, public ::testing::WithParamInterface<int
 };
 TEST_P(InitFixture, TestFailedIOExpanderInitialization)
 {
-    int failingDevice = GetParam(); 
+    const int failingDevice = GetParam(); 
     InSequence initialization;
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
     {
@@ -23,7 +23,7 @@ TEST_P(InitFixture, TestFailedIOExpanderInitialization)
             break;
     }
     
-    bool noDeviceWillFail = (failingDevice < 0) || (failingDevice >= NUMBER_OF_SX1509_DEVICES);
+    const bool noDeviceWillFail = (failingDevice < 0) || (failingDevice >= NUMBER_OF_SX1509_DEVICES);
     ASSERT_EQ(wall->initializeIOexpanders(), noDeviceWillFail);
 }
 INSTANTIATE_TEST_CASE_P(InitalizationTests, InitFixture, Values(-1, 0, 1, 2, 3));
@@ -114,7 +114,7 @@ class MuxFixture : public WallFixture, public ::testing::WithParamInterface<int>
 };
 TEST_P(MuxFixture, TestMultiplexerSelection)
 {
-    int deviceIndex = GetParam(); 
+    const int deviceIndex = GetParam(); 
     expectMultiplexerSelectsSX1509(deviceIndex);
     wall->setMultiplexerForIOexpander(deviceIndex);
 }
@@ -125,8 +125,8 @@ TEST_P(MuxFixture, TestMultiplexerSelection)
 // but must be assumed to be possible.
 TEST_F(MuxFixture, TestMuxCommunicationFailure)
 {
-    int targetBus = 3;
-    int expectedBusVector = 1 << targetBus;
+    const int targetBus = 3;
+    const int expectedBusVector = 1 << targetBus;
     InSequence mux_bus_selection;
 
     EXPECT_CALL(*i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));

@@ -8,7 +8,7 @@ class SwitchFixture : public WallFixture, public ::testing::WithParamInterface<t
 };
 TEST_P(SwitchFixture, TestReadSwitchOn)
 {
-    toggle_switch toggle = GetParam();
+    const toggle_switch toggle = GetParam();
 
     InSequence is_switch_on;
     expectMultiplexerSelectsSX1509(INPUT_TOGGLE_I2C_DEVICE);
@@ -18,7 +18,7 @@ TEST_P(SwitchFixture, TestReadSwitchOn)
 }
 TEST_P(SwitchFixture, TestReadSwitchOff)
 {
-    toggle_switch toggle = GetParam();
+    const toggle_switch toggle = GetParam();
 
     InSequence is_switch_off;
     expectMultiplexerSelectsSX1509(INPUT_TOGGLE_I2C_DEVICE);
@@ -96,20 +96,20 @@ class PotentiometerFixture : public WallFixture {
 
 TEST_F(PotentiometerFixture, TestReadKnobValue)
 {
-    uint16_t knobPosition = 147;
+    const uint16_t knobPosition = 147;
     InSequence read_knob;
     expectMultiplexerSelectsADS1015(INPUT_ROTARY_POT_I2C_DEVICE);
     EXPECT_ADS1015_ANALOG_READ(INPUT_ROTARY_POT_I2C_DEVICE, INPUT_ROTARY_POT, knobPosition);
     ASSERT_EQ(wall->getKnobPosition(), knobPosition);
 }
+
 // When knob is moved all the way left or right, the contact becomes
 // disengaged from the track, resulting in a maximum value that is not
 // acheivable, even when far right.  If this value is detected, the result
 // must a be safe value that is the extreme value for the left side.
 TEST_F(PotentiometerFixture, TestRejectIllegalKnobLeftValue)
 {
-    uint16_t knobPositionTooFarLeft = MAXIMUM_12BIT_VALUE;
-
+    const uint16_t knobPositionTooFarLeft = MAXIMUM_12BIT_VALUE;
     InSequence read_knob;
     expectMultiplexerSelectsADS1015(INPUT_ROTARY_POT_I2C_DEVICE);
     EXPECT_ADS1015_ANALOG_READ(INPUT_ROTARY_POT_I2C_DEVICE, INPUT_ROTARY_POT, knobPositionTooFarLeft);
@@ -119,7 +119,7 @@ TEST_F(PotentiometerFixture, TestRejectIllegalKnobLeftValue)
 
 TEST_F(PotentiometerFixture, TestReadSliderValue)
 {
-    uint16_t sliderPosition = 926;
+    const uint16_t sliderPosition = 926;
     InSequence read_slider;
     expectMultiplexerSelectsADS1015(INPUT_LINEAR_POT_I2C_DEVICE);
     EXPECT_ADS1015_ANALOG_READ(INPUT_LINEAR_POT_I2C_DEVICE, INPUT_LINEAR_POT, sliderPosition);
@@ -131,8 +131,8 @@ TEST_F(PotentiometerFixture, TestReadSliderValue)
 // must a be safe value that is the extreme vale for the side last observed.
 TEST_F(PotentiometerFixture, TestRejectIllegalSliderLeftValue)
 {
-    uint16_t sliderPositionTooFarLeft = MAXIMUM_12BIT_VALUE;
-    uint16_t sliderPositionSmallLeftValue = 45;
+    const uint16_t sliderPositionSmallLeftValue = 45;
+    const uint16_t sliderPositionTooFarLeft = MAXIMUM_12BIT_VALUE;
 
     InSequence read_slider;
     expectMultiplexerSelectsADS1015(INPUT_LINEAR_POT_I2C_DEVICE);
@@ -146,8 +146,8 @@ TEST_F(PotentiometerFixture, TestRejectIllegalSliderLeftValue)
 }
 TEST_F(PotentiometerFixture, TestRejectIllegalSliderRightValue)
 {
-    uint16_t sliderPositionTooFarRight = MAXIMUM_12BIT_VALUE;
-    uint16_t sliderPositionMostlytoTheRight = 876;
+    const uint16_t sliderPositionMostlytoTheRight = 876;
+    const uint16_t sliderPositionTooFarRight = MAXIMUM_12BIT_VALUE;
 
     InSequence read_slider;
     expectMultiplexerSelectsADS1015(INPUT_LINEAR_POT_I2C_DEVICE);
@@ -165,8 +165,8 @@ class LightSensorFixture : public WallFixture, public ::testing::WithParamInterf
 };
 TEST_P(LightSensorFixture, TestReadBrightnessValue)
 {
-    photo_sensor sensor = GetParam();
-    uint16_t brightness = 133 * sensor;
+    const photo_sensor sensor = GetParam();
+    const uint16_t brightness = 133 * sensor;
 
     InSequence read_photo_sensor;
     expectMultiplexerSelectsADS1015(INPUT_PHOTO_SENSOR_I2C_DEVICE);
@@ -185,8 +185,8 @@ class TouchSensorFixture : public WallFixture, public ::testing::WithParamInterf
 };
 TEST_P(TouchSensorFixture, TestReadTOUCHValue)
 {
-    force_sensor sensor = GetParam();
-    uint16_t force = 186 * sensor;
+    const force_sensor sensor = GetParam();
+    const uint16_t force = 186 * sensor;
 
     InSequence read_force_sensor;
     expectMultiplexerSelectsADS1015(INPUT_FORCE_SENSOR_I2C_DEVICE);
@@ -205,7 +205,7 @@ class ButtonFixture : public WallFixture, public ::testing::WithParamInterface<l
 };
 TEST_P(ButtonFixture, TestButtonDepressed)
 {
-    large_button button = GetParam();
+    const large_button button = GetParam();
 
     InSequence check_button_depressed;
     int device = WallImplementation::buttonDevice(button);
@@ -215,7 +215,7 @@ TEST_P(ButtonFixture, TestButtonDepressed)
 }
 TEST_P(ButtonFixture, TestButtonNotDepressed)
 {
-    large_button button = GetParam();
+    const large_button button = GetParam();
 
     InSequence check_button_depressed;
     int device = WallImplementation::buttonDevice(button);
@@ -225,20 +225,20 @@ TEST_P(ButtonFixture, TestButtonNotDepressed)
 }
 TEST_P(ButtonFixture, TestButtonIlluminated)
 {
-    large_button button = GetParam();
+    const large_button button = GetParam();
+    const int device = WallImplementation::buttonDevice(button);
 
     InSequence illuminate_button;
-    int device = WallImplementation::buttonDevice(button);
     expectMultiplexerSelectsSX1509(device);
     EXPECT_SX1509_DIGITAL_WRITE(device, WallImplementation::buttonLEDpin(button), HIGH);
     wall->illuminateButton(button);
 }
 TEST_P(ButtonFixture, TestButtonDarkened)
 {
-    large_button button = GetParam();
+    const large_button button = GetParam();
+    const int device = WallImplementation::buttonDevice(button);
 
     InSequence darken_button;
-    int device = WallImplementation::buttonDevice(button);
     expectMultiplexerSelectsSX1509(device);
     EXPECT_SX1509_DIGITAL_WRITE(device, WallImplementation::buttonLEDpin(button), LOW);
     wall->extinguishButton(button);

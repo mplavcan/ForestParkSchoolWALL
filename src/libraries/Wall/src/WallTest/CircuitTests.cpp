@@ -12,7 +12,7 @@ protected:
 };
 void CircuitConnectionFixture::expectCircuitIsInput(circuit_end end)
 {
-    int device = WallImplementation::circuitDevice(end);
+    const int device = WallImplementation::circuitDevice(end);
 
     InSequence set_to_input;
     expectMultiplexerSelectsSX1509(device);
@@ -20,8 +20,8 @@ void CircuitConnectionFixture::expectCircuitIsInput(circuit_end end)
 }
 void CircuitConnectionFixture::expectCircuitIsOutput(circuit_end end)
 {
-    int device = WallImplementation::circuitDevice(end);
-    int pin = WallImplementation::circuitPin(end);
+    const int device = WallImplementation::circuitDevice(end);
+    const int pin = WallImplementation::circuitPin(end);
 
     InSequence set_to_output;
     expectMultiplexerSelectsSX1509(device);
@@ -31,43 +31,43 @@ void CircuitConnectionFixture::expectCircuitIsOutput(circuit_end end)
 
 TEST_P(CircuitConnectionFixture, TestCircuitIdle)
 {
-    circuit_end end = GetParam();
+    const circuit_end end = GetParam();
  
     InSequence read_connection_value;
-    int device = WallImplementation::circuitDevice(end);
+    const int device = WallImplementation::circuitDevice(end);
     expectMultiplexerSelectsSX1509(device);
     EXPECT_SX1509_DIGITAL_READ(device, WallImplementation::circuitPin(end), HIGH);
     ASSERT_EQ(wall->readCircuitState(end), HIGH);
 }
 TEST_P(CircuitConnectionFixture, TestCircuitEnergized)
 {
-    circuit_end end = GetParam();
+    const circuit_end end = GetParam();
 
     InSequence read_connection_value;
-    int device = WallImplementation::circuitDevice(end);
+    const int device = WallImplementation::circuitDevice(end);
     expectMultiplexerSelectsSX1509(device);
     EXPECT_SX1509_DIGITAL_READ(device, WallImplementation::circuitPin(end), LOW);
     ASSERT_EQ(wall->readCircuitState(end), LOW);
 }
 TEST_P(CircuitConnectionFixture, TestCircuitInput)
 {
-    circuit_end end = GetParam();
+    const circuit_end end = GetParam();
     expectCircuitIsInput(end);
     wall->setCircuitAsInput(end);
 }
 TEST_P(CircuitConnectionFixture, TestCircuitOutput)
 {
-    circuit_end end = GetParam();
+    const circuit_end end = GetParam();
     expectCircuitIsOutput(end);
     wall->setCircuitAsOutput(end);
 }
 TEST_F(CircuitConnectionFixture, TestCircuitsConnected)
 {
-    circuit_end sink = CIRCUIT_BLUE_MOTOR_LEFT;
-    circuit_end source = CIRCUIT_NEGATIVE_POLE;
+    const circuit_end sink = CIRCUIT_BLUE_MOTOR_LEFT;
+    const circuit_end source = CIRCUIT_NEGATIVE_POLE;
 
     InSequence check_connection;
-    int sink_device = WallImplementation::circuitDevice(sink);
+    const int sink_device = WallImplementation::circuitDevice(sink);
     
     expectCircuitIsOutput(source);
     expectMultiplexerSelectsSX1509(sink_device);
@@ -78,11 +78,11 @@ TEST_F(CircuitConnectionFixture, TestCircuitsConnected)
 }
 TEST_F(CircuitConnectionFixture, TestCircuitsNotConnected)
 {
-    circuit_end sink = CIRCUIT_JOYSTICK_LEFT;
-    circuit_end source = CIRCUIT_POSITIVE_POLE;
+    const circuit_end sink = CIRCUIT_JOYSTICK_LEFT;
+    const circuit_end source = CIRCUIT_POSITIVE_POLE;
 
     InSequence check_connection;
-    int sink_device = WallImplementation::circuitDevice(sink);
+    const int sink_device = WallImplementation::circuitDevice(sink);
 
     expectCircuitIsOutput(source);
     expectMultiplexerSelectsSX1509(sink_device);

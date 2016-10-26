@@ -10,8 +10,8 @@ class LEDHighFixture : public WallFixture,
 };
 TEST_P(LEDHighFixture, TurnOnLEDArray)
 {
-    led_array array = get<0>(GetParam());
-    led_section section = get<1>(GetParam());
+    const led_array array = get<0>(GetParam());
+    const led_section section = get<1>(GetParam());
 
     InSequence led_on;
     expectMultiplexerSelectsSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE);
@@ -21,8 +21,8 @@ TEST_P(LEDHighFixture, TurnOnLEDArray)
 }
 TEST_P(LEDHighFixture, TurnOffLEDArray)
 {
-    led_array array = get<0>(GetParam());
-    led_section section = get<1>(GetParam());
+    const led_array array = get<0>(GetParam());
+    const led_section section = get<1>(GetParam());
 
     InSequence led_off;
     expectMultiplexerSelectsSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE);
@@ -44,8 +44,8 @@ class LEDLowFixture : public WallFixture,
 };
 TEST_P(LEDLowFixture, TurnOnLEDArray)
 {
-    led_array array = get<0>(GetParam());
-    led_section section = get<1>(GetParam());
+    const led_array array = get<0>(GetParam());
+    const led_section section = get<1>(GetParam());
 
     InSequence led_on;
     expectMultiplexerSelectsSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE);
@@ -55,8 +55,8 @@ TEST_P(LEDLowFixture, TurnOnLEDArray)
 }
 TEST_P(LEDLowFixture, TurnOffLEDArray)
 {
-    led_array array = get<0>(GetParam());
-    led_section section = get<1>(GetParam());
+    const led_array array = get<0>(GetParam());
+    const led_section section = get<1>(GetParam());
 
     InSequence led_off;
     expectMultiplexerSelectsSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE);
@@ -77,8 +77,8 @@ class MotorFixture : public WallFixture, public ::testing::WithParamInterface<wa
 };
 TEST_P(MotorFixture, TestRunMotorClockwise)
 {
-    wall_motor motor = GetParam();
-    int speed = 247;
+    const wall_motor motor = GetParam();
+    const uint8_t speed = 247;
 
     InSequence run_motor;
     expectMultiplexerSelectsSX1509(OUTPUT_MOTOR_I2C_DEVICE);
@@ -95,8 +95,8 @@ TEST_P(MotorFixture, TestRunMotorClockwise)
 }
 TEST_P(MotorFixture, TestRunMotorCounterClockwise)
 {
-    wall_motor motor = GetParam();
-    int speed = 522;
+    const wall_motor motor = GetParam();
+    const uint8_t speed = 122;
 
     InSequence run_motor;
     expectMultiplexerSelectsSX1509(OUTPUT_MOTOR_I2C_DEVICE);
@@ -113,7 +113,7 @@ TEST_P(MotorFixture, TestRunMotorCounterClockwise)
 }
 TEST_P(MotorFixture, TestStopMotor)
 {
-    wall_motor motor = GetParam();
+    const wall_motor motor = GetParam();
 
     InSequence stop_motor;
     expectMultiplexerSelectsSX1509(OUTPUT_MOTOR_I2C_DEVICE);
@@ -154,7 +154,7 @@ class WireFixture : public WallFixture, public ::testing::WithParamInterface<EL_
 };
 TEST_P(WireFixture, TestWireIlluminated)
 {
-    EL_wire line = GetParam();
+    const EL_wire line = GetParam();
 
     InSequence illuminate_wire;
     EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(line), HIGH));
@@ -162,7 +162,7 @@ TEST_P(WireFixture, TestWireIlluminated)
 }
 TEST_P(WireFixture, TestWireDarkened)
 {
-    EL_wire line = GetParam();
+    const EL_wire line = GetParam();
 
     InSequence illuminate_wire;
     EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(line), LOW));
@@ -184,8 +184,8 @@ INSTANTIATE_TEST_CASE_P(WireTests, WireFixture, Values(
 class DisplayFixture : public WallFixture {};
 TEST_F(DisplayFixture, TestLCDprintAtLocation)
 {
-    int row = 1;
-    int col = 0;
+    const int row = 1;
+    const int col = 0;
     char string[] = "Hello World!";
     expectMultiplexerSelectedBus(GROVE_LCD_I2C_BUS);
     EXPECT_CALL(*io->accessMockLCD(), setCursor(col, row));
@@ -196,9 +196,9 @@ TEST_F(DisplayFixture, TestLCDprintAtLocation)
 
 TEST_F(DisplayFixture, TestSetLCDbackgroundColor)
 {
-    int red = 145;
-    int green = 35;
-    int blue = 227;
+    const int red = 145;
+    const int green = 35;
+    const int blue = 227;
     expectMultiplexerSelectedBus(GROVE_LCD_I2C_BUS);
     EXPECT_CALL(*io->accessMockLCD(), clear());
     
@@ -207,9 +207,9 @@ TEST_F(DisplayFixture, TestSetLCDbackgroundColor)
 
 TEST_F(DisplayFixture, TestSetBackgroundColor)
 {
-    int red = 145;
-    int green = 35;
-    int blue = 227;
+    const int red = 145;
+    const int green = 35;
+    const int blue = 227;
     expectMultiplexerSelectedBus(GROVE_LCD_I2C_BUS);
     EXPECT_CALL(*io->accessMockLCD(), setRGB(red, green, blue));
 

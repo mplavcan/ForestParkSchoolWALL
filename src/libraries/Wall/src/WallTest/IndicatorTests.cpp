@@ -8,7 +8,7 @@ class IndicatorFixture : public WallFixture, public ::testing::WithParamInterfac
 };
 TEST_P(IndicatorFixture, TestTurnOnIndicator)
 {
-    indicator_led lamp = GetParam();
+    const indicator_led lamp = GetParam();
 
     InSequence lamp_on;
     expectMultiplexerSelectedBus(ADAFRUIT_PWM_I2C_BUS);
@@ -17,7 +17,7 @@ TEST_P(IndicatorFixture, TestTurnOnIndicator)
 }
 TEST_P(IndicatorFixture, TestTurnOffIndicator)
 {
-    indicator_led lamp = GetParam();
+    const indicator_led lamp = GetParam();
 
     InSequence lamp_off;
     expectMultiplexerSelectsSX1509(ADAFRUIT_PWM_I2C_BUS);
@@ -26,7 +26,7 @@ TEST_P(IndicatorFixture, TestTurnOffIndicator)
 }
 TEST_P(IndicatorFixture, TestSetIndicatorBrighness)
 {
-    indicator_led lamp = GetParam();
+    const indicator_led lamp = GetParam();
     unsigned int brightness = 1392;
 
     InSequence lamp_bright;

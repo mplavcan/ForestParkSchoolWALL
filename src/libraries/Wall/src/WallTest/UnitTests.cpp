@@ -14,7 +14,7 @@ void WallFixture::expectMultiplexerSelectsADS1015(int device)
 }
 void WallFixture::expectMultiplexerSelectedBus(int bus)
 {
-    int expectedBusVector = 1 << bus;
+    const int expectedBusVector = 1 << bus;
     InSequence mux_bus_selection;
     EXPECT_CALL(*i2c, beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS));
     EXPECT_CALL(*i2c, write(expectedBusVector));
