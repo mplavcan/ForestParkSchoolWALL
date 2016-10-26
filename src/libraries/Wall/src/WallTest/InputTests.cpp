@@ -108,7 +108,7 @@ TEST_F(PotentiometerFixture, TestReadKnobValue)
 // must a be safe value that is the extreme value for the left side.
 TEST_F(PotentiometerFixture, TestRejectIllegalKnobLeftValue)
 {
-    uint16_t knobPositionTooFarLeft = 4095;
+    uint16_t knobPositionTooFarLeft = MAXIMUM_12BIT_VALUE;
 
     InSequence read_knob;
     expectMultiplexerSelectsADS1015(INPUT_ROTARY_POT_I2C_DEVICE);
@@ -131,7 +131,7 @@ TEST_F(PotentiometerFixture, TestReadSliderValue)
 // must a be safe value that is the extreme vale for the side last observed.
 TEST_F(PotentiometerFixture, TestRejectIllegalSliderLeftValue)
 {
-    uint16_t sliderPositionTooFarLeft = 4095;
+    uint16_t sliderPositionTooFarLeft = MAXIMUM_12BIT_VALUE;
     uint16_t sliderPositionSmallLeftValue = 45;
 
     InSequence read_slider;
@@ -146,7 +146,7 @@ TEST_F(PotentiometerFixture, TestRejectIllegalSliderLeftValue)
 }
 TEST_F(PotentiometerFixture, TestRejectIllegalSliderRightValue)
 {
-    uint16_t sliderPositionTooFarRight = 4095;
+    uint16_t sliderPositionTooFarRight = MAXIMUM_12BIT_VALUE;
     uint16_t sliderPositionMostlytoTheRight = 876;
 
     InSequence read_slider;
