@@ -163,11 +163,11 @@ void loop() {
     printJoystickDirection();
 
     int16_t slider = wall->getSliderPosition();
-    Serial.print("WHY IS THIS NOT THE SLIDER: "); Serial.println(slider);
+    Serial.print("Slider: "); Serial.println(slider);
     ControlMotor(ORANGE_MOTOR, slider);
 
     int16_t knob = wall->getKnobPosition();
-    Serial.print("KNOB: "); Serial.println(knob);
+    Serial.print("Knob: "); Serial.println(knob);
     wall->stopMotor(BLUE_MOTOR);
     //ControlMotor(BLUE_MOTOR, knob);
 

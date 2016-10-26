@@ -365,7 +365,7 @@ bool WallImplementation::isJoystickRight(void)
 // To normalize reverse the value by subtracting from maxmium 12-bit value (4095)
 uint16_t WallImplementation::normalizedKnobValue(uint16_t rawKnobValue)
 {
-    return INPUT_ROTARY_POT_LEFT_LIMIT - rawKnobValue;
+    return (rawKnobValue > INPUT_ROTARY_POT_RIGHT_LIMIT) ? INPUT_ROTARY_POT_LEFT_LIMIT : rawKnobValue;
 }
 
 uint16_t WallImplementation::getKnobPosition(void)
@@ -375,21 +375,28 @@ uint16_t WallImplementation::getKnobPosition(void)
         readADC_SingleEnded(INPUT_ROTARY_POT));
 }
 
-// When slider is moved all the way left, the contact becomes disengaged from
-// the track, resulting in a maximum value that is not acheivable, even when
-// far right.  If this value is detected, the result must a be safe value 
-// that appears to be far left.
+// When slider is moved all the way left or right, the contact becomes
+// disengaged from the track, resulting in a maximum value that is not
+// acheivable, even when far right.  If this value is detected, the result
+// must a be safe value that is the extreme vale for the side last observed.
 uint16_t WallImplementation::normalizedSliderValue(uint16_t rawSliderValue)
 {
+    uint16_t middlePosition = ((INPUT_LINEAR_POT_LEFT_LIMIT+ INPUT_LINEAR_POT_RIGHT_LIMIT)/2);
+    uint16_t extremePosition = (this->lastSliderPosition < middlePosition) ?
+        INPUT_LINEAR_POT_LEFT_LIMIT :
+        INPUT_LINEAR_POT_RIGHT_LIMIT;
+
     return (rawSliderValue > INPUT_LINEAR_POT_RIGHT_LIMIT) ? 
-        INPUT_LINEAR_POT_LEFT_LIMIT : rawSliderValue;
+        extremePosition : rawSliderValue;
 }
 
 uint16_t WallImplementation::getSliderPosition(void)
 {
     setMultiplexerForAnalog(INPUT_LINEAR_POT_I2C_DEVICE);
-    return normalizedSliderValue(analog_expander[INPUT_LINEAR_POT_I2C_DEVICE]->
+    uint16_t sliderPosition = normalizedSliderValue(analog_expander[INPUT_LINEAR_POT_I2C_DEVICE]->
         readADC_SingleEnded(INPUT_LINEAR_POT));
+    this->lastSliderPosition = sliderPosition;
+    return sliderPosition;
 }
 
 int WallImplementation::photoSensorPin(photo_sensor sensor)

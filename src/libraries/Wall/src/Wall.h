@@ -149,7 +149,7 @@ public:
     static const int analogDeviceBus[NUMBER_OF_ADS1015_DEVICES];
 
     static uint16_t normalizedKnobValue(uint16_t sliderValue);
-    static uint16_t normalizedSliderValue(uint16_t sliderValue);
+    uint16_t normalizedSliderValue(uint16_t sliderValue);
 
     static int motorControlPin1(wall_motor motor);
     static int motorControlPin2(wall_motor motor);
@@ -174,6 +174,8 @@ private:
     Adafruit_PWMServoDriver *pwm;
     rgb_lcd *lcd;
 
+    uint16_t lastSliderPosition;
+    
     int writeMultiplexerForBus(int bus);
     bool ledArrayIsActiveLow(led_array array);
 };

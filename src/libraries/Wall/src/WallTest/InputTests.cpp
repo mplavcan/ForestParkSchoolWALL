@@ -93,17 +93,30 @@ TEST_F(JoystickFixture, TestReadJoystickIsNotRight)
 
 class PotentiometerFixture : public WallFixture {
 };
-// Knob is wired to return high values to the left, low values to the right.
-// To normalize reverse the value by subtracting from maxmium 12-bit value (4095)
+
 TEST_F(PotentiometerFixture, TestReadKnobValue)
 {
     uint16_t knobPosition = 147;
-    uint16_t knobReturnValue = INPUT_ROTARY_POT_LEFT_LIMIT - knobPosition;
     InSequence read_knob;
     expectMultiplexerSelectsADS1015(INPUT_ROTARY_POT_I2C_DEVICE);
     EXPECT_ADS1015_ANALOG_READ(INPUT_ROTARY_POT_I2C_DEVICE, INPUT_ROTARY_POT, knobPosition);
-    ASSERT_EQ(wall->getKnobPosition(), knobReturnValue);
+    ASSERT_EQ(wall->getKnobPosition(), knobPosition);
 }
+// When knob is moved all the way left or right, the contact becomes
+// disengaged from the track, resulting in a maximum value that is not
+// acheivable, even when far right.  If this value is detected, the result
+// must a be safe value that is the extreme value for the left side.
+TEST_F(PotentiometerFixture, TestRejectIllegalKnobLeftValue)
+{
+    uint16_t knobPositionTooFarLeft = 4095;
+
+    InSequence read_knob;
+    expectMultiplexerSelectsADS1015(INPUT_ROTARY_POT_I2C_DEVICE);
+    EXPECT_ADS1015_ANALOG_READ(INPUT_ROTARY_POT_I2C_DEVICE, INPUT_ROTARY_POT, knobPositionTooFarLeft);
+
+    ASSERT_EQ(wall->getKnobPosition(), INPUT_ROTARY_POT_LEFT_LIMIT);
+}
+
 TEST_F(PotentiometerFixture, TestReadSliderValue)
 {
     uint16_t sliderPosition = 926;
@@ -112,18 +125,39 @@ TEST_F(PotentiometerFixture, TestReadSliderValue)
     EXPECT_ADS1015_ANALOG_READ(INPUT_LINEAR_POT_I2C_DEVICE, INPUT_LINEAR_POT, sliderPosition);
     ASSERT_EQ(wall->getSliderPosition(), sliderPosition);
 }
-// When slider is moved all the way left, the contact becomes diengaged from
-// the track, resulting in a maximum value that is not acheivable, even when
-// far right.  If this value is detected, the result must a be safe value 
-// that appears to be far left.
-TEST_F(PotentiometerFixture, TestRejectIllegalSliderValue)
+// When slider is moved all the way left or right, the contact becomes
+// disengaged from the track, resulting in a maximum value that is not
+// acheivable, even when far right.  If this value is detected, the result
+// must a be safe value that is the extreme vale for the side last observed.
+TEST_F(PotentiometerFixture, TestRejectIllegalSliderLeftValue)
 {
     uint16_t sliderPositionTooFarLeft = 4095;
-    uint16_t sliderPositionSafeLeftValue = 0;
+    uint16_t sliderPositionSmallLeftValue = 45;
+
     InSequence read_slider;
     expectMultiplexerSelectsADS1015(INPUT_LINEAR_POT_I2C_DEVICE);
+    EXPECT_ADS1015_ANALOG_READ(INPUT_LINEAR_POT_I2C_DEVICE, INPUT_LINEAR_POT, sliderPositionSmallLeftValue);
+
+    expectMultiplexerSelectsADS1015(INPUT_LINEAR_POT_I2C_DEVICE);
     EXPECT_ADS1015_ANALOG_READ(INPUT_LINEAR_POT_I2C_DEVICE, INPUT_LINEAR_POT, sliderPositionTooFarLeft);
-    ASSERT_EQ(wall->getSliderPosition(), sliderPositionSafeLeftValue);
+
+    wall->getSliderPosition();
+    ASSERT_EQ(wall->getSliderPosition(), INPUT_LINEAR_POT_LEFT_LIMIT);
+}
+TEST_F(PotentiometerFixture, TestRejectIllegalSliderRightValue)
+{
+    uint16_t sliderPositionTooFarRight = 4095;
+    uint16_t sliderPositionMostlytoTheRight = 876;
+
+    InSequence read_slider;
+    expectMultiplexerSelectsADS1015(INPUT_LINEAR_POT_I2C_DEVICE);
+    EXPECT_ADS1015_ANALOG_READ(INPUT_LINEAR_POT_I2C_DEVICE, INPUT_LINEAR_POT, sliderPositionMostlytoTheRight);
+
+    expectMultiplexerSelectsADS1015(INPUT_LINEAR_POT_I2C_DEVICE);
+    EXPECT_ADS1015_ANALOG_READ(INPUT_LINEAR_POT_I2C_DEVICE, INPUT_LINEAR_POT, sliderPositionTooFarRight);
+
+    wall->getSliderPosition();
+    ASSERT_EQ(wall->getSliderPosition(), INPUT_LINEAR_POT_RIGHT_LIMIT);
 }
 
 
