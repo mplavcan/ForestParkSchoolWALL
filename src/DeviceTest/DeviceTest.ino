@@ -25,6 +25,9 @@ void setup() {
     wall->lcdPrintAt(0, 0, "Wall Interface");
     wall->lcdPrintAt(0, 1, "Device Test");
     wall->setCircuitAsOutput(CIRCUIT_POSITIVE_POLE);
+    wall->setCircuitAsOutput(CIRCUIT_NEGATIVE_POLE);
+    wall->turnIndicatorOn(Wall::indicatorForCircuit(CIRCUIT_POSITIVE_POLE));
+    wall->turnIndicatorOn(Wall::indicatorForCircuit(CIRCUIT_NEGATIVE_POLE));
 }
 
 
@@ -100,7 +103,7 @@ void turnOffAllLights()
     wall->extinguishELWire(WHITE_WIRE);
     wall->extinguishELWire(BLUE_WIRE_ONE);
     wall->extinguishELWire(BLUE_WIRE_TWO);
-    for (int lamp = INDICATE_WHITE_LED; lamp <= INDICATE_POSITIVE_POLE; lamp++)
+    for (int lamp = INDICATE_WHITE_LED; lamp <= CIRCUIT_RED_LED_RIGHT; lamp++)
         wall->turnIndicatorOff(static_cast<indicator_led>(lamp));
 }
 
@@ -132,8 +135,7 @@ void turnOnSelectiveLight(int choice)
 void indicateCircuitState(circuit_end point)
 {
     indicator_led lamp = Wall::indicatorForCircuit(point);
-    if (point != CIRCUIT_POSITIVE_POLE &&
-        (wall->readCircuitState(point) == LOW))
+    if (wall->readCircuitState(point) == LOW)
     {
         Serial.println(String(point) + " triggered");
         wall->turnIndicatorOn(lamp);
@@ -171,7 +173,7 @@ void loop() {
     wall->stopMotor(BLUE_MOTOR);
     //ControlMotor(BLUE_MOTOR, knob);
 
-    for (int grid = CIRCUIT_KNOB_LEFT; grid <= CIRCUIT_NEGATIVE_POLE; grid++)
+    for (int grid = CIRCUIT_KNOB_LEFT; grid <= CIRCUIT_RED_LED_RIGHT; grid++)
         indicateCircuitState(static_cast<circuit_end>(grid));
  
     if (counter == 0)
