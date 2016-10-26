@@ -96,7 +96,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties arduino.build.auto_discover_includes="0" />
+      <UserProperties arduino.build.auto_discover_includes="0" arduino.upload.port="COM4" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

@@ -24,6 +24,7 @@ void setup() {
     wall->lcdSetBacklightColor(140, 220, 10);
     wall->lcdPrintAt(0, 0, "Wall Interface");
     wall->lcdPrintAt(0, 1, "Device Test");
+    wall->setCircuitAsOutput(CIRCUIT_POSITIVE_POLE);
 }
 
 
@@ -40,29 +41,33 @@ void lightButtonIfPressed(large_button color)
     }
 }
 
+
 void printPhotoValues(photo_sensor sensor)
 {
     int16_t value = wall->getPhotoSensorValue(sensor);
-    Serial.print(String(sensor) + ": "); Serial.println(value);
+    String sensorName[3] = { "LEFT_PHOTO", "CENTER_PHOTO", "RIGHT_PHOTO" };
+    Serial.print(sensorName[sensor] + ": "); Serial.println(value);
 }
 
 void printTouchValues(force_sensor sensor)
 {
     int16_t value = wall->getTouchSensorValue(sensor);
-    Serial.print(String(sensor) + ": "); Serial.println(value);
+    String sensorName[3] = { "LEFT_TOUCH", "BOTTOM_TOUCH", "RIGHT_TOUCH" };
+    Serial.print(sensorName[sensor] + ": "); Serial.println(value);
 }
 
 void printToggleState(toggle_switch toggle)
 {
     String state = wall->isToggleOn(toggle) ? "ON" : "OFF";
-    Serial.print(String(toggle) + ": "+ state) ;
+    String toggleName[3] = { "LEFT_TOGGLE", "CENTER_TOGGLE", "RIGHT_TOGGLE" };
+    Serial.println(toggleName[toggle] + ": "+ state) ;
 }
 
 
 void printJoystickDirection()
 {
-    if (wall->isJoystickUp()) Serial.println("Joystick Down");
-    if (wall->isJoystickDown()) Serial.println("Joystick Up");
+    if (wall->isJoystickUp()) Serial.println("Joystick Up");
+    if (wall->isJoystickDown()) Serial.println("Joystick Down");
     if (wall->isJoystickLeft()) Serial.println("Joystick Left");
     if (wall->isJoystickRight()) Serial.println("Joystick Rright");
 }
@@ -70,9 +75,10 @@ void printJoystickDirection()
 void ControlMotor(wall_motor motor, int16_t controlValue)
 {
     const int THRESHOLD = 512;
-    if (controlValue > THRESHOLD) wall->setMotorDirectionClockwise(motor);
-    if (controlValue < THRESHOLD) wall->setMotorDirectionCounterClockwise(motor);
-    if (controlValue == THRESHOLD) wall->stopMotor(motor);
+    const int DEADZONE = 25;
+    if (controlValue > THRESHOLD + DEADZONE) wall->setMotorDirectionClockwise(motor);
+    else if (controlValue < THRESHOLD - DEADZONE) wall->setMotorDirectionCounterClockwise(motor);
+    else wall->stopMotor(motor);
     wall->setMotorSpeed(motor, controlValue >> 5);
 }
 
@@ -86,14 +92,14 @@ void turnOffAllLights()
     wall->turnOffLEDarray(RED_LED, RIGHT_SIDE);
     wall->turnOffLEDarray(RED_LED, LOWER_LEFT_SIDE);
     wall->turnOffLEDarray(RED_LED, LOWER_RIGHT_SIDE);
-    wall->illuminateELWire(RED_WIRE_ONE);
-    wall->illuminateELWire(RED_WIRE_TWO);
-    wall->illuminateELWire(GREEN_WIRE_ONE);
-    wall->illuminateELWire(GREEN_WIRE_TWO);
-    wall->illuminateELWire(YELLOW_WIRE);
-    wall->illuminateELWire(WHITE_WIRE);
-    wall->illuminateELWire(BLUE_WIRE_ONE);
-    wall->illuminateELWire(BLUE_WIRE_TWO);
+    wall->extinguishELWire(RED_WIRE_ONE);
+    wall->extinguishELWire(RED_WIRE_TWO);
+    wall->extinguishELWire(GREEN_WIRE_ONE);
+    wall->extinguishELWire(GREEN_WIRE_TWO);
+    wall->extinguishELWire(YELLOW_WIRE);
+    wall->extinguishELWire(WHITE_WIRE);
+    wall->extinguishELWire(BLUE_WIRE_ONE);
+    wall->extinguishELWire(BLUE_WIRE_TWO);
     for (int lamp = INDICATE_WHITE_LED; lamp <= INDICATE_POSITIVE_POLE; lamp++)
         wall->turnIndicatorOff(static_cast<indicator_led>(lamp));
 }
@@ -126,7 +132,8 @@ void turnOnSelectiveLight(int choice)
 void indicateCircuitState(circuit_end point)
 {
     indicator_led lamp = Wall::indicatorForCircuit(point);
-    if (wall->readCircuitState(point) == LOW)
+    if (point != CIRCUIT_POSITIVE_POLE &&
+        (wall->readCircuitState(point) == LOW))
     {
         Serial.println(String(point) + " triggered");
         wall->turnIndicatorOn(lamp);
@@ -156,12 +163,13 @@ void loop() {
     printJoystickDirection();
 
     int16_t slider = wall->getSliderPosition();
-    Serial.print("SLIDER: "); Serial.println(slider);
+    Serial.print("WHY IS THIS NOT THE SLIDER: "); Serial.println(slider);
     ControlMotor(ORANGE_MOTOR, slider);
 
     int16_t knob = wall->getKnobPosition();
     Serial.print("KNOB: "); Serial.println(knob);
-    ControlMotor(BLUE_MOTOR, knob);
+    wall->stopMotor(BLUE_MOTOR);
+    //ControlMotor(BLUE_MOTOR, knob);
 
     for (int grid = CIRCUIT_KNOB_LEFT; grid <= CIRCUIT_NEGATIVE_POLE; grid++)
         indicateCircuitState(static_cast<circuit_end>(grid));
