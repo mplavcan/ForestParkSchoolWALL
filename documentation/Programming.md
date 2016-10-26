@@ -19,5 +19,13 @@ While the stock Arduino IDE can be used, the code in this repository was develop
 * [Jetbrains Resharper C++](https://www.jetbrains.com/resharper-cpp/)
 
 
+Repository Setup
+----------------
+The tests also use the [Arduino-mock library](https://github.com/balp/arduino-mock), which is installed as a Git sub-repository in this repo.  To install it, perform these steps after cloning:
+
+```
+   git submodule init
+   git submodule update
+```
 
 
