@@ -233,14 +233,14 @@ int WallImplementation::ledArrayPin(led_array array, led_section section)
 
 void WallImplementation::turnOnLEDarray(led_array array, led_section section)
 {
-    int pinValue = ledArrayIsActiveLow(array) ? LOW : HIGH;
+    const int pinValue = ledArrayIsActiveLow(array) ? LOW : HIGH;
     setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
     io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->digitalWrite(
         WallImplementation::ledArrayPin(array, section), pinValue);
 }
 void WallImplementation::turnOffLEDarray(led_array array, led_section section)
 {
-    int pinValue = ledArrayIsActiveLow(array) ? HIGH : LOW;
+    const int pinValue = ledArrayIsActiveLow(array) ? HIGH : LOW;
     setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
     io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->digitalWrite(
         WallImplementation::ledArrayPin(array, section), pinValue);
@@ -361,8 +361,10 @@ bool WallImplementation::isJoystickRight(void)
     return (io_expander[INPUT_JOYSTICK_I2C_DEVICE]->digitalRead(INPUT_JOYSTICK_RIGHT) == LOW);
 }
 
-// Knob is wired to return high values to the left, low values to the right.
-// To normalize reverse the value by subtracting from maxmium 12-bit value (4095)
+// When knob is moved all the way left or right, the contact becomes
+// disengaged from the track, resulting in a maximum value that is not
+// acheivable, even when far right.  If this value is detected, the result
+// must a be safe value that is the extreme value for the left side.
 uint16_t WallImplementation::normalizedKnobValue(uint16_t rawKnobValue)
 {
     return (rawKnobValue > INPUT_ROTARY_POT_RIGHT_LIMIT) ? INPUT_ROTARY_POT_LEFT_LIMIT : rawKnobValue;
@@ -378,14 +380,12 @@ uint16_t WallImplementation::getKnobPosition(void)
 // When slider is moved all the way left or right, the contact becomes
 // disengaged from the track, resulting in a maximum value that is not
 // acheivable, even when far right.  If this value is detected, the result
-// must a be safe value that is the extreme vale for the side last observed.
+// must a be safe value that is the extreme value for the side last observed.
 uint16_t WallImplementation::normalizedSliderValue(uint16_t rawSliderValue)
 {
-    uint16_t middlePosition = ((INPUT_LINEAR_POT_LEFT_LIMIT+ INPUT_LINEAR_POT_RIGHT_LIMIT)/2);
-    uint16_t extremePosition = (this->lastSliderPosition < middlePosition) ?
+    const uint16_t extremePosition = (this->lastSliderPosition < INPUT_LINEAR_POT_MIDDLE_POSITION) ?
         INPUT_LINEAR_POT_LEFT_LIMIT :
         INPUT_LINEAR_POT_RIGHT_LIMIT;
-
     return (rawSliderValue > INPUT_LINEAR_POT_RIGHT_LIMIT) ? 
         extremePosition : rawSliderValue;
 }
@@ -393,10 +393,9 @@ uint16_t WallImplementation::normalizedSliderValue(uint16_t rawSliderValue)
 uint16_t WallImplementation::getSliderPosition(void)
 {
     setMultiplexerForAnalog(INPUT_LINEAR_POT_I2C_DEVICE);
-    uint16_t sliderPosition = normalizedSliderValue(analog_expander[INPUT_LINEAR_POT_I2C_DEVICE]->
+    this->lastSliderPosition = normalizedSliderValue(analog_expander[INPUT_LINEAR_POT_I2C_DEVICE]->
         readADC_SingleEnded(INPUT_LINEAR_POT));
-    this->lastSliderPosition = sliderPosition;
-    return sliderPosition;
+    return this->lastSliderPosition;
 }
 
 int WallImplementation::photoSensorPin(photo_sensor sensor)
@@ -502,20 +501,20 @@ int WallImplementation::circuitPin(circuit_end end)
 
 int WallImplementation::readCircuitState(circuit_end end)
 {
-    int device = circuitDevice(end);
+    const int device = circuitDevice(end);
     setMultiplexerForIOexpander(device);
     return io_expander[device]->digitalRead(circuitPin(end));
 }
 
 void WallImplementation::setCircuitAsInput(circuit_end end)
 {
-    int device = circuitDevice(end);
+    const int device = circuitDevice(end);
     setMultiplexerForIOexpander(device);
     io_expander[device]->pinMode(circuitPin(end), INPUT_PULLUP);
 }
 void WallImplementation::setCircuitAsOutput(circuit_end end)
 {
-    int device = circuitDevice(end);
+    const int device = circuitDevice(end);
     setMultiplexerForIOexpander(device);
     io_expander[device]->pinMode(circuitPin(end), OUTPUT);
     io_expander[device]->digitalWrite(circuitPin(end), LOW);
@@ -606,19 +605,19 @@ int WallImplementation::buttonLEDpin(large_button button)
 }
 bool WallImplementation::isButtonDepressed(large_button button)
 {
-    int device = buttonDevice(button);
+    const int device = buttonDevice(button);
     setMultiplexerForIOexpander(device);
     return (io_expander[device]->digitalRead(buttonPin(button)) == LOW);
 }
 void WallImplementation::illuminateButton(large_button button)
 {
-    int device = buttonDevice(button);
+    const int device = buttonDevice(button);
     setMultiplexerForIOexpander(device);
     io_expander[device]->digitalWrite(buttonLEDpin(button), HIGH);
 }
 void WallImplementation::extinguishButton(large_button button)
 {
-    int device = buttonDevice(button);
+    const int device = buttonDevice(button);
     setMultiplexerForIOexpander(device);
     io_expander[device]->digitalWrite(buttonLEDpin(button), LOW);
 }
@@ -672,6 +671,3 @@ void WallImplementation::clearLCDscreen(void)
     setMultiplexerI2CBus(GROVE_LCD_I2C_BUS);
     lcd->clear();
 }
-
-
-
