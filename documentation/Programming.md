@@ -8,7 +8,7 @@ The Wall is powered by a single [Intel Arduino 101 "Curie"](https://www.arduino.
 * [Sparkfun SX1509 IO Expander](https://github.com/sparkfun/SparkFun_SX1509_Arduino_Library)
 * [Adafruit ADS1X15](https://github.com/nipoutch/Adafruit_ADS1015)
 * [Adafruit PWM Servo Driver Library](https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library)
-* [Seeedstudio Grove I2C](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight)
+* [Seeedstudio Grove I2C RGB Backlit LCD](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight)
 
 Toolchain
 ---------
