@@ -120,12 +120,12 @@
 
 // Motor controller outputs
 #define OUTPUT_MOTOR_I2C_DEVICE        FIRST_SX1509_INDEX
-#define OUTPUT_MOTOR1_PWM               8  
-#define OUTPUT_MOTOR1_IN1              10 
-#define OUTPUT_MOTOR1_IN2               9
-#define OUTPUT_MOTOR2_PWM              13
-#define OUTPUT_MOTOR2_IN1              11
-#define OUTPUT_MOTOR2_IN2              12
+#define OUTPUT_MOTOR2_PWM               8  
+#define OUTPUT_MOTOR2_IN1              10 
+#define OUTPUT_MOTOR2_IN2               9
+#define OUTPUT_MOTOR1_PWM              13
+#define OUTPUT_MOTOR1_IN1              11
+#define OUTPUT_MOTOR1_IN2              12
 
 // LED array output array outputs
 #define OUTPUT_LED_ARRAY_I2C_DEVICE    SECOND_SX1509_INDEX

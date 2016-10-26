@@ -248,15 +248,15 @@ void WallImplementation::turnOffLEDarray(led_array array, led_section section)
 
 int WallImplementation::motorControlPin1(wall_motor motor)
 {
-    return (motor == BLUE_MOTOR) ? OUTPUT_MOTOR1_IN1 : OUTPUT_MOTOR2_IN1;
+    return (motor == BLUE_MOTOR) ? OUTPUT_MOTOR2_IN1 : OUTPUT_MOTOR1_IN1;
 }
 int WallImplementation::motorControlPin2(wall_motor motor)
 {
-    return (motor == BLUE_MOTOR) ? OUTPUT_MOTOR1_IN2 : OUTPUT_MOTOR2_IN2;
+    return (motor == BLUE_MOTOR) ? OUTPUT_MOTOR2_IN2 : OUTPUT_MOTOR1_IN2;
 }
 int WallImplementation::motorPWMpin(wall_motor motor)
 {
-    return (motor == BLUE_MOTOR) ? OUTPUT_MOTOR1_PWM : OUTPUT_MOTOR2_PWM;
+    return (motor == BLUE_MOTOR) ? OUTPUT_MOTOR2_PWM : OUTPUT_MOTOR1_PWM;
 }
 
 // Motor Truth Table (from TB6612 documentation):
@@ -448,10 +448,10 @@ int WallImplementation::circuitDevice(circuit_end end)
         case CIRCUIT_TOGGLE_RIGHT: return GRID_TOGGLE_SWITCH_I2C_DEVICE;
         case CIRCUIT_TOUCH_LEFT: return GRID_FORCE_SENSOR_I2C_DEVICE;
         case CIRCUIT_TOUCH_RIGHT: return GRID_FORCE_SENSOR_I2C_DEVICE;
-        case CIRCUIT_BLUE_MOTOR_LEFT: return GRID_MOTOR_1_I2C_DEVICE;
-        case CIRCUIT_BLUE_MOTOR_RIGHT: return GRID_MOTOR_1_I2C_DEVICE;
-        case CIRCUIT_ORANGE_MOTOR_LEFT: return GRID_MOTOR_2_I2C_DEVICE;
-        case CIRCUIT_ORANGE_MOTOR_RIGHT: return GRID_MOTOR_2_I2C_DEVICE;
+        case CIRCUIT_BLUE_MOTOR_LEFT: return GRID_MOTOR_2_I2C_DEVICE;
+        case CIRCUIT_BLUE_MOTOR_RIGHT: return GRID_MOTOR_2_I2C_DEVICE;
+        case CIRCUIT_ORANGE_MOTOR_LEFT: return GRID_MOTOR_1_I2C_DEVICE;
+        case CIRCUIT_ORANGE_MOTOR_RIGHT: return GRID_MOTOR_1_I2C_DEVICE;
         case CIRCUIT_TRANSDUCER_LEFT: return GRID_TRANSDUCER_I2C_DEVICE;
         case CIRCUIT_TRANSDUCER_RIGHT: return GRID_TRANSDUCER_I2C_DEVICE;
         case CIRCUIT_WHITE_LED_LEFT: return GRID_LED_ARRAY_WHITE_I2C_DEVICE;
@@ -481,10 +481,10 @@ int WallImplementation::circuitPin(circuit_end end)
         case CIRCUIT_TOGGLE_RIGHT: return GRID_TOGGLE_SWITCH_RIGHT;
         case CIRCUIT_TOUCH_LEFT: return GRID_FORCE_SENSOR_LEFT;
         case CIRCUIT_TOUCH_RIGHT: return GRID_FORCE_SENSOR_RIGHT;
-        case CIRCUIT_BLUE_MOTOR_LEFT: return GRID_MOTOR_1_LEFT;
-        case CIRCUIT_BLUE_MOTOR_RIGHT: return GRID_MOTOR_1_RIGHT;
-        case CIRCUIT_ORANGE_MOTOR_LEFT: return GRID_MOTOR_2_LEFT;
-        case CIRCUIT_ORANGE_MOTOR_RIGHT: return GRID_MOTOR_2_RIGHT;
+        case CIRCUIT_BLUE_MOTOR_LEFT: return GRID_MOTOR_2_LEFT;
+        case CIRCUIT_BLUE_MOTOR_RIGHT: return GRID_MOTOR_2_RIGHT;
+        case CIRCUIT_ORANGE_MOTOR_LEFT: return GRID_MOTOR_1_LEFT;
+        case CIRCUIT_ORANGE_MOTOR_RIGHT: return GRID_MOTOR_1_RIGHT;
         case CIRCUIT_TRANSDUCER_LEFT: return GRID_TRANSDUCER_LEFT;
         case CIRCUIT_TRANSDUCER_RIGHT: return GRID_TRANSDUCER_RIGHT;
         case CIRCUIT_WHITE_LED_LEFT: return GRID_LED_ARRAY_WHITE_LEFT;
