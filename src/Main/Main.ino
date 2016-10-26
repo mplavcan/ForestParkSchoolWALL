@@ -179,8 +179,8 @@ uint16_t getInputHexValue(void)
                     wall->getPhotoSensorValue(RIGHT_PHOTO));
         case CIRCUIT_TOUCH_LEFT:
             return (wall->getTouchSensorValue(LEFT_TOUCH) +
-                wall->getTouchSensorValue(BOTTOM_TOUCH) +
-                wall->getTouchSensorValue(RIGHT_TOUCH));
+                    wall->getTouchSensorValue(BOTTOM_TOUCH) +
+                    wall->getTouchSensorValue(RIGHT_TOUCH));
         case CIRCUIT_JOYSTICK_LEFT:
             return PWM_FULL_DUTY_CYCLE *
                (wall->isJoystickDown() || 
