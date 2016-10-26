@@ -248,19 +248,19 @@ void WallImplementation::turnOffLEDarray(led_array array, led_section section)
 
 int WallImplementation::motorControlPin1(wall_motor motor)
 {
-    return (motor = BLUE_MOTOR) ? OUTPUT_MOTOR1_IN1 : OUTPUT_MOTOR2_IN1;
+    return (motor == BLUE_MOTOR) ? OUTPUT_MOTOR1_IN1 : OUTPUT_MOTOR2_IN1;
 }
 int WallImplementation::motorControlPin2(wall_motor motor)
 {
-    return (motor = BLUE_MOTOR) ? OUTPUT_MOTOR1_IN2 : OUTPUT_MOTOR2_IN2;
+    return (motor == BLUE_MOTOR) ? OUTPUT_MOTOR1_IN2 : OUTPUT_MOTOR2_IN2;
 }
 int WallImplementation::motorPWMpin(wall_motor motor)
 {
-    return (motor = BLUE_MOTOR) ? OUTPUT_MOTOR1_PWM : OUTPUT_MOTOR2_PWM;
+    return (motor == BLUE_MOTOR) ? OUTPUT_MOTOR1_PWM : OUTPUT_MOTOR2_PWM;
 }
 
 // Motor Truth Table (from TB6612 documentation):
-//
+//s
 //   PIN1  PIN2    Motor behavior   
 //  ================================
 //   LOW   LOW     Stop  
@@ -375,7 +375,7 @@ uint16_t WallImplementation::getKnobPosition(void)
         readADC_SingleEnded(INPUT_ROTARY_POT));
 }
 
-// When slider is moved all the way left, the contact becomes diengaged from
+// When slider is moved all the way left, the contact becomes disengaged from
 // the track, resulting in a maximum value that is not acheivable, even when
 // far right.  If this value is detected, the result must a be safe value 
 // that appears to be far left.
@@ -413,9 +413,9 @@ int WallImplementation::forceSensorPin(force_sensor sensor)
 {
     switch (sensor)
     {
-        case LEFT_TOUCH:   return INPUT_FORCE_SENSOR_1;
-        case BOTTOM_TOUCH: return INPUT_FORCE_SENSOR_2;
-        case RIGHT_TOUCH:  return INPUT_FORCE_SENSOR_3;
+        case LEFT_TOUCH:   return INPUT_FORCE_SENSOR_2;
+        case BOTTOM_TOUCH: return INPUT_FORCE_SENSOR_3;
+        case RIGHT_TOUCH:  return INPUT_FORCE_SENSOR_1;
         default: return 0;
     }
 }
