@@ -9,10 +9,12 @@
 #include "DeviceFactory.h"
 #include "Wall.h"
 #include "HexCircuits.h"
+#include "Timer.h"
 
 #define ONE_TENTH_SECOND 100
 
 Wall *wall;
+Timer *ledTimer;
 
 void setup() {
     Serial.begin(115200);
@@ -47,7 +49,8 @@ void loop()
     lightIndicatorsForConnectedCircuits();
     if(wall->isCircuitConnected(connectionInput, connectionOutput))
         driveOutputHex(getInputHexValue());
-    delay(ONE_TENTH_SECOND);
+    ledTimer = new Timer(100);
+    while (!ledTimer->expired());
 }
 
 
