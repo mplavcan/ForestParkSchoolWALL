@@ -15,9 +15,9 @@
 Wall *wall;
 
 void setup() {
-    Serial.println("Starting setup()");
-    delay(1000);
     Serial.begin(115200);
+    delay(1000);
+    Serial.println("Starting setup()");
     Serial.println("Forest Park Circuit Wall starting up");
 
     wall = new Wall(new DeviceFactory());
