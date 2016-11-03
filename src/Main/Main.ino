@@ -241,7 +241,17 @@ void lightIndicatorsForConnectedCircuits()
 
 void turnOffAllOutputHexes()
 {
-    
+    wall->turnTransducerOff();
+    wall->turnOffLEDarray(GREEN_LED, LEFT_SIDE);
+    wall->turnOffLEDarray(GREEN_LED, RIGHT_SIDE);
+    wall->turnOffLEDarray(WHITE_LED, LEFT_SIDE);
+    wall->turnOffLEDarray(WHITE_LED, RIGHT_SIDE);
+    wall->turnOffLEDarray(RED_LED, LEFT_SIDE);
+    wall->turnOffLEDarray(RED_LED, RIGHT_SIDE);
+    wall->turnOffLEDarray(RED_LED, LOWER_LEFT_SIDE);
+    wall->turnOffLEDarray(RED_LED, LOWER_RIGHT_SIDE);
+    wall->stopMotor(BLUE_MOTOR);
+    wall->stopMotor(ORANGE_MOTOR);
 }
 
 void loop()
