@@ -43,76 +43,6 @@ indicator_led inputIndicator, outputIndicator;
 bool circuitComplete;
 
 
-void loop()
-{
-    collectCircuitConnections();
-    lightIndicatorsForConnectedCircuits();
-    if(wall->isCircuitConnected(connectionInput, connectionOutput))
-        driveOutputHex(getInputHexValue());
-    ledTimer = new Timer(100);
-    while (!ledTimer->expired());
-}
-
-
-
-void collectCircuitConnections()
-{
-    energizedInput = inputHexCircuitLeft();
-    energizedOutput = outputHexCircuitRight();
-    connectionInput = inputHexCircuitRight();
-    connectionOutput = outputHexCircuitLeft();
-    inputIndicator = Wall::indicatorForCircuit(energizedInput);
-    outputIndicator = Wall::indicatorForCircuit(energizedOutput);
-    
-    circuitComplete = wall->isCircuitConnected(connectionInput, connectionOutput) &&
-        (energizedInput != CIRCUIT_POSITIVE_POLE) &&
-        (energizedOutput != CIRCUIT_NEGATIVE_POLE);
-}
-
-void lightIndicatorsForConnectedCircuits()
-{
-    if (circuitComplete)
-    {
-        wall->turnIndicatorOn(inputIndicator);
-        wall->turnIndicatorOn(outputIndicator);
-    }
-    else
-    {
-        if (energizedInput != CIRCUIT_POSITIVE_POLE)
-            wall->setIndicatorBrightness(inputIndicator, brightCycle());
-        if (energizedOutput != CIRCUIT_NEGATIVE_POLE)
-            wall->setIndicatorBrightness(outputIndicator, brightCycle());
-    }
-}
-
-
-void driveOutputHex(uint16_t value)
-{
-    const int THRESHOLD = 2048;
-    switch(energizedOutput)
-    {
-        case CIRCUIT_BLUE_MOTOR_RIGHT:
-            driveMotor(BLUE_MOTOR, value, THRESHOLD);
-            break;
-        case CIRCUIT_ORANGE_MOTOR_RIGHT:
-            driveMotor(ORANGE_MOTOR, value, THRESHOLD);
-            break;
-        case CIRCUIT_TRANSDUCER_RIGHT:
-            driveTransducer(value, THRESHOLD);
-            break;
-        case CIRCUIT_WHITE_LED_RIGHT:
-            driveTwoPartLED(WHITE_LED, value, THRESHOLD);
-            break;
-        case CIRCUIT_GREEN_LED_RIGHT: 
-            driveTwoPartLED(GREEN_LED, value, THRESHOLD);
-            break;
-        case CIRCUIT_RED_LED_RIGHT:
-            driveFourPartLED(value, THRESHOLD);
-            break;
-        default: break;
-    }
-}
-
 void driveMotor(wall_motor motor, uint16_t value, const int threshold)
 {
     bool motorIsClockwise = (value > threshold);
@@ -199,9 +129,13 @@ uint16_t getInputHexValue(void)
     }
 }
 
-unsigned int brightCycle()
+unsigned int sawtoothCycle()
 {
-    return millis() % PWM_FULL_DUTY_CYCLE;
+    int cycle = millis() % PWM_FULL_DUTY_CYCLE;
+    if (cycle < PWM_FULL_DUTY_CYCLE / 2)
+        return cycle;
+    else
+        return (PWM_FULL_DUTY_CYCLE - cycle);
 }
 
 circuit_end inputHexCircuitLeft()
@@ -245,3 +179,79 @@ circuit_end outputHexCircuitRight()
     return CIRCUIT_NEGATIVE_POLE;
 }
 
+void driveOutputHex(uint16_t value)
+{
+    const int THRESHOLD = 2048;
+    switch (energizedOutput)
+    {
+    case CIRCUIT_BLUE_MOTOR_RIGHT:
+        driveMotor(BLUE_MOTOR, value, THRESHOLD);
+        break;
+    case CIRCUIT_ORANGE_MOTOR_RIGHT:
+        driveMotor(ORANGE_MOTOR, value, THRESHOLD);
+        break;
+    case CIRCUIT_TRANSDUCER_RIGHT:
+        driveTransducer(value, THRESHOLD);
+        break;
+    case CIRCUIT_WHITE_LED_RIGHT:
+        driveTwoPartLED(WHITE_LED, value, THRESHOLD);
+        break;
+    case CIRCUIT_GREEN_LED_RIGHT:
+        driveTwoPartLED(GREEN_LED, value, THRESHOLD);
+        break;
+    case CIRCUIT_RED_LED_RIGHT:
+        driveFourPartLED(value, THRESHOLD);
+        break;
+    default: break;
+    }
+}
+
+void collectCircuitConnections()
+{
+    energizedInput = inputHexCircuitLeft();
+    energizedOutput = outputHexCircuitRight();
+    connectionInput = inputHexCircuitRight();
+    connectionOutput = outputHexCircuitLeft();
+    inputIndicator = Wall::indicatorForCircuit(energizedInput);
+    outputIndicator = Wall::indicatorForCircuit(energizedOutput);
+
+    circuitComplete = wall->isCircuitConnected(connectionInput, connectionOutput) &&
+        (energizedInput != CIRCUIT_POSITIVE_POLE) &&
+        (energizedOutput != CIRCUIT_NEGATIVE_POLE);
+}
+
+
+
+void lightIndicatorsForConnectedCircuits()
+{
+    if (circuitComplete)
+    {
+        wall->turnIndicatorOn(inputIndicator);
+        wall->turnIndicatorOn(outputIndicator);
+    }
+    else
+    {
+        if (energizedInput != CIRCUIT_POSITIVE_POLE)
+            wall->setIndicatorBrightness(inputIndicator, sawtoothCycle());
+        if (energizedOutput != CIRCUIT_NEGATIVE_POLE)
+            wall->setIndicatorBrightness(outputIndicator, sawtoothCycle());
+    }
+}
+
+
+void turnOffAllOutputHexes()
+{
+    
+}
+
+void loop()
+{
+    collectCircuitConnections();
+    lightIndicatorsForConnectedCircuits();
+    if (wall->isCircuitConnected(connectionInput, connectionOutput))
+        driveOutputHex(getInputHexValue());
+    else 
+        turnOffAllOutputHexes();
+    ledTimer = new Timer(100);
+    while (!ledTimer->expired());
+}
