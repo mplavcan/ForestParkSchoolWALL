@@ -233,9 +233,11 @@ int WallImplementation::ledArrayPin(led_array array, led_section section)
 
 void WallImplementation::turnOnLEDarray(led_array array, led_section section)
 {
-    const int pinValue = ledArrayIsActiveLow(array) ? LOW : HIGH;
+    const int pinValue = ledArrayIsActiveLow(array) ? 
+        MINIMUM_ANALOG_OUTPUT_VALUE : 
+        MAXIMUM_ANALOG_OUTPUT_VALUE;
     setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
-    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->digitalWrite(
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->analogWrite(
         WallImplementation::ledArrayPin(array, section), pinValue);
 }
 void WallImplementation::turnOffLEDarray(led_array array, led_section section)

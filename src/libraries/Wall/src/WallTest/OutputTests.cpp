@@ -15,8 +15,8 @@ TEST_P(LEDHighFixture, TurnOnLEDArray)
 
     InSequence led_on;
     expectMultiplexerSelectsSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE);
-    EXPECT_SX1509_DIGITAL_WRITE(OUTPUT_LED_ARRAY_I2C_DEVICE,
-        WallImplementation::ledArrayPin(array, section), HIGH);
+    EXPECT_SX1509_ANALOG_WRITE(OUTPUT_LED_ARRAY_I2C_DEVICE,
+        WallImplementation::ledArrayPin(array, section), MAXIMUM_ANALOG_OUTPUT_VALUE);
     wall->turnOnLEDarray(array, section);
 }
 TEST_P(LEDHighFixture, TurnOffLEDArray)
@@ -49,8 +49,8 @@ TEST_P(LEDLowFixture, TurnOnLEDArray)
 
     InSequence led_on;
     expectMultiplexerSelectsSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE);
-    EXPECT_SX1509_DIGITAL_WRITE(OUTPUT_LED_ARRAY_I2C_DEVICE,
-        WallImplementation::ledArrayPin(array, section), LOW);
+    EXPECT_SX1509_ANALOG_WRITE(OUTPUT_LED_ARRAY_I2C_DEVICE,
+        WallImplementation::ledArrayPin(array, section), MINIMUM_ANALOG_OUTPUT_VALUE);
     wall->turnOnLEDarray(array, section);
 }
 TEST_P(LEDLowFixture, TurnOffLEDArray)
