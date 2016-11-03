@@ -12,6 +12,7 @@
 #include "Timer.h"
 
 #define ONE_TENTH_SECOND 100
+#define ONE_HUNDREDTH_SECOND 10
 
 Wall *wall;
 Timer *ledTimer;
@@ -254,14 +255,19 @@ void turnOffAllOutputHexes()
     wall->stopMotor(ORANGE_MOTOR);
 }
 
+void timerDelay(unsigned long time)
+{
+    ledTimer = new Timer(time);
+    while (!ledTimer->expired());
+}
+
 void loop()
 {
     collectCircuitConnections();
     lightIndicatorsForConnectedCircuits();
-    if (wall->isCircuitConnected(connectionInput, connectionOutput))
+    if (circuitComplete)
         driveOutputHex(getInputHexValue());
     else 
         turnOffAllOutputHexes();
-    ledTimer = new Timer(100);
-    while (!ledTimer->expired());
+    timerDelay(ONE_HUNDREDTH_SECOND);
 }
