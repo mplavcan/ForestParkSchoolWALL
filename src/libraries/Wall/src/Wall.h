@@ -182,7 +182,6 @@ private:
     uint16_t lastSliderPosition;
     
     int writeMultiplexerForBus(int bus);
-    bool ledArrayIsActiveLow(led_array array);
 };
 
 
