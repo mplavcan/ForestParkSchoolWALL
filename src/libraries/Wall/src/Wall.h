@@ -112,6 +112,7 @@ public:
     
     void turnOnLEDarray(led_array array, led_section section);
     void turnOffLEDarray(led_array array, led_section section);
+    void setLEDarrayBrightness(led_array array, led_section section, unsigned char brightness);
     void setMotorDirectionClockwise(wall_motor motor);
     void setMotorDirectionCounterClockwise(wall_motor motor);
     void setMotorSpeed(wall_motor motor, uint8_t speed);
@@ -158,6 +159,7 @@ public:
     static int motorControlPin2(wall_motor motor);
     static int motorPWMpin(wall_motor motor);
     static int ledArrayPin(led_array array, led_section section);
+    static unsigned char ledArrayNormalizedValue(led_array array, unsigned char value);
     static int greenLEDarrayPin(led_section section);
     static int whiteLEDarrayPin(led_section section);
     static int redLEDarrayPin(led_section section);
@@ -191,6 +193,7 @@ public:
     using WallImplementation::initialize;
     using WallImplementation::turnOnLEDarray;
     using WallImplementation::turnOffLEDarray;
+    using WallImplementation::setLEDarrayBrightness;
     using WallImplementation::setMotorDirectionClockwise;
     using WallImplementation::setMotorDirectionCounterClockwise;
     using WallImplementation::setMotorSpeed;

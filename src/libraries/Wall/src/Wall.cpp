@@ -110,14 +110,14 @@ void WallImplementation::initializeAnalogExpanders(void)
 void WallImplementation::initializeLEDarrayOutputs(void)
 {
     setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
-    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_GREEN_LEFT, OUTPUT);
-    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_GREEN_RIGHT, OUTPUT);
-    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_WHITE_LEFT, OUTPUT);
-    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_WHITE_RIGHT, OUTPUT);
-    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_1, OUTPUT);
-    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_2, OUTPUT);
-    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_3, OUTPUT);
-    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_4, OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_GREEN_LEFT, ANALOG_OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_GREEN_RIGHT, ANALOG_OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_WHITE_LEFT, ANALOG_OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_WHITE_RIGHT, ANALOG_OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_1, ANALOG_OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_2, ANALOG_OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_3, ANALOG_OUTPUT);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_4, ANALOG_OUTPUT);
 }
 
 void WallImplementation::initializeMotorOutputs(void)
@@ -186,11 +186,6 @@ void WallImplementation::initalizeELwireOutputs(void)
         pinMode(elWirePin(static_cast<EL_wire>(el)), OUTPUT);
 }
 
-bool WallImplementation::ledArrayIsActiveLow(led_array array)
-{
-    return (array == RED_LED);
-}
-
 int WallImplementation::greenLEDarrayPin(led_section section)
 {
     switch (section)
@@ -215,8 +210,8 @@ int WallImplementation::redLEDarrayPin(led_section section)
     {
         case LEFT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_1;
         case RIGHT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_2;
-        case LOWER_LEFT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_3;
-        case LOWER_RIGHT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_4;
+        case LOWER_RIGHT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_3;
+        case LOWER_LEFT_SIDE: return OUTPUT_LED_ARRAY_RED_QUAD_4;
         default: return 0;
     }
 }
@@ -231,21 +226,30 @@ int WallImplementation::ledArrayPin(led_array array, led_section section)
     return 0;
 }
 
-void WallImplementation::turnOnLEDarray(led_array array, led_section section)
+// The SX1509 "analog" PWM pulse assumes that a LED is attached from Vcc to the output, such
+// that a low output turns on the LED (active low).  The green and white arrays are in fact
+// wired active high, so they must be adjusted to the opposite value
+//
+unsigned char WallImplementation::ledArrayNormalizedValue(led_array array, unsigned char value)
 {
-    const int pinValue = ledArrayIsActiveLow(array) ? 
-        MINIMUM_ANALOG_OUTPUT_VALUE : 
-        MAXIMUM_ANALOG_OUTPUT_VALUE;
+    return (array == RED_LED) ? value : MAXIMUM_ANALOG_OUTPUT_VALUE - value;
+}
+
+
+void WallImplementation::setLEDarrayBrightness(led_array array, led_section section, unsigned char brightness)
+{
     setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
     io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->analogWrite(
-        WallImplementation::ledArrayPin(array, section), pinValue);
+        WallImplementation::ledArrayPin(array, section), ledArrayNormalizedValue(array, brightness));
+}
+
+void WallImplementation::turnOnLEDarray(led_array array, led_section section)
+{
+    setLEDarrayBrightness(array, section, MAXIMUM_ANALOG_OUTPUT_VALUE);
 }
 void WallImplementation::turnOffLEDarray(led_array array, led_section section)
 {
-    const int pinValue = ledArrayIsActiveLow(array) ? HIGH : LOW;
-    setMultiplexerForIOexpander(OUTPUT_LED_ARRAY_I2C_DEVICE);
-    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->digitalWrite(
-        WallImplementation::ledArrayPin(array, section), pinValue);
+    setLEDarrayBrightness(array, section, MINIMUM_ANALOG_OUTPUT_VALUE);
 }
 
 int WallImplementation::motorControlPin1(wall_motor motor)
