@@ -21,7 +21,7 @@ void setup() {
 
     if(!wall->initialize())
         Serial.println("Initialization of I2C devices failed");
-    wall->lcdSetBacklightColor(140, 220, 10);
+    wall->lcdSetBacklightColor(180, 100, 10);
     wall->lcdPrintAt(0, 0, "Wall Interface");
     wall->lcdPrintAt(0, 1, "Device Test");
     wall->setCircuitAsOutput(CIRCUIT_POSITIVE_POLE);
@@ -170,8 +170,7 @@ void loop() {
 
     int16_t knob = wall->getKnobPosition();
     Serial.print("Knob: "); Serial.println(knob);
-    wall->stopMotor(BLUE_MOTOR);
-    //ControlMotor(BLUE_MOTOR, knob);
+    ControlMotor(BLUE_MOTOR, knob);
 
     for (int grid = CIRCUIT_KNOB_LEFT; grid <= CIRCUIT_RED_LED_RIGHT; grid++)
         indicateCircuitState(static_cast<circuit_end>(grid));
