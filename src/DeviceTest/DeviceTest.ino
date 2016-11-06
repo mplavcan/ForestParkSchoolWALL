@@ -35,7 +35,7 @@ void lightButtonIfPressed(large_button color)
 {
     if (wall->isButtonDepressed(color))
     {
-        Serial.println(String(color) + " depressed");
+        Serial.println("Large Button" + String(color) + " depressed");
         wall->illuminateButton(color);
     }
     else
@@ -103,7 +103,7 @@ void turnOffAllLights()
     wall->extinguishELWire(WHITE_WIRE);
     wall->extinguishELWire(BLUE_WIRE_ONE);
     wall->extinguishELWire(BLUE_WIRE_TWO);
-    for (int lamp = INDICATE_WHITE_LED; lamp <= CIRCUIT_RED_LED_RIGHT; lamp++)
+    for (int lamp = INDICATE_WHITE_LED; lamp <= INDICATE_TOUCH_SENSOR; lamp++)
         wall->turnIndicatorOff(static_cast<indicator_led>(lamp));
 }
 
