@@ -35,17 +35,10 @@ void setup() {
     Serial.println("Exiting setup()");
 }
 
-input_hex energizedInput;
-output_hex energizedOutput;
-circuit_end inputConnection,
-            outputConnection;
-bool circuitComplete;
-
-
-void driveMotor(wall_motor motor, uint16_t value, const int threshold)
+void driveMotor(wall_motor motor, uint16_t value, const int midpoint)
 {
-    bool motorIsClockwise = (value > threshold);
-    bool motorSpeed = (value % threshold);
+    bool motorIsClockwise = (value > midpoint);
+    bool motorSpeed = (value % midpoint);
     if (motorIsClockwise)
         wall->setMotorDirectionClockwise(motor);
     else
@@ -53,49 +46,54 @@ void driveMotor(wall_motor motor, uint16_t value, const int threshold)
     wall->setMotorSpeed(motor, motorSpeed);
 }
 
-void driveTransducer(uint16_t value, const int THRESHOLD)
+void driveTransducer(uint16_t value, const int midpoint)
 {
-    if (value > THRESHOLD)
+    if (value > midpoint)
         wall->turnTransducerOn();
     else
         wall->turnTransducerOff();
 }
 
-void driveTwoPartLED(led_array array, uint16_t value, const int THRESHOLD)
+void driveTwoPartLED(led_array array, uint16_t value, const int midpoint)
 {
     if (value > 0)
         wall->turnOnLEDarray(array, LEFT_SIDE);
     else
         wall->turnOffLEDarray(array, LEFT_SIDE);
 
-    if (value > THRESHOLD)
+    if (value > midpoint)
         wall->turnOnLEDarray(array, RIGHT_SIDE);
     else
         wall->turnOffLEDarray(array, RIGHT_SIDE);
 }
 
-void driveFourPartLED(uint16_t value, const int THRESHOLD)
+void driveFourPartLED(uint16_t value, const int midpoint)
 {
     if (value > 0)
         wall->turnOnLEDarray(RED_LED, LOWER_LEFT_SIDE);
     else
         wall->turnOffLEDarray(RED_LED, LOWER_LEFT_SIDE);
 
-    if (value > (THRESHOLD / 2))
+    if (value > (midpoint / 2))
         wall->turnOnLEDarray(RED_LED, LEFT_SIDE);
     else
         wall->turnOffLEDarray(RED_LED, LEFT_SIDE);
 
-    if (value > THRESHOLD)
+    if (value > midpoint)
         wall->turnOnLEDarray(RED_LED, RIGHT_SIDE);
     else
         wall->turnOffLEDarray(RED_LED, RIGHT_SIDE);
 
-    if (value > (3 * THRESHOLD / 2))
+    if (value > (3 * midpoint / 2))
         wall->turnOnLEDarray(RED_LED, LOWER_RIGHT_SIDE);
     else
         wall->turnOffLEDarray(RED_LED, LOWER_RIGHT_SIDE);
 }
+
+
+input_hex energizedInput;
+output_hex energizedOutput;
+bool circuitComplete;
 
 uint16_t getInputHexValue(void)
 {
@@ -154,7 +152,7 @@ output_hex findConnectedOutputHex()
     {
         output_hex out = static_cast<output_hex>(hex);
         circuit_end end = Wall::rightCircuitForOutput(out);
-        if (wall->isCircuitConnected(CIRCUIT_POSITIVE_POLE, end))
+        if (wall->isCircuitConnected(CIRCUIT_NEGATIVE_POLE, end))
             return out;
     }
     return NO_OUTPUT;
@@ -162,28 +160,28 @@ output_hex findConnectedOutputHex()
 
 void driveOutputHex(uint16_t value)
 {
-    const int THRESHOLD = 2048;
+    const int midpoint = 2048;
     switch (energizedOutput)
     {
-    case CIRCUIT_BLUE_MOTOR_RIGHT:
-        driveMotor(BLUE_MOTOR, value, THRESHOLD);
-        break;
-    case CIRCUIT_ORANGE_MOTOR_RIGHT:
-        driveMotor(ORANGE_MOTOR, value, THRESHOLD);
-        break;
-    case CIRCUIT_TRANSDUCER_RIGHT:
-        driveTransducer(value, THRESHOLD);
-        break;
-    case CIRCUIT_WHITE_LED_RIGHT:
-        driveTwoPartLED(WHITE_LED, value, THRESHOLD);
-        break;
-    case CIRCUIT_GREEN_LED_RIGHT:
-        driveTwoPartLED(GREEN_LED, value, THRESHOLD);
-        break;
-    case CIRCUIT_RED_LED_RIGHT:
-        driveFourPartLED(value, THRESHOLD);
-        break;
-    default: break;
+        case BLUE_MOTOR_HEX:
+            driveMotor(BLUE_MOTOR, value, midpoint);
+            break;
+        case ORANGE_MOTOR_HEX:
+            driveMotor(ORANGE_MOTOR, value, midpoint);
+            break;
+        case TRANSDUCER_HEX:
+            driveTransducer(value, midpoint);
+            break;
+        case WHITE_LED_HEX:
+            driveTwoPartLED(WHITE_LED, value, midpoint);
+            break;
+        case GREEN_LED_HEX:
+            driveTwoPartLED(GREEN_LED, value, midpoint);
+            break;
+        case RED_LED_HEX:
+            driveFourPartLED(value, midpoint);
+            break;
+        default: break;
     }
 }
 
@@ -191,29 +189,30 @@ void collectCircuitConnections()
 {
     energizedInput = findConnectedInputHex();
     energizedOutput = findConnectedOutputHex();
-    inputConnection = Wall::rightCircuitForInput(energizedInput);
-    outputConnection = Wall::rightCircuitForOutput(energizedOutput);
-
-    circuitComplete = wall->isCircuitConnected(inputConnection, outputConnection) &&
+    bool inputAndOutputConnected = wall->isCircuitConnected(
+        Wall::rightCircuitForInput(energizedInput),
+        Wall::rightCircuitForOutput(energizedOutput));
+    
+    circuitComplete = inputAndOutputConnected &&
         (energizedInput != NO_INPUT) &&
         (energizedOutput != NO_OUTPUT);
 }
 
-
-
 void lightIndicatorsForConnectedCircuits()
 {
+    indicator_led inputLamp = Wall::indicatorforInput(energizedInput);
+    indicator_led outputLamp = Wall::indicatorForOutput(energizedOutput);
     if (circuitComplete)
     {
-        wall->turnIndicatorOn(Wall::indicatorforInput(energizedInput));
-        wall->turnIndicatorOn(Wall::indicatorForOutput(energizedOutput));
+        wall->turnIndicatorOn(inputLamp);
+        wall->turnIndicatorOn(outputLamp);
     }
     else
     {
-        if (energizedInput != CIRCUIT_POSITIVE_POLE)
-            wall->setIndicatorBrightness(Wall::indicatorforInput(energizedInput), sawtoothCycle());
-        if (energizedOutput != CIRCUIT_NEGATIVE_POLE)
-            wall->setIndicatorBrightness(Wall::indicatorForOutput(energizedOutput), sawtoothCycle());
+        if (energizedInput != NO_INPUT)
+            wall->setIndicatorBrightness(inputLamp, sawtoothCycle());
+        if (energizedOutput != NO_OUTPUT)
+            wall->setIndicatorBrightness(outputLamp, sawtoothCycle());
     }
 }
 
