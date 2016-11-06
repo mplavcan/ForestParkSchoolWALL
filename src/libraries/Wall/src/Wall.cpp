@@ -539,39 +539,87 @@ bool WallImplementation::isCircuitConnected(circuit_end A, circuit_end B)
     return areConnected;
 }
 
-indicator_led WallImplementation::indicatorForCircuit(circuit_end point)
+circuit_end WallImplementation::leftCircuitForInput(input_hex hex)
 {
-    switch(point)
+    switch (hex)
     {
-        case CIRCUIT_POSITIVE_POLE: return INDICATE_POSITIVE_POLE;
-        case CIRCUIT_KNOB_LEFT:
-        case CIRCUIT_KNOB_RIGHT: return INDICATE_KNOB;
-        case CIRCUIT_SLIDER_LEFT:
-        case CIRCUIT_SLIDER_RIGHT: return INDICATE_SLIDER;
-        case CIRCUIT_PHOTO_LEFT:
-        case CIRCUIT_PHOTO_RIGHT: return INDICATE_PHOTO_SENSOR;
-        case CIRCUIT_JOYSTICK_LEFT:
-        case CIRCUIT_JOYSTICK_RIGHT: return INDICATE_JOYSTICK;
-        case CIRCUIT_TOGGLE_LEFT:
-        case CIRCUIT_TOGGLE_RIGHT: return INDICATE_TOGGLES;
-        case CIRCUIT_TOUCH_LEFT:
-        case CIRCUIT_TOUCH_RIGHT: return INDICATE_TOUCH_SENSOR;
-        case CIRCUIT_BLUE_MOTOR_LEFT:
-        case CIRCUIT_BLUE_MOTOR_RIGHT: return INDICATE_BLUE_MOTOR;
-        case CIRCUIT_ORANGE_MOTOR_LEFT: 
-        case CIRCUIT_ORANGE_MOTOR_RIGHT: return INDICATE_ORANGE_MOTOR;
-        case CIRCUIT_TRANSDUCER_LEFT:
-        case CIRCUIT_TRANSDUCER_RIGHT: return INDICATE_TRANSDUCER;
-        case CIRCUIT_WHITE_LED_LEFT:
-        case CIRCUIT_WHITE_LED_RIGHT: return INDICATE_WHITE_LED;
-        case CIRCUIT_GREEN_LED_LEFT:
-        case CIRCUIT_GREEN_LED_RIGHT: return INDICATE_GREEN_LED;
-        case CIRCUIT_RED_LED_LEFT:
-        case CIRCUIT_RED_LED_RIGHT: return INDICATE_RED_LED;
-        case CIRCUIT_NEGATIVE_POLE:
-        default:  return INDICATE_NEGATIVE_POLE;
+        case KNOB_HEX: return CIRCUIT_KNOB_LEFT;
+        case SLIDER_HEX: return CIRCUIT_SLIDER_LEFT;
+        case PHOTO_SENSOR_HEX: return CIRCUIT_PHOTO_LEFT;
+        case JOYSTICK_HEX: return CIRCUIT_JOYSTICK_LEFT;
+        case TOGGLE_SWITCH_HEX: return CIRCUIT_TOGGLE_LEFT;
+        case TOUCH_SENSOR_HEX: return CIRCUIT_TOUCH_LEFT;
+        default: return NO_CIRCUIT;
+    };
+}
+circuit_end WallImplementation::rightCircuitForInput(input_hex hex)
+{
+    switch (hex)
+    {
+        case KNOB_HEX: return CIRCUIT_KNOB_RIGHT;
+        case SLIDER_HEX: return CIRCUIT_SLIDER_RIGHT;
+        case PHOTO_SENSOR_HEX: return CIRCUIT_PHOTO_RIGHT;
+        case JOYSTICK_HEX: return CIRCUIT_JOYSTICK_RIGHT;
+        case TOGGLE_SWITCH_HEX: return CIRCUIT_TOGGLE_RIGHT;
+        case TOUCH_SENSOR_HEX: return CIRCUIT_TOUCH_RIGHT;
+        default: return NO_CIRCUIT;
+    };
+}
+circuit_end WallImplementation::leftCircuitForOutput(output_hex hex)
+{
+    switch (hex)
+    {
+        case BLUE_MOTOR_HEX: return CIRCUIT_BLUE_MOTOR_LEFT;
+        case ORANGE_MOTOR_HEX: return CIRCUIT_ORANGE_MOTOR_LEFT;
+        case TRANSDUCER_HEX: return CIRCUIT_TRANSDUCER_LEFT;
+        case WHITE_LED_HEX: return CIRCUIT_WHITE_LED_LEFT;
+        case GREEN_LED_HEX: return CIRCUIT_GREEN_LED_LEFT;
+        case RED_LED_HEX: return CIRCUIT_RED_LED_LEFT;
+        default: return NO_CIRCUIT;
+    };
+}
+circuit_end WallImplementation::rightCircuitForOutput(output_hex hex)
+{
+    switch (hex)
+    {
+        case BLUE_MOTOR_HEX: return CIRCUIT_BLUE_MOTOR_RIGHT;
+        case ORANGE_MOTOR_HEX: return CIRCUIT_ORANGE_MOTOR_RIGHT;
+        case TRANSDUCER_HEX: return CIRCUIT_TRANSDUCER_RIGHT;
+        case WHITE_LED_HEX: return CIRCUIT_WHITE_LED_RIGHT;
+        case GREEN_LED_HEX: return CIRCUIT_GREEN_LED_RIGHT;
+        case RED_LED_HEX: return CIRCUIT_RED_LED_RIGHT;
+        default: return NO_CIRCUIT;
+    };
+}
+
+indicator_led WallImplementation::indicatorforInput(input_hex hex)
+{
+    switch (hex)
+    {
+        case KNOB_HEX: return INDICATE_KNOB;
+        case SLIDER_HEX: return INDICATE_SLIDER;
+        case PHOTO_SENSOR_HEX: return INDICATE_PHOTO_SENSOR;
+        case JOYSTICK_HEX: return INDICATE_JOYSTICK;
+        case TOGGLE_SWITCH_HEX: return INDICATE_TOGGLES;
+        case TOUCH_SENSOR_HEX: return INDICATE_TOUCH_SENSOR;
+        default: return NO_INDICATION;
+    };
+}
+
+indicator_led WallImplementation::indicatorForOutput(output_hex hex)
+{
+    switch (hex)
+    {
+    case BLUE_MOTOR_HEX: return INDICATE_BLUE_MOTOR;
+    case ORANGE_MOTOR_HEX: return INDICATE_ORANGE_MOTOR;
+    case TRANSDUCER_HEX: return INDICATE_TRANSDUCER;
+    case WHITE_LED_HEX: return INDICATE_WHITE_LED;
+    case GREEN_LED_HEX: return INDICATE_GREEN_LED;
+    case RED_LED_HEX: return INDICATE_RED_LED;
+    default: return NO_INDICATION;
     }
 }
+
 
 int WallImplementation::buttonDevice(large_button button)
 {

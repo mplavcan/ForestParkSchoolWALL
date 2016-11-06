@@ -8,7 +8,6 @@
 #include <Adafruit_ADS1015.h>
 #include "DeviceFactory.h"
 #include "Wall.h"
-#include "HexCircuits.h"
 #include "Timer.h"
 
 #define ONE_TENTH_SECOND 100
@@ -30,17 +29,16 @@ void setup() {
     wall->lcdSetBacklightColor(0, 255, 50);
     wall->lcdPrintAt(0, 0, "Forest Park");
     wall->lcdPrintAt(0, 1, "Elementary");
-    wall->turnIndicatorOn(Wall::indicatorForCircuit(CIRCUIT_POSITIVE_POLE));
-    wall->turnIndicatorOn(Wall::indicatorForCircuit(CIRCUIT_NEGATIVE_POLE));
+    wall->turnIndicatorOn(INDICATE_NEGATIVE_POLE);
+    wall->turnIndicatorOn(INDICATE_POSITIVE_POLE);
 
     Serial.println("Exiting setup()");
 }
 
-circuit_end energizedInput,
-            energizedOutput,
-            connectionInput,
-            connectionOutput;
-indicator_led inputIndicator, outputIndicator;
+input_hex energizedInput;
+output_hex energizedOutput;
+circuit_end inputConnection,
+            outputConnection;
 bool circuitComplete;
 
 
@@ -103,25 +101,25 @@ uint16_t getInputHexValue(void)
 {
     switch (energizedInput)
     {
-        case CIRCUIT_KNOB_LEFT:      
+        case KNOB_HEX:
             return wall->getKnobPosition(); 
-        case CIRCUIT_SLIDER_LEFT:
+        case SLIDER_HEX:
             return wall->getSliderPosition();
-        case CIRCUIT_PHOTO_LEFT:
+        case PHOTO_SENSOR_HEX:
             return (wall->getPhotoSensorValue(LEFT_PHOTO) +
                     wall->getPhotoSensorValue(CENTER_PHOTO) +
                     wall->getPhotoSensorValue(RIGHT_PHOTO));
-        case CIRCUIT_TOUCH_LEFT:
+        case TOUCH_SENSOR_HEX:
             return (wall->getTouchSensorValue(LEFT_TOUCH) +
                     wall->getTouchSensorValue(BOTTOM_TOUCH) +
                     wall->getTouchSensorValue(RIGHT_TOUCH));
-        case CIRCUIT_JOYSTICK_LEFT:
+        case JOYSTICK_HEX:
             return PWM_FULL_DUTY_CYCLE *
                (wall->isJoystickDown() || 
                 wall->isJoystickLeft() ||
                 wall->isJoystickRight() ||
                 wall->isJoystickUp());
-        case CIRCUIT_TOGGLE_LEFT:
+        case TOGGLE_SWITCH_HEX:
             return (
                 (wall->isToggleOn(LEFT_TOGGLE)   * (PWM_FULL_DUTY_CYCLE / 2)) +
                 (wall->isToggleOn(CENTER_TOGGLE) * (PWM_FULL_DUTY_CYCLE / 4)) +
@@ -139,45 +137,27 @@ unsigned int sawtoothCycle()
         return (PWM_FULL_DUTY_CYCLE - cycle);
 }
 
-circuit_end inputHexCircuitLeft()
+input_hex findConnectedInputHex()
 {
-    for (int hex = 0; hex < NUMBER_INPUT_HEXES; hex++)
+    for (int hex = KNOB_HEX; hex <= TOUCH_SENSOR_HEX; hex++)
     {
-        circuit_end end = input_hexes_left[hex];
+        input_hex in = static_cast<input_hex>(hex);
+        circuit_end end = Wall::leftCircuitForInput(in);
         if (wall->isCircuitConnected(CIRCUIT_POSITIVE_POLE, end))
-            return end;
+            return in;
     }
-    return CIRCUIT_POSITIVE_POLE;
+    return NO_INPUT;
 }
-circuit_end inputHexCircuitRight()
+output_hex findConnectedOutputHex()
 {
-    for (int hex = 0; hex < NUMBER_INPUT_HEXES; hex++)
+    for (int hex = WHITE_LED_HEX; hex <= TRANSDUCER_HEX; hex++)
     {
-        circuit_end end = input_hexes_right[hex];
+        output_hex out = static_cast<output_hex>(hex);
+        circuit_end end = Wall::rightCircuitForOutput(out);
         if (wall->isCircuitConnected(CIRCUIT_POSITIVE_POLE, end))
-            return end;
+            return out;
     }
-    return CIRCUIT_POSITIVE_POLE;
-}
-circuit_end outputHexCircuitLeft()
-{
-    for (int hex = 0; hex < NUMBER_OUTPUT_HEXES; hex++)
-    {
-        circuit_end end = output_hexes_left[hex];
-        if (wall->isCircuitConnected(CIRCUIT_NEGATIVE_POLE, end))
-            return end;
-    }
-    return CIRCUIT_NEGATIVE_POLE;
-}
-circuit_end outputHexCircuitRight()
-{
-    for (int hex = 0; hex < NUMBER_OUTPUT_HEXES; hex++)
-    {
-        circuit_end end = output_hexes_right[hex];
-        if (wall->isCircuitConnected(CIRCUIT_NEGATIVE_POLE, end))
-            return end;
-    }
-    return CIRCUIT_NEGATIVE_POLE;
+    return NO_OUTPUT;
 }
 
 void driveOutputHex(uint16_t value)
@@ -209,16 +189,14 @@ void driveOutputHex(uint16_t value)
 
 void collectCircuitConnections()
 {
-    energizedInput = inputHexCircuitLeft();
-    energizedOutput = outputHexCircuitRight();
-    connectionInput = inputHexCircuitRight();
-    connectionOutput = outputHexCircuitLeft();
-    inputIndicator = Wall::indicatorForCircuit(energizedInput);
-    outputIndicator = Wall::indicatorForCircuit(energizedOutput);
+    energizedInput = findConnectedInputHex();
+    energizedOutput = findConnectedOutputHex();
+    inputConnection = Wall::rightCircuitForInput(energizedInput);
+    outputConnection = Wall::rightCircuitForOutput(energizedOutput);
 
-    circuitComplete = wall->isCircuitConnected(connectionInput, connectionOutput) &&
-        (energizedInput != CIRCUIT_POSITIVE_POLE) &&
-        (energizedOutput != CIRCUIT_NEGATIVE_POLE);
+    circuitComplete = wall->isCircuitConnected(inputConnection, outputConnection) &&
+        (energizedInput != NO_INPUT) &&
+        (energizedOutput != NO_OUTPUT);
 }
 
 
@@ -227,15 +205,15 @@ void lightIndicatorsForConnectedCircuits()
 {
     if (circuitComplete)
     {
-        wall->turnIndicatorOn(inputIndicator);
-        wall->turnIndicatorOn(outputIndicator);
+        wall->turnIndicatorOn(Wall::indicatorforInput(energizedInput));
+        wall->turnIndicatorOn(Wall::indicatorForOutput(energizedOutput));
     }
     else
     {
         if (energizedInput != CIRCUIT_POSITIVE_POLE)
-            wall->setIndicatorBrightness(inputIndicator, sawtoothCycle());
+            wall->setIndicatorBrightness(Wall::indicatorforInput(energizedInput), sawtoothCycle());
         if (energizedOutput != CIRCUIT_NEGATIVE_POLE)
-            wall->setIndicatorBrightness(outputIndicator, sawtoothCycle());
+            wall->setIndicatorBrightness(Wall::indicatorForOutput(energizedOutput), sawtoothCycle());
     }
 }
 

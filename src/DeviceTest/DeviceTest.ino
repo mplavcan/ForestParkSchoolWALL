@@ -26,8 +26,8 @@ void setup() {
     wall->lcdPrintAt(0, 1, "Device Test");
     wall->setCircuitAsOutput(CIRCUIT_POSITIVE_POLE);
     wall->setCircuitAsOutput(CIRCUIT_NEGATIVE_POLE);
-    wall->turnIndicatorOn(Wall::indicatorForCircuit(CIRCUIT_POSITIVE_POLE));
-    wall->turnIndicatorOn(Wall::indicatorForCircuit(CIRCUIT_NEGATIVE_POLE));
+    wall->turnIndicatorOn(INDICATE_POSITIVE_POLE);
+    wall->turnIndicatorOn(INDICATE_NEGATIVE_POLE);
 }
 
 
@@ -132,12 +132,39 @@ void turnOnSelectiveLight(int choice)
     }
 }
 
-void indicateCircuitState(circuit_end point)
+void indicateInputCircuitState(input_hex hex)
 {
-    indicator_led lamp = Wall::indicatorForCircuit(point);
-    if (wall->readCircuitState(point) == LOW)
+    indicator_led lamp = Wall::indicatorforInput(hex);
+    circuit_end left = Wall::leftCircuitForInput(hex);
+    circuit_end right = Wall::leftCircuitForInput(hex);
+    if (wall->readCircuitState(left) == LOW)
     {
-        Serial.println(String(point) + " triggered");
+        Serial.println("Left side input "+ String(hex) + " circuit triggered");
+        wall->turnIndicatorOn(lamp);
+        wall->turnTransducerOn();
+    }
+    if (wall->readCircuitState(right) == LOW)
+    {
+        Serial.println("Right side input " + String(hex) + " circuit triggered");
+        wall->turnIndicatorOn(lamp);
+        wall->turnTransducerOn();
+    }
+}
+
+void indicateOutputCircuitState(output_hex hex)
+{
+    indicator_led lamp = Wall::indicatorForOutput(hex);
+    circuit_end left = Wall::leftCircuitForOutput(hex);
+    circuit_end right = Wall::leftCircuitForOutput(hex);
+    if (wall->readCircuitState(left) == LOW)
+    {
+        Serial.println("Left side output " + String(hex) + " circuit triggered");
+        wall->turnIndicatorOn(lamp);
+        wall->turnTransducerOn();
+    }
+    if (wall->readCircuitState(right) == LOW)
+    {
+        Serial.println("Right side output " + String(hex) + " circuit triggered");
         wall->turnIndicatorOn(lamp);
         wall->turnTransducerOn();
     }
@@ -172,9 +199,11 @@ void loop() {
     Serial.print("Knob: "); Serial.println(knob);
     ControlMotor(BLUE_MOTOR, knob);
 
-    for (int grid = CIRCUIT_KNOB_LEFT; grid <= CIRCUIT_RED_LED_RIGHT; grid++)
-        indicateCircuitState(static_cast<circuit_end>(grid));
- 
+    for (int hex = KNOB_HEX; hex <= TOUCH_SENSOR_HEX; hex++)
+        indicateInputCircuitState(static_cast<input_hex>(hex));
+    for (int hex = WHITE_LED_HEX; hex <= TRANSDUCER_HEX; hex++)
+        indicateOutputCircuitState(static_cast<output_hex>(hex));
+
     if (counter == 0)
     {
         turnOffAllLights();

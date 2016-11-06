@@ -20,6 +20,30 @@
 #define FALSE   (0)
 #define TRUE    (!FALSE)
 
+#define NUMBER_INPUT_HEXES 6
+#define NUMBER_OUTPUT_HEXES 6
+
+typedef enum
+{
+    KNOB_HEX, 
+    SLIDER_HEX, 
+    PHOTO_SENSOR_HEX, 
+    JOYSTICK_HEX, 
+    TOGGLE_SWITCH_HEX, 
+    TOUCH_SENSOR_HEX,
+    NO_INPUT = -1
+} input_hex;
+typedef enum
+{
+    WHITE_LED_HEX, 
+    BLUE_MOTOR_HEX, 
+    RED_LED_HEX, 
+    ORANGE_MOTOR_HEX, 
+    GREEN_LED_HEX, 
+    TRANSDUCER_HEX,
+    NO_OUTPUT = -1
+} output_hex;
+
 typedef enum { BLUE_MOTOR, ORANGE_MOTOR } wall_motor;
 typedef enum { GREEN_LED, WHITE_LED, RED_LED } led_array;
 typedef enum { LEFT_SIDE, RIGHT_SIDE, LOWER_LEFT_SIDE, LOWER_RIGHT_SIDE } led_section;
@@ -27,6 +51,7 @@ typedef enum { LEFT_TOGGLE, CENTER_TOGGLE, RIGHT_TOGGLE } toggle_switch;
 typedef enum { LEFT_PHOTO, CENTER_PHOTO, RIGHT_PHOTO } photo_sensor;
 typedef enum { LEFT_TOUCH, BOTTOM_TOUCH, RIGHT_TOUCH } force_sensor;
 typedef enum { BLUE_BUTTON, YELLOW_BUTTON, GREEN_BUTTON, RED_BUTTON, WHITE_BUTTON } large_button;
+
 typedef enum 
 { 
     RED_WIRE_ONE,
@@ -41,20 +66,21 @@ typedef enum
 
 typedef enum
 {
-    INDICATE_WHITE_LED       = INDICATOR_LED_ARRAY_WHITE,
-    INDICATE_BLUE_MOTOR      = INDICATOR_MOTOR_2,
-    INDICATE_RED_LED         = INDICATOR_LED_ARRAY_RED,
-    INDICATE_ORANGE_MOTOR    = INDICATOR_MOTOR_1,
-    INDICATE_TRANSDUCER      = INDICATOR_TRANSDUCER,
-    INDICATE_GREEN_LED       = INDICATOR_LED_ARRAY_GREEN,
-    INDICATE_NEGATIVE_POLE   = INDICATOR_BATTERY_NEGATIVE,
-    INDICATE_KNOB            = INDICATOR_ROTARY_POT,
-    INDICATE_SLIDER          = INDICATOR_LINEAR_POT,
-    INDICATE_PHOTO_SENSOR    = INDICATOR_PHOTO_SENSOR,
-    INDICATE_JOYSTICK        = INDICATOR_JOYSTICK,
-    INDICATE_TOGGLES         = INDICATOR_TOGGLE_SWITCH,
-    INDICATE_TOUCH_SENSOR    = INDICATOR_FORCE_SENSOR,
-    INDICATE_POSITIVE_POLE   = INDICATOR_BATTERY_POSITIVE
+    INDICATE_WHITE_LED = INDICATOR_LED_ARRAY_WHITE,
+    INDICATE_BLUE_MOTOR = INDICATOR_MOTOR_2,
+    INDICATE_RED_LED = INDICATOR_LED_ARRAY_RED,
+    INDICATE_ORANGE_MOTOR = INDICATOR_MOTOR_1,
+    INDICATE_TRANSDUCER = INDICATOR_TRANSDUCER,
+    INDICATE_GREEN_LED = INDICATOR_LED_ARRAY_GREEN,
+    INDICATE_NEGATIVE_POLE = INDICATOR_BATTERY_NEGATIVE,
+    INDICATE_KNOB = INDICATOR_ROTARY_POT,
+    INDICATE_SLIDER = INDICATOR_LINEAR_POT,
+    INDICATE_PHOTO_SENSOR = INDICATOR_PHOTO_SENSOR,
+    INDICATE_JOYSTICK = INDICATOR_JOYSTICK,
+    INDICATE_TOGGLES = INDICATOR_TOGGLE_SWITCH,
+    INDICATE_TOUCH_SENSOR = INDICATOR_FORCE_SENSOR,
+    INDICATE_POSITIVE_POLE = INDICATOR_BATTERY_POSITIVE,
+    NO_INDICATION = -1
 } indicator_led;
 
 typedef enum
@@ -84,7 +110,8 @@ typedef enum
     CIRCUIT_RED_LED_LEFT,
     CIRCUIT_RED_LED_RIGHT,
     CIRCUIT_POSITIVE_POLE,
-    CIRCUIT_NEGATIVE_POLE
+    CIRCUIT_NEGATIVE_POLE,
+    NO_CIRCUIT = -1
 } circuit_end;
 
 
@@ -145,7 +172,12 @@ public:
     void lcdSetBacklightColor(uint8_t red, uint8_t green, uint8_t blue);
     void clearLCDscreen(void);
 
-    static indicator_led indicatorForCircuit(circuit_end point);
+    static indicator_led indicatorforInput(input_hex hex);
+    static indicator_led indicatorForOutput(output_hex hex);
+    static circuit_end leftCircuitForInput(input_hex hex);
+    static circuit_end rightCircuitForInput(input_hex hex);
+    static circuit_end leftCircuitForOutput(output_hex hex);
+    static circuit_end rightCircuitForOutput(output_hex hex);
 
     static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];
@@ -225,7 +257,12 @@ public:
     using WallImplementation::lcdSetBacklightColor;
     using WallImplementation::clearLCDscreen;
 
-    using WallImplementation::indicatorForCircuit;
+    using WallImplementation::indicatorforInput;
+    using WallImplementation::indicatorForOutput;
+    using WallImplementation::leftCircuitForInput;
+    using WallImplementation::rightCircuitForInput;
+    using WallImplementation::leftCircuitForOutput;
+    using WallImplementation::rightCircuitForOutput;
 };
 
 #endif // _WALL_H_
