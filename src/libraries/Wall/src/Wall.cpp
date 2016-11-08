@@ -307,22 +307,44 @@ void WallImplementation::turnTransducerOff(void)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_FULL_DUTY_CYCLE);
+
 }
 
+int WallImplementation::indicatorPin(indicator_led lamp)
+{
+    switch(lamp)
+    {
+        case INDICATE_WHITE_LED: return INDICATOR_LED_ARRAY_WHITE;
+        case INDICATE_BLUE_MOTOR: return INDICATOR_MOTOR_2;
+        case INDICATE_RED_LED: return INDICATOR_LED_ARRAY_RED;
+        case INDICATE_ORANGE_MOTOR: return INDICATOR_MOTOR_1;
+        case INDICATE_TRANSDUCER: return INDICATOR_TRANSDUCER;
+        case INDICATE_GREEN_LED: return INDICATOR_LED_ARRAY_GREEN;
+        case INDICATE_NEGATIVE_POLE: return INDICATOR_BATTERY_NEGATIVE;
+        case INDICATE_KNOB: return INDICATOR_ROTARY_POT;
+        case INDICATE_SLIDER: return INDICATOR_LINEAR_POT;
+        case INDICATE_PHOTO_SENSOR: return INDICATOR_PHOTO_SENSOR;
+        case INDICATE_JOYSTICK: return INDICATOR_JOYSTICK;
+        case INDICATE_TOGGLES: return INDICATOR_TOGGLE_SWITCH;
+        case INDICATE_TOUCH_SENSOR: return INDICATOR_FORCE_SENSOR;
+        case INDICATE_POSITIVE_POLE: return INDICATOR_BATTERY_POSITIVE;
+        default: return -1;
+    }
+}
 void WallImplementation::turnIndicatorOn(indicator_led lamp)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
-    pwm->setPin(lamp, PWM_INDICATOR_ON_VALUE, FALSE);
+    pwm->setPin(indicatorPin(lamp), PWM_INDICATOR_ON_VALUE, FALSE);
 }
 void WallImplementation::turnIndicatorOff(indicator_led lamp)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
-    pwm->setPin(lamp, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(indicatorPin(lamp), PWM_INDICATOR_OFF_VALUE, FALSE);
 }
 void WallImplementation::setIndicatorBrightness(indicator_led lamp, uint16_t value)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
-    pwm->setPin(lamp, value % PWM_FULL_DUTY_CYCLE, FALSE);
+    pwm->setPin(indicatorPin(lamp), value % PWM_FULL_DUTY_CYCLE, FALSE);
 }
 
 int WallImplementation::toggleSwitchPin(toggle_switch toggle)
