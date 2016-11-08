@@ -89,6 +89,7 @@ bool WallImplementation::initialize(void)
     initializeJoystickInputs();
     initializeButtonInOuts();
     initalizeELwireOutputs();
+    initializePWMOutputs();
     resetCircuitInputs();
     return true;
 }
@@ -133,22 +134,9 @@ void WallImplementation::initializeMotorOutputs(void)
 
 void WallImplementation::initializePWMOutputs(void)
 {
+    setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
+    pwm->begin();
     pwm->setPWMFreq(WALL_PWM_FREQUENCY);
-    turnIndicatorOff(INDICATE_WHITE_LED);
-    turnIndicatorOff(INDICATE_RED_LED);
-    turnIndicatorOff(INDICATE_GREEN_LED);
-    turnIndicatorOff(INDICATE_BLUE_MOTOR);
-    turnIndicatorOff(INDICATE_ORANGE_MOTOR);
-    turnIndicatorOff(INDICATE_TRANSDUCER);
-    turnIndicatorOff(INDICATE_TOGGLES);
-    turnIndicatorOff(INDICATE_JOYSTICK);
-    turnIndicatorOff(INDICATE_KNOB);
-    turnIndicatorOff(INDICATE_SLIDER);
-    turnIndicatorOff(INDICATE_PHOTO_SENSOR);
-    turnIndicatorOff(INDICATE_TOUCH_SENSOR);
-    turnIndicatorOff(INDICATE_POSITIVE_POLE);
-    turnIndicatorOff(INDICATE_NEGATIVE_POLE);
-    turnTransducerOff();
 }
 
 void WallImplementation::initializeToggleInputs(void)

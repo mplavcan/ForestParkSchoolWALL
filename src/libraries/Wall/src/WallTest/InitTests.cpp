@@ -54,6 +54,13 @@ TEST_F(InitFixture, TestMotorPinModes)
 
     wall->initializeMotorOutputs();
 }
+TEST_F(InitFixture, TestPWMInitiaitzation)
+{
+    expectMultiplexerSelectedBus(ADAFRUIT_PWM_I2C_BUS);
+    EXPECT_CALL(*io->accessMockPWM(), begin());
+    EXPECT_CALL(*io->accessMockPWM(), setPWMFreq(WALL_PWM_FREQUENCY));
+    wall->initializePWMOutputs();
+}
 TEST_F(InitFixture, TestTogglePinModes)
 {
     expectMultiplexerSelectsSX1509(INPUT_TOGGLE_I2C_DEVICE);
