@@ -119,6 +119,15 @@ void WallImplementation::initializeLEDarrayOutputs(void)
     io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_2, ANALOG_OUTPUT);
     io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_3, ANALOG_OUTPUT);
     io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->pinMode(OUTPUT_LED_ARRAY_RED_QUAD_4, ANALOG_OUTPUT);
+
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->analogWrite(OUTPUT_LED_ARRAY_GREEN_LEFT, MAXIMUM_ANALOG_OUTPUT_VALUE);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->analogWrite(OUTPUT_LED_ARRAY_GREEN_RIGHT, MAXIMUM_ANALOG_OUTPUT_VALUE);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->analogWrite(OUTPUT_LED_ARRAY_WHITE_LEFT, MAXIMUM_ANALOG_OUTPUT_VALUE);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->analogWrite(OUTPUT_LED_ARRAY_WHITE_RIGHT, MAXIMUM_ANALOG_OUTPUT_VALUE);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->analogWrite(OUTPUT_LED_ARRAY_RED_QUAD_1, MAXIMUM_ANALOG_OUTPUT_VALUE);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->analogWrite(OUTPUT_LED_ARRAY_RED_QUAD_2, MAXIMUM_ANALOG_OUTPUT_VALUE);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->analogWrite(OUTPUT_LED_ARRAY_RED_QUAD_3, MAXIMUM_ANALOG_OUTPUT_VALUE);
+    io_expander[OUTPUT_LED_ARRAY_I2C_DEVICE]->analogWrite(OUTPUT_LED_ARRAY_RED_QUAD_4, MAXIMUM_ANALOG_OUTPUT_VALUE);
 }
 
 void WallImplementation::initializeMotorOutputs(void)
@@ -137,6 +146,23 @@ void WallImplementation::initializePWMOutputs(void)
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->begin();
     pwm->setPWMFreq(WALL_PWM_FREQUENCY);
+
+    pwm->setPin(INDICATOR_LED_ARRAY_WHITE, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_LED_ARRAY_RED, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_LED_ARRAY_GREEN, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_MOTOR_2, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_MOTOR_1, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_TRANSDUCER, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_TOGGLE_SWITCH, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_JOYSTICK, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_ROTARY_POT, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_LINEAR_POT, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_PHOTO_SENSOR, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_FORCE_SENSOR, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_BATTERY_POSITIVE, PWM_INDICATOR_OFF_VALUE, FALSE);
+    pwm->setPin(INDICATOR_BATTERY_NEGATIVE, PWM_INDICATOR_OFF_VALUE, FALSE);
+
+    pwm->setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_FULL_DUTY_CYCLE);
 }
 
 void WallImplementation::initializeToggleInputs(void)
@@ -165,13 +191,18 @@ void WallImplementation::initializeButtonInOuts(void)
         setMultiplexerForIOexpander(device);
         io_expander[device]->pinMode(buttonPin(button), INPUT_PULLUP);
         io_expander[device]->pinMode(buttonLEDpin(button), OUTPUT);
+        io_expander[device]->digitalWrite(buttonLEDpin(button), LOW);
     }
 }
 
 void WallImplementation::initalizeELwireOutputs(void)
 {
     for (int el = RED_WIRE_ONE; el <= BLUE_WIRE_TWO; el++)
-        pinMode(elWirePin(static_cast<EL_wire>(el)), OUTPUT);
+    {
+        int wire = elWirePin(static_cast<EL_wire>(el));
+        pinMode(wire, OUTPUT);
+        digitalWrite(wire, LOW);
+    }
 }
 
 int WallImplementation::greenLEDarrayPin(led_section section)
@@ -295,7 +326,6 @@ void WallImplementation::turnTransducerOff(void)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPWM(OUTPUT_TRANSDUCER, PWM_START_OF_DUTY_CYCLE, PWM_FULL_DUTY_CYCLE);
-
 }
 
 int WallImplementation::indicatorPin(indicator_led lamp)
