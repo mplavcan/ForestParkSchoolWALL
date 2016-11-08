@@ -136,7 +136,7 @@ void indicateInputCircuitState(input_hex hex)
 {
     indicator_led lamp = Wall::indicatorforInput(hex);
     circuit_end left = Wall::leftCircuitForInput(hex);
-    circuit_end right = Wall::leftCircuitForInput(hex);
+    circuit_end right = Wall::rightCircuitForInput(hex);
     if (wall->readCircuitState(left) == LOW)
     {
         Serial.println("Left side input "+ String(hex) + " circuit triggered");
@@ -155,7 +155,7 @@ void indicateOutputCircuitState(output_hex hex)
 {
     indicator_led lamp = Wall::indicatorForOutput(hex);
     circuit_end left = Wall::leftCircuitForOutput(hex);
-    circuit_end right = Wall::leftCircuitForOutput(hex);
+    circuit_end right = Wall::rightCircuitForOutput(hex);
     if (wall->readCircuitState(left) == LOW)
     {
         Serial.println("Left side output " + String(hex) + " circuit triggered");
