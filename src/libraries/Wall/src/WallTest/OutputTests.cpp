@@ -1,8 +1,13 @@
 // Input device tests for Wall object
 //
 #include "Wallfixture.h"
+#include <tuple>
 
 namespace testing {
+
+using std::tuple;
+using std::make_tuple;
+using std::get;
 
 // Active-High LED array tests
 class LEDHighFixture : public WallFixture,

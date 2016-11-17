@@ -2,7 +2,6 @@
 //
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <tuple>
 #include <Arduino.h>
 #include <Wire.h>
 #include <rgb_lcd.h>
