@@ -118,7 +118,7 @@ typedef enum
 class WallImplementation
 {
 public:
-    WallImplementation(FactoryInterface *io);
+    WallImplementation* usingFactory(FactoryInterface *io);
     bool initialize(void);
     bool initializeIOexpanders(void);
     void initializeAnalogExpanders(void);
@@ -221,7 +221,7 @@ private:
 class Wall: private WallImplementation
 {
 public:
-    Wall(FactoryInterface *io): WallImplementation(io) {}
+    Wall* usingFactory(FactoryInterface *io) { this->WallImplementation::usingFactory(io); return this; }
     using WallImplementation::initialize;
     using WallImplementation::turnOnLEDarray;
     using WallImplementation::turnOffLEDarray;

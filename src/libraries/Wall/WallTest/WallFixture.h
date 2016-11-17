@@ -26,7 +26,7 @@ protected:
         Intel101 = arduinoMockInstance();
         i2c = static_cast<StrictMock<WireMock> *>(WireMockInstance());
         io = new MockDeviceFactory;
-        wall = new WallImplementation(io);
+        wall = (new WallImplementation)->usingFactory(io);
     }
 
     virtual ~WallFixture() {

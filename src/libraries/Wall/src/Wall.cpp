@@ -31,13 +31,14 @@ const int WallImplementation::analogDeviceBus[NUMBER_OF_ADS1015_DEVICES] = {
 };
 
 
-WallImplementation::WallImplementation(FactoryInterface *io) {
+WallImplementation* WallImplementation::usingFactory(FactoryInterface *io) {
     for (int device = 0; device < NUMBER_OF_SX1509_DEVICES; device++)
         this->io_expander[device] = io->createSX1509Instance();
     for (int device = 0; device < NUMBER_OF_ADS1015_DEVICES; device++)
         this->analog_expander[device] = io->createADS1015Instance(analogDeviceAddress[device]);
     this->pwm = io->createPWMinstance(ADAFRUIT_PWM_I2C_ADDRESS);
     this->lcd = io->createLCDInstance();
+    return this;
 }
 
 void WallImplementation::setMultiplexerForIOexpander(int device) {

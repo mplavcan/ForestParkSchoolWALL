@@ -22,7 +22,7 @@ void setup() {
     Serial.println("Starting setup()");
     Serial.println("Forest Park Circuit Wall starting up");
 
-    wall = new Wall(new DeviceFactory());
+    wall = (new Wall)->usingFactory(new DeviceFactory);
 
     if (!wall->initialize())
         Serial.println("Initialization of I2C devices failed");
