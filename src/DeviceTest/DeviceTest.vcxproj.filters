@@ -16,7 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DeviceTest.ino" />
-    <None Include="..\libraries\Wall\src\WallTest\WallTest.vcxproj" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.DeviceTest.vsarduino.h">

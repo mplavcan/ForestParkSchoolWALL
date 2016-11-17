@@ -1,6 +1,8 @@
 // Input device tests for Wall object
 //
 #include "Wallfixture.h"
+#include <Wall.h>
+#include <Arduino.h>
 
 namespace testing {
 

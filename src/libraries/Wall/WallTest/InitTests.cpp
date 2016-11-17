@@ -1,6 +1,9 @@
 // Initialization tests for Wall object
 //
 #include "Wallfixture.h"
+#include <Wall.h>
+#include <Arduino.h>
+#include <SparkFunSX1509.h>
 
 namespace testing {
 

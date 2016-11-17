@@ -19,10 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BF8BF064-8F98-4DA4-BBAE-A0002095BF12}</ProjectGuid>
+    <ProjectGuid>{76151C02-01C6-4557-B157-9AC40123A64C}</ProjectGuid>
     <RootNamespace>WallTest</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>WallTest</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -75,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)libraries\Wall\src;$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;$(SolutionDir)packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;$(SolutionDir)packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\Wall\src;$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -83,7 +82,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)libraries\Wall\src;$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;$(SolutionDir)packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;$(SolutionDir)packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\Wall\src;$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -93,7 +92,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)libraries\Wall\src;$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;$(SolutionDir)packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;$(SolutionDir)packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\Wall\src;$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -107,7 +106,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)libraries\Wall\src;$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;$(SolutionDir)packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;$(SolutionDir)packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\Wall\src;$(SolutionDir)libraries\arduino-mock;$(SolutionDir)libraries\MockDevices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -115,13 +114,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\arduino-mock\src\Arduino.cc" />
-    <ClCompile Include="..\..\..\arduino-mock\src\Wire.cc" />
-    <ClCompile Include="..\..\..\MockDevices\Adafruit_ADS1015.cpp" />
-    <ClCompile Include="..\..\..\MockDevices\Adafruit_PWMServoDriver.cpp" />
-    <ClCompile Include="..\..\..\MockDevices\rgb_lcd.cpp" />
-    <ClCompile Include="..\..\..\MockDevices\SparkFunSX1509.cpp" />
-    <ClCompile Include="..\Wall.cpp" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\arduino-mock\src\Arduino.cc" />
+    <ClCompile Include="..\..\arduino-mock\src\Wire.cc" />
+    <ClCompile Include="..\..\MockDevices\Adafruit_ADS1015.cpp" />
+    <ClCompile Include="..\..\MockDevices\Adafruit_PWMServoDriver.cpp" />
+    <ClCompile Include="..\..\MockDevices\rgb_lcd.cpp" />
+    <ClCompile Include="..\..\MockDevices\SparkFunSX1509.cpp" />
+    <ClCompile Include="..\src\Wall.cpp" />
     <ClCompile Include="CircuitTests.cpp" />
     <ClCompile Include="IndicatorTests.cpp" />
     <ClCompile Include="InitTests.cpp" />
@@ -130,23 +132,14 @@
     <ClCompile Include="OutputTests.cpp" />
     <ClCompile Include="UnitTests.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\..\..\..\packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googletest.v140.windesktop.static.rt-dyn.targets" Condition="Exists('..\..\..\..\packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googletest.v140.windesktop.static.rt-dyn.targets')" />
-    <Import Project="..\..\..\..\packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googlemock.v140.windesktop.static.rt-dyn.targets" Condition="Exists('..\..\..\..\packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googlemock.v140.windesktop.static.rt-dyn.targets')" />
+    <Import Project="..\..\..\packages\gmock.1.7.0\build\native\gmock.targets" Condition="Exists('..\..\..\packages\gmock.1.7.0\build\native\gmock.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\..\packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googletest.v140.windesktop.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\googletest.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googletest.v140.windesktop.static.rt-dyn.targets'))" />
-    <Error Condition="!Exists('..\..\..\..\packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googlemock.v140.windesktop.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\googlemock.v140.windesktop.static.rt-dyn.1.7.0.1\build\native\googlemock.v140.windesktop.static.rt-dyn.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\gmock.1.7.0\build\native\gmock.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\gmock.1.7.0\build\native\gmock.targets'))" />
   </Target>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties VM.DebugTextMessages.SerialWindow="1" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>

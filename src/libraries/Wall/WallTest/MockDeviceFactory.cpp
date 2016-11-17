@@ -1,6 +1,11 @@
 // Unit tests for Wall object
 //
 #include "MockDeviceFactory.h"
+#include <SparkFunSX1509.h>
+#include <Adafruit_PWMServoDriver.h>
+#include <Adafruit_ADS1015.h>
+#include <rgb_lcd.h>
+
 
 #define MAXIMUM_IO_INSTANCES 10  // arbitrary, must be great than any of "NUMBER_OF_xxxx_DEVICES"
 
