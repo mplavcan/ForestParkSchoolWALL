@@ -19,7 +19,7 @@ Wall Interface methods:
     // Motors (BLUE_MOTOR, ORANGE_MOTOR)
     void setMotorDirectionClockwise(wall_motor motor);
     void setMotorDirectionCounterClockwise(wall_motor motor);
-    void setMotorSpeed(wall_motor motor, uint8_t speed);
+    void setMotorSpeed(wall_motor motor, unsigned char speed);
     void stopMotor(wall_motor motor);
 
     // Buzzer
@@ -36,22 +36,22 @@ Wall Interface methods:
     bool isJoystickRight(void);
 
     // Silver Knob
-    uint16_t getKnobPosition(void);
+    unsigned in getKnobPosition(void);
 
     // Arrow Slider
-    uint16_t getSliderPosition(void);
+    unsigned in getSliderPosition(void);
 
     // Photo Sensors (LEFT_PHOTO, CENTER_PHOTO, RIGHT_PHOTO)
-    uint16_t getPhotoSensorValue(photo_sensor sensor);
+    unsigned in getPhotoSensorValue(photo_sensor sensor);
 
     // Touch Sensors (LEFT_TOUCH, BOTTOM_TOUCH, RIGHT_TOUCH)
-    uint16_t getTouchSensorValue(force_sensor sensor);
+    unsigned in getTouchSensorValue(force_sensor sensor);
   
     // Input/Output Indicator LEDs (per input/output)
     //
     void turnIndicatorOn(indicator_led lamp);
     void turnIndicatorOff(indicator_led lamp);
-    void setIndicatorBrightness(indicator_led lamp, uint16_t value);
+    void setIndicatorBrightness(indicator_led lamp, unsigned in value);
 
     // Hex circuit points (per input/output)
     int readCircuitState(circuit_end end);
@@ -70,8 +70,8 @@ Wall Interface methods:
     void extinguishELWire(EL_wire line);
 
     // LCD Display
-    void lcdPrintAt(uint8_t column, uint8_t row, const char buf[]);
-    void lcdSetBacklightColor(uint8_t red, uint8_t green, uint8_t blue);
+    void lcdPrintAt(unsigned char column, unsigned char row, const char buf[]);
+    void lcdSetBacklightColor(unsigned char red, unsigned char green, unsigned char blue);
     void clearLCDscreen(void);
 
 ```

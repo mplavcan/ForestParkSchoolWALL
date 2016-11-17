@@ -118,6 +118,7 @@ typedef enum
 class WallImplementation
 {
 public:
+    WallImplementation() : pwm(nullptr),lcd(nullptr),lastSliderPosition(1024) {}
     WallImplementation* usingFactory(FactoryInterface *io);
     bool initialize(void);
     bool initializeIOexpanders(void);
@@ -142,22 +143,22 @@ public:
     void setLEDarrayBrightness(led_array array, led_section section, unsigned char brightness);
     void setMotorDirectionClockwise(wall_motor motor);
     void setMotorDirectionCounterClockwise(wall_motor motor);
-    void setMotorSpeed(wall_motor motor, uint8_t speed);
+    void setMotorSpeed(wall_motor motor, unsigned char speed);
     void stopMotor(wall_motor motor);
     void turnTransducerOn(void);
     void turnTransducerOff(void);
     void turnIndicatorOn(indicator_led lamp);
     void turnIndicatorOff(indicator_led lamp);
-    void setIndicatorBrightness(indicator_led lamp, uint16_t value);
+    void setIndicatorBrightness(indicator_led lamp, unsigned int value);
     bool isToggleOn(toggle_switch toggle);
     bool isJoystickUp(void);
     bool isJoystickDown(void);
     bool isJoystickLeft(void);
     bool isJoystickRight(void);
-    uint16_t getKnobPosition(void);
-    uint16_t getSliderPosition(void);
-    uint16_t getPhotoSensorValue(photo_sensor sensor);
-    uint16_t getTouchSensorValue(force_sensor sensor);
+    unsigned int getKnobPosition(void);
+    unsigned int getSliderPosition(void);
+    unsigned int getPhotoSensorValue(photo_sensor sensor);
+    unsigned int getTouchSensorValue(force_sensor sensor);
     int readCircuitState(circuit_end end);
     void resetCircuitInputs(void);
     void setCircuitAsInput(circuit_end end);
@@ -168,8 +169,8 @@ public:
     void extinguishButton(large_button button);
     void illuminateELWire(EL_wire line);
     void extinguishELWire(EL_wire line);
-    void lcdPrintAt(uint8_t column, uint8_t row, const char buf[]);
-    void lcdSetBacklightColor(uint8_t red, uint8_t green, uint8_t blue);
+    void lcdPrintAt(unsigned char column, unsigned char row, const char buf[]);
+    void lcdSetBacklightColor(unsigned char red, unsigned char green, unsigned char blue);
     void clearLCDscreen(void);
 
     static indicator_led indicatorforInput(input_hex hex);
@@ -184,8 +185,8 @@ public:
     static const int analogDeviceAddress[NUMBER_OF_ADS1015_DEVICES];
     static const int analogDeviceBus[NUMBER_OF_ADS1015_DEVICES];
 
-    static uint16_t normalizedKnobValue(uint16_t sliderValue);
-    uint16_t normalizedSliderValue(uint16_t sliderValue);
+    static unsigned int normalizedKnobValue(unsigned int sliderValue);
+    unsigned int normalizedSliderValue(unsigned int sliderValue);
 
     static int motorControlPin1(wall_motor motor);
     static int motorControlPin2(wall_motor motor);
@@ -212,7 +213,7 @@ private:
     Adafruit_PWMServoDriver *pwm;
     rgb_lcd *lcd;
 
-    uint16_t lastSliderPosition;
+    unsigned int lastSliderPosition;
     
     int writeMultiplexerForBus(int bus);
 };

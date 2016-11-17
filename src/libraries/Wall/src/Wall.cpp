@@ -312,7 +312,7 @@ void WallImplementation::stopMotor(wall_motor motor)
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin1(motor), LOW);
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->digitalWrite(motorControlPin2(motor), LOW);
 }
-void WallImplementation::setMotorSpeed(wall_motor motor, uint8_t speed)
+void WallImplementation::setMotorSpeed(wall_motor motor, unsigned char speed)
 {
     setMultiplexerForIOexpander(OUTPUT_MOTOR_I2C_DEVICE);
     io_expander[OUTPUT_MOTOR_I2C_DEVICE]->analogWrite(motorPWMpin(motor), speed);
@@ -360,7 +360,7 @@ void WallImplementation::turnIndicatorOff(indicator_led lamp)
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPin(indicatorPin(lamp), PWM_INDICATOR_OFF_VALUE, FALSE);
 }
-void WallImplementation::setIndicatorBrightness(indicator_led lamp, uint16_t value)
+void WallImplementation::setIndicatorBrightness(indicator_led lamp, unsigned int value)
 {
     setMultiplexerI2CBus(ADAFRUIT_PWM_I2C_BUS);
     pwm->setPin(indicatorPin(lamp), value % PWM_FULL_DUTY_CYCLE, FALSE);
@@ -412,12 +412,12 @@ bool WallImplementation::isJoystickRight(void)
 // disengaged from the track, resulting in a maximum value that is not
 // acheivable, even when far right.  If this value is detected, the result
 // must a be safe value that is the extreme value for the left side.
-uint16_t WallImplementation::normalizedKnobValue(uint16_t rawKnobValue)
+unsigned int WallImplementation::normalizedKnobValue(unsigned int rawKnobValue)
 {
     return (rawKnobValue > INPUT_ROTARY_POT_RIGHT_LIMIT) ? INPUT_ROTARY_POT_LEFT_LIMIT : rawKnobValue;
 }
 
-uint16_t WallImplementation::getKnobPosition(void)
+unsigned int WallImplementation::getKnobPosition(void)
 {
     setMultiplexerForAnalog(INPUT_ROTARY_POT_I2C_DEVICE);
     return normalizedKnobValue(analog_expander[INPUT_ROTARY_POT_I2C_DEVICE]->
@@ -428,16 +428,16 @@ uint16_t WallImplementation::getKnobPosition(void)
 // disengaged from the track, resulting in a maximum value that is not
 // acheivable, even when far right.  If this value is detected, the result
 // must a be safe value that is the extreme value for the side last observed.
-uint16_t WallImplementation::normalizedSliderValue(uint16_t rawSliderValue)
+unsigned int WallImplementation::normalizedSliderValue(unsigned int rawSliderValue)
 {
-    const uint16_t extremePosition = (this->lastSliderPosition < INPUT_LINEAR_POT_MIDDLE_POSITION) ?
+    const unsigned int extremePosition = (this->lastSliderPosition < INPUT_LINEAR_POT_MIDDLE_POSITION) ?
         INPUT_LINEAR_POT_LEFT_LIMIT :
         INPUT_LINEAR_POT_RIGHT_LIMIT;
     return (rawSliderValue > INPUT_LINEAR_POT_RIGHT_LIMIT) ? 
         extremePosition : rawSliderValue;
 }
 
-uint16_t WallImplementation::getSliderPosition(void)
+unsigned int WallImplementation::getSliderPosition(void)
 {
     setMultiplexerForAnalog(INPUT_LINEAR_POT_I2C_DEVICE);
     this->lastSliderPosition = normalizedSliderValue(analog_expander[INPUT_LINEAR_POT_I2C_DEVICE]->
@@ -456,7 +456,7 @@ int WallImplementation::photoSensorPin(photo_sensor sensor)
     }
 }
 
-uint16_t WallImplementation::getPhotoSensorValue(photo_sensor sensor)
+unsigned int WallImplementation::getPhotoSensorValue(photo_sensor sensor)
 {
     setMultiplexerForAnalog(INPUT_PHOTO_SENSOR_I2C_DEVICE);
     return analog_expander[INPUT_PHOTO_SENSOR_I2C_DEVICE]->readADC_SingleEnded(photoSensorPin(sensor));
@@ -473,7 +473,7 @@ int WallImplementation::forceSensorPin(force_sensor sensor)
     }
 }
 
-uint16_t WallImplementation::getTouchSensorValue(force_sensor sensor)
+unsigned int WallImplementation::getTouchSensorValue(force_sensor sensor)
 {
     setMultiplexerForAnalog(INPUT_FORCE_SENSOR_I2C_DEVICE);
     return analog_expander[INPUT_FORCE_SENSOR_I2C_DEVICE]->readADC_SingleEnded(forceSensorPin(sensor));
@@ -748,14 +748,14 @@ void WallImplementation::initializeLCD(void)
     lcd->clear();
 }
 
-void WallImplementation::lcdPrintAt(uint8_t column, uint8_t row, const char buf[])
+void WallImplementation::lcdPrintAt(unsigned char column, unsigned char row, const char buf[])
 {
     setMultiplexerI2CBus(GROVE_LCD_I2C_BUS);
     lcd->setCursor(column, row);
     lcd->print(buf);
 }
 
-void WallImplementation::lcdSetBacklightColor(uint8_t red, uint8_t green, uint8_t blue)
+void WallImplementation::lcdSetBacklightColor(unsigned char red, unsigned char green, unsigned char blue)
 {
     setMultiplexerI2CBus(GROVE_LCD_I2C_BUS);
     lcd->setRGB(red, green, blue);
