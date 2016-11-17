@@ -13,7 +13,6 @@ class ApplicationFixture : public Test {
 protected:
        
     ApplicationFixture() {
-        WallMock *wall = (new WallMock)->usingFactory(NULL);
     }
 
     ~ApplicationFixture() {   

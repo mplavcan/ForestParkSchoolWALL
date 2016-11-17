@@ -119,10 +119,6 @@
   <ItemGroup>
     <ClCompile Include="UnitTests.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\Wall\src\WallMock.h" />
-    <ClInclude Include="..\src\FunWithCircuits.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\..\..\packages\gmock.1.7.0\build\native\gmock.targets" Condition="Exists('..\..\..\packages\gmock.1.7.0\build\native\gmock.targets')" />
