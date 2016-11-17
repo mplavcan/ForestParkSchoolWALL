@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimerTest", "libraries\Time
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WallTest", "libraries\Wall\WallTest\WallTest.vcxproj", "{76151C02-01C6-4557-B157-9AC40123A64C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FunWithCircuitsTest", "libraries\FunWithCircuits\FunWithCircuitsTest\FunWithCircuitsTest.vcxproj", "{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -57,6 +59,16 @@ Global
 		{76151C02-01C6-4557-B157-9AC40123A64C}.Release|x64.Build.0 = Release|x64
 		{76151C02-01C6-4557-B157-9AC40123A64C}.Release|x86.ActiveCfg = Release|Win32
 		{76151C02-01C6-4557-B157-9AC40123A64C}.Release|x86.Build.0 = Release|Win32
+		{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}.Debug|ARM.ActiveCfg = Debug|Win32
+		{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}.Debug|x64.ActiveCfg = Debug|x64
+		{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}.Debug|x64.Build.0 = Debug|x64
+		{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}.Debug|x86.ActiveCfg = Debug|Win32
+		{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}.Debug|x86.Build.0 = Debug|Win32
+		{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}.Release|ARM.ActiveCfg = Release|Win32
+		{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}.Release|x64.ActiveCfg = Release|x64
+		{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}.Release|x64.Build.0 = Release|x64
+		{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}.Release|x86.ActiveCfg = Release|Win32
+		{14EFA37B-5CF7-4519-AD43-C27A32AAFC9C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
