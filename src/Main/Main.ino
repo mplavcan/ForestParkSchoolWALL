@@ -170,7 +170,7 @@ void driveOutputHex(uint16_t value)
         case TRANSDUCER_HEX:
             driveTransducer(value, midpoint);
             break;
-        case WHITE_LED_HEX:
+          case WHITE_LED_HEX:
             driveTwoPartLED(WHITE_LED, value, midpoint);
             break;
         case GREEN_LED_HEX:
@@ -229,6 +229,14 @@ void lightIndicatorsForConnectedCircuits()
 }
 
 
+void lightButtonIfPressed(large_button color)
+{
+    if (wall->isButtonDepressed(color))
+        wall->illuminateButton(color);
+    else
+        wall->extinguishButton(color);
+}
+
 void turnOffAllOutputHexes()
 {
     wall->turnTransducerOff();
@@ -246,6 +254,12 @@ void turnOffAllOutputHexes()
 
 void loop()
 {
+    lightButtonIfPressed(BLUE_BUTTON);
+    lightButtonIfPressed(RED_BUTTON);
+    lightButtonIfPressed(GREEN_BUTTON);
+    lightButtonIfPressed(YELLOW_BUTTON);
+    lightButtonIfPressed(WHITE_BUTTON);
+
     collectCircuitConnections();
     lightIndicatorsForConnectedCircuits();
     if (circuitComplete)
