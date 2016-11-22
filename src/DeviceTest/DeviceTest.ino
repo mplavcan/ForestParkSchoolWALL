@@ -19,11 +19,26 @@ void setup() {
 
     wall = (new Wall)->usingFactory(new DeviceFactory);
 
+    // BEGIN_WORKAROUND:
+    // For some odd reason, the LCD display routine inside Wall is 
+    // dropping the second print, and highlighting the upper line.
+    // A nearly identical piece of code in Main.ino _works_perfectly_
+    // Adding this separate initializtion appears to avoid the issue
+    {
+        rgb_lcd localLCD;
+        Wire.beginTransmission(ADAFRUIT_MULTIPLEXER_I2C_ADDRESS);
+        Wire.write(1);
+        localLCD.begin(16, 2);
+    }
+    // END WORKAROUND
+
     if(!wall->initialize())
         Serial.println("Initialization of I2C devices failed");
+
     wall->lcdSetBacklightColor(180, 100, 10);
     wall->lcdPrintAt(0, 0, "Wall Interface");
     wall->lcdPrintAt(0, 1, "Device Test");
+    
     wall->setCircuitAsOutput(CIRCUIT_POSITIVE_POLE);
     wall->setCircuitAsOutput(CIRCUIT_NEGATIVE_POLE);
     wall->turnIndicatorOn(INDICATE_POSITIVE_POLE);
