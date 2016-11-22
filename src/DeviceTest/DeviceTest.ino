@@ -78,11 +78,13 @@ void printJoystickDirection()
 void ControlMotor(wall_motor motor, int16_t controlValue)
 {
     const int THRESHOLD = 512;
-    const int DEADZONE = 25;
+    const int DEADZONE = 50;
+    const unsigned char maximumSpeed = 50;
     if (controlValue > THRESHOLD + DEADZONE) wall->setMotorDirectionClockwise(motor);
     else if (controlValue < THRESHOLD - DEADZONE) wall->setMotorDirectionCounterClockwise(motor);
     else wall->stopMotor(motor);
-    wall->setMotorSpeed(motor, controlValue >> 5);
+    unsigned char speed = (controlValue >> 5);
+    wall->setMotorSpeed(motor, min(speed, maximumSpeed));
 }
 
 void turnOffAllLights()
