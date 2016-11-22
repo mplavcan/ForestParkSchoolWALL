@@ -11,8 +11,10 @@
 
 #define ONE_TENTH_SECOND 100
 #define ONE_HUNDREDTH_SECOND 10
+#define ONE_SECOND 1000
 
 Wall *wall;
+unsigned long lightsOnTime = 0;
 
 void setup() {
     Serial.begin(115200);
@@ -159,13 +161,14 @@ output_hex findConnectedOutputHex()
 void driveOutputHex(uint16_t value)
 {
     const int midpoint = 2048;
+    const int motorMidpoint = 500;
     switch (energizedOutput)
     {
         case BLUE_MOTOR_HEX:
-            driveMotor(BLUE_MOTOR, value, midpoint);
+            driveMotor(BLUE_MOTOR, value, motorMidpoint);
             break;
         case ORANGE_MOTOR_HEX:
-            driveMotor(ORANGE_MOTOR, value, midpoint);
+            driveMotor(ORANGE_MOTOR, value, motorMidpoint);
             break;
         case TRANSDUCER_HEX:
             driveTransducer(value, midpoint);
@@ -232,9 +235,38 @@ void lightIndicatorsForConnectedCircuits()
 void lightButtonIfPressed(large_button color)
 {
     if (wall->isButtonDepressed(color))
+    {
         wall->illuminateButton(color);
+        EL_wire wire;
+
+        switch(color)
+        {
+            case RED_BUTTON: wire = RED_WIRE_ONE; break;
+            case YELLOW_BUTTON: wire = YELLOW_WIRE; break;
+            case WHITE_BUTTON: wire = WHITE_WIRE; break;
+            case BLUE_BUTTON: wire = BLUE_WIRE_ONE; break;
+            case GREEN_BUTTON: wire = GREEN_WIRE_ONE; break;
+            default: break;
+        }
+
+        wall->illuminateELWire(wire);
+        lightsOnTime = millis();
+    }
     else
         wall->extinguishButton(color);
+}
+
+
+void turnOffAllELwires()
+{
+    wall->extinguishELWire(RED_WIRE_ONE);
+    wall->extinguishELWire(RED_WIRE_TWO);
+    wall->extinguishELWire(GREEN_WIRE_ONE);
+    wall->extinguishELWire(GREEN_WIRE_TWO);
+    wall->extinguishELWire(YELLOW_WIRE);
+    wall->extinguishELWire(WHITE_WIRE);
+    wall->extinguishELWire(BLUE_WIRE_ONE);
+    wall->extinguishELWire(BLUE_WIRE_TWO);
 }
 
 void turnOffAllOutputHexes()
@@ -267,4 +299,6 @@ void loop()
     else 
         turnOffAllOutputHexes();
     delay(ONE_HUNDREDTH_SECOND);
+    if (millis() > lightsOnTime + (2 * ONE_SECOND))
+        turnOffAllELwires();
 }
