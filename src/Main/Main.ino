@@ -10,14 +10,7 @@
 #include "Wall.h"
 #include "FunWithCircuits.h"
 
-#define ONE_TENTH_SECOND 100
-#define ONE_HUNDREDTH_SECOND 10
-#define ONE_SECOND 1000
-
-Wall *wall;
 FunWithCircuits *app;
-
-unsigned long lightsOnTime = 0;
 
 void setup() {
     Serial.begin(115200);
@@ -25,7 +18,6 @@ void setup() {
     Serial.println("Starting setup()");
     Serial.println("Forest Park Circuit Wall starting up");
 
-    wall = (new Wall)->usingFactory(new DeviceFactory);
     app = new FunWithCircuits((new Wall)->usingFactory(new DeviceFactory));
 
     if (!app->setup())

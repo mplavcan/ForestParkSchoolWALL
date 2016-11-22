@@ -5,6 +5,10 @@
 #ifndef _FUN_WITH_CIRCUITS_H_
 #define _FUN_WITH_CIRCUITS_H_
 
+#define ONE_HUNDREDTH_SECOND 10
+#define ONE_TENTH_SECOND 100
+#define ONE_SECOND 1000
+
 class FunWithCircuits {
 public:
     FunWithCircuits(Wall *w) : wall(w) {}
@@ -35,5 +39,7 @@ private:
     input_hex energizedInput = NO_INPUT;
     output_hex energizedOutput = NO_OUTPUT;
     bool circuitComplete = false;
+
+    unsigned long lightsOnTime = 0;
 };
 #endif // _FUN_WITH_CIRCUITS_H_
