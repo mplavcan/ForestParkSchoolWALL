@@ -8,13 +8,11 @@
 #include <Adafruit_ADS1015.h>
 #include "DeviceFactory.h"
 #include "Wall.h"
-#include "Timer.h"
 
 #define ONE_TENTH_SECOND 100
 #define ONE_HUNDREDTH_SECOND 10
 
 Wall *wall;
-Timer *ledTimer;
 
 void setup() {
     Serial.begin(115200);
@@ -191,7 +189,7 @@ void collectCircuitConnections()
     energizedOutput = findConnectedOutputHex();
     bool inputAndOutputConnected = wall->isCircuitConnected(
         Wall::rightCircuitForInput(energizedInput),
-        Wall::rightCircuitForOutput(energizedOutput));
+        Wall::leftCircuitForOutput(energizedOutput));
     
     circuitComplete = inputAndOutputConnected &&
         (energizedInput != NO_INPUT) &&
@@ -200,19 +198,33 @@ void collectCircuitConnections()
 
 void lightIndicatorsForConnectedCircuits()
 {
-    indicator_led inputLamp = Wall::indicatorforInput(energizedInput);
-    indicator_led outputLamp = Wall::indicatorForOutput(energizedOutput);
     if (circuitComplete)
     {
+        indicator_led inputLamp = Wall::indicatorforInput(energizedInput);
+        indicator_led outputLamp = Wall::indicatorForOutput(energizedOutput);
         wall->turnIndicatorOn(inputLamp);
         wall->turnIndicatorOn(outputLamp);
     }
     else
     {
-        if (energizedInput != NO_INPUT)
-            wall->setIndicatorBrightness(inputLamp, sawtoothCycle());
-        if (energizedOutput != NO_OUTPUT)
-            wall->setIndicatorBrightness(outputLamp, sawtoothCycle());
+        for (int hex = KNOB_HEX; hex <= TOUCH_SENSOR_HEX; hex++)
+        {
+            input_hex in = static_cast<input_hex>(hex);
+            indicator_led inputLamp = Wall::indicatorforInput(in);
+            if (in == energizedInput)
+                wall->setIndicatorBrightness(inputLamp, sawtoothCycle());
+            else
+                wall->setIndicatorBrightness(inputLamp, 0);
+        }
+        for (int hex = WHITE_LED_HEX; hex <= TRANSDUCER_HEX; hex++)
+        {
+            output_hex out = static_cast<output_hex>(hex);
+            indicator_led outputLamp = Wall::indicatorForOutput(out);
+            if (out == energizedOutput)
+                wall->setIndicatorBrightness(outputLamp, sawtoothCycle());
+            else
+                wall->setIndicatorBrightness(outputLamp, 0);
+        }
     }
 }
 
@@ -232,12 +244,6 @@ void turnOffAllOutputHexes()
     wall->stopMotor(ORANGE_MOTOR);
 }
 
-void timerDelay(unsigned long time)
-{
-    ledTimer = new Timer(time);
-    while (!ledTimer->expired());
-}
-
 void loop()
 {
     collectCircuitConnections();
@@ -246,5 +252,5 @@ void loop()
         driveOutputHex(getInputHexValue());
     else 
         turnOffAllOutputHexes();
-    timerDelay(ONE_HUNDREDTH_SECOND);
+    delay(ONE_HUNDREDTH_SECOND);
 }
