@@ -22,7 +22,7 @@ The replacement design consolidated the control into a single [Intel Arduino 101
 * One [Adafruit TB6612 2-channel motor controller](https://www.adafruit.com/products/2448)
 * One [Adafruit TCA9548a I2C multiplexer](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (to avoid multiple devices with the same address conflicting on the I2C bus)
 
-![Reverse side of Wall showing boards](/pictures/Wall_reverse_side_boards.tiff)
+![Reverse side of Wall showing wiring](/pictures/Wall_reverse_side.tiff)
 
 The group added a SeeedStudio Grove I2C RGB LCD display under a clear hex in the upper left corner of the Wall to provide additional visual feedback.
 

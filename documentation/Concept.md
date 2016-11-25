@@ -3,7 +3,7 @@ Board Design
 
 Board concept was created by [Travis Feldman](http://travisfeldman.org) in June 2014
 
-The board consists of an artistic map of the state of Oregon, laid out using hexagons:
+The board consists of an artistic map of the northwest corner of the state of Oregon, laid out using hexagons:
 
 ![Board front showing hexes](/pictures/Board_Hexes.jpg)
 
@@ -25,9 +25,9 @@ On the right (mountain) side are "battery negative" terminal and six outputs:
 
 The board also has five large illuminated colored buttons (Red, Green, White, Blue, Yellow) that are associated with electroluminescent wire wrapped under the hexes.  
 
-A LCD with a selectable color backlight occupies a hex in th upper-left corner of the board.
+A LCD with a selectable color backlight occupies a hex in the upper-left corner of the board.
 
-The circuits allow any one of the input types to be connected to one of the outputs using a series of wooden blocks to bridge across the intervening hexes.  When a full connection between the positive/input/output/negative conenction are made, the input will manipulate the output.
+The circuits allow any one of the input types to be connected to one of the outputs using a series of wooden blocks to bridge across the intervening hexes.  When a full connection between the positive/input/output/negative terminals are made, the input will manipulate the output.
 
 All components are software controllable by the Arduino, independent of each other.  While the students appear to be creating circuits, in fact the software is making the decision about what to activate.  This also prevents accidental damage from being done by "short circuits"
 
