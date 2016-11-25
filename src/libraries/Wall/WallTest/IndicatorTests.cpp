@@ -13,7 +13,7 @@ TEST_P(IndicatorFixture, TestTurnOnIndicator)
 
     InSequence lamp_on;
     expectMultiplexerSelectedBus(ADAFRUIT_PWM_I2C_BUS);
-    EXPECT_CALL(*io->accessMockPWM(), setPin(WallImplementation::indicatorPin(lamp), PWM_INDICATOR_ON_VALUE, FALSE));
+    EXPECT_CALL(*io->accessMockPWM(), setPin(TestableWall::indicatorPin(lamp), PWM_INDICATOR_ON_VALUE, FALSE));
     wall->turnIndicatorOn(lamp);
 }
 TEST_P(IndicatorFixture, TestTurnOffIndicator)
@@ -22,7 +22,7 @@ TEST_P(IndicatorFixture, TestTurnOffIndicator)
 
     InSequence lamp_off;
     expectMultiplexerSelectsSX1509(ADAFRUIT_PWM_I2C_BUS);
-    EXPECT_CALL(*io->accessMockPWM(), setPin(WallImplementation::indicatorPin(lamp), PWM_INDICATOR_OFF_VALUE, FALSE));
+    EXPECT_CALL(*io->accessMockPWM(), setPin(TestableWall::indicatorPin(lamp), PWM_INDICATOR_OFF_VALUE, FALSE));
     wall->turnIndicatorOff(lamp);
 }
 TEST_P(IndicatorFixture, TestSetIndicatorBrighness)
@@ -32,7 +32,7 @@ TEST_P(IndicatorFixture, TestSetIndicatorBrighness)
 
     InSequence lamp_bright;
     expectMultiplexerSelectsSX1509(ADAFRUIT_PWM_I2C_BUS);
-    EXPECT_CALL(*io->accessMockPWM(), setPin(WallImplementation::indicatorPin(lamp), brightness, FALSE));
+    EXPECT_CALL(*io->accessMockPWM(), setPin(TestableWall::indicatorPin(lamp), brightness, FALSE));
     wall->setIndicatorBrightness(lamp, brightness);
 }
 INSTANTIATE_TEST_CASE_P(IndicatorTests, IndicatorFixture, Values(

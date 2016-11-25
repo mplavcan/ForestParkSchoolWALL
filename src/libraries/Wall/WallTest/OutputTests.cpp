@@ -23,7 +23,7 @@ TEST_P(LEDHighFixture, TurnOnLEDArray)
     InSequence led_on;
     expectMultiplexerSelectsSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE);
     EXPECT_SX1509_ANALOG_WRITE(OUTPUT_LED_ARRAY_I2C_DEVICE,
-        WallImplementation::ledArrayPin(array, section), MINIMUM_ANALOG_OUTPUT_VALUE);
+        TestableWall::ledArrayPin(array, section), MINIMUM_ANALOG_OUTPUT_VALUE);
     wall->turnOnLEDarray(array, section);
 }
 TEST_P(LEDHighFixture, TurnOffLEDArray)
@@ -34,7 +34,7 @@ TEST_P(LEDHighFixture, TurnOffLEDArray)
     InSequence led_off;
     expectMultiplexerSelectsSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE);
     EXPECT_SX1509_ANALOG_WRITE(OUTPUT_LED_ARRAY_I2C_DEVICE,
-        WallImplementation::ledArrayPin(array, section), MAXIMUM_ANALOG_OUTPUT_VALUE);
+        TestableWall::ledArrayPin(array, section), MAXIMUM_ANALOG_OUTPUT_VALUE);
     wall->turnOffLEDarray(array, section);
 }
 INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDHighFixture, Values(
@@ -57,7 +57,7 @@ TEST_P(LEDLowFixture, TurnOnLEDArray)
     InSequence led_on;
     expectMultiplexerSelectsSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE);
     EXPECT_SX1509_ANALOG_WRITE(OUTPUT_LED_ARRAY_I2C_DEVICE,
-        WallImplementation::ledArrayPin(array, section), MAXIMUM_ANALOG_OUTPUT_VALUE);
+        TestableWall::ledArrayPin(array, section), MAXIMUM_ANALOG_OUTPUT_VALUE);
     wall->turnOnLEDarray(array, section);
 }
 TEST_P(LEDLowFixture, TurnOffLEDArray)
@@ -68,7 +68,7 @@ TEST_P(LEDLowFixture, TurnOffLEDArray)
     InSequence led_off;
     expectMultiplexerSelectsSX1509(OUTPUT_LED_ARRAY_I2C_DEVICE);
     EXPECT_SX1509_ANALOG_WRITE(OUTPUT_LED_ARRAY_I2C_DEVICE,
-        WallImplementation::ledArrayPin(array, section), MINIMUM_ANALOG_OUTPUT_VALUE);
+        TestableWall::ledArrayPin(array, section), MINIMUM_ANALOG_OUTPUT_VALUE);
     wall->turnOffLEDarray(array, section);
 }
 INSTANTIATE_TEST_CASE_P(LEDArrayTests, LEDLowFixture, Values(
@@ -90,12 +90,12 @@ TEST_P(MotorFixture, TestRunMotorClockwise)
     InSequence run_motor;
     expectMultiplexerSelectsSX1509(OUTPUT_MOTOR_I2C_DEVICE);
     EXPECT_SX1509_DIGITAL_WRITE(OUTPUT_MOTOR_I2C_DEVICE,
-        WallImplementation::motorControlPin1(motor), HIGH);
+        TestableWall::motorControlPin1(motor), HIGH);
     EXPECT_SX1509_DIGITAL_WRITE(OUTPUT_MOTOR_I2C_DEVICE,
-        WallImplementation::motorControlPin2(motor), LOW);
+        TestableWall::motorControlPin2(motor), LOW);
     expectMultiplexerSelectsSX1509(OUTPUT_MOTOR_I2C_DEVICE);
     EXPECT_SX1509_ANALOG_WRITE(OUTPUT_MOTOR_I2C_DEVICE,
-        WallImplementation::motorPWMpin(motor), speed);
+        TestableWall::motorPWMpin(motor), speed);
 
     wall->setMotorDirectionClockwise(motor);
     wall->setMotorSpeed(motor, speed);
@@ -108,12 +108,12 @@ TEST_P(MotorFixture, TestRunMotorCounterClockwise)
     InSequence run_motor;
     expectMultiplexerSelectsSX1509(OUTPUT_MOTOR_I2C_DEVICE);
     EXPECT_SX1509_DIGITAL_WRITE(OUTPUT_MOTOR_I2C_DEVICE,
-        WallImplementation::motorControlPin1(motor), LOW);
+        TestableWall::motorControlPin1(motor), LOW);
     EXPECT_SX1509_DIGITAL_WRITE(OUTPUT_MOTOR_I2C_DEVICE,
-        WallImplementation::motorControlPin2(motor), HIGH);
+        TestableWall::motorControlPin2(motor), HIGH);
     expectMultiplexerSelectsSX1509(OUTPUT_MOTOR_I2C_DEVICE);
     EXPECT_SX1509_ANALOG_WRITE(OUTPUT_MOTOR_I2C_DEVICE,
-        WallImplementation::motorPWMpin(motor), speed);
+        TestableWall::motorPWMpin(motor), speed);
 
     wall->setMotorDirectionCounterClockwise(motor);
     wall->setMotorSpeed(motor, speed);
@@ -125,9 +125,9 @@ TEST_P(MotorFixture, TestStopMotor)
     InSequence stop_motor;
     expectMultiplexerSelectsSX1509(OUTPUT_MOTOR_I2C_DEVICE);
     EXPECT_SX1509_DIGITAL_WRITE(OUTPUT_MOTOR_I2C_DEVICE,
-        WallImplementation::motorControlPin1(motor), LOW);
+        TestableWall::motorControlPin1(motor), LOW);
     EXPECT_SX1509_DIGITAL_WRITE(OUTPUT_MOTOR_I2C_DEVICE,
-        WallImplementation::motorControlPin2(motor), LOW);
+        TestableWall::motorControlPin2(motor), LOW);
 
     wall->stopMotor(motor);
 }
@@ -164,7 +164,7 @@ TEST_P(WireFixture, TestWireIlluminated)
     const EL_wire line = GetParam();
 
     InSequence illuminate_wire;
-    EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(line), HIGH));
+    EXPECT_CALL(*Intel101, digitalWrite(TestableWall::elWirePin(line), HIGH));
     wall->illuminateELWire(line);
 }
 TEST_P(WireFixture, TestWireDarkened)
@@ -172,7 +172,7 @@ TEST_P(WireFixture, TestWireDarkened)
     const EL_wire line = GetParam();
 
     InSequence illuminate_wire;
-    EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(line), LOW));
+    EXPECT_CALL(*Intel101, digitalWrite(TestableWall::elWirePin(line), LOW));
     wall->extinguishELWire(line);
 }
 INSTANTIATE_TEST_CASE_P(WireTests, WireFixture, Values(

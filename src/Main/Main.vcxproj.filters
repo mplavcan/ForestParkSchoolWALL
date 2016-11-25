@@ -33,7 +33,7 @@
     <ClInclude Include="..\libraries\Wall\src\Wall_IO_pins.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libraries\Timer\src\Timer.h">
+    <ClInclude Include="FunWithCircuits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,7 +44,7 @@
     <ClCompile Include="..\libraries\Wall\src\Wall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\libraries\Timer\src\Timer.cpp">
+    <ClCompile Include="FunWithCircuits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

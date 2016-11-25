@@ -7,11 +7,11 @@ namespace testing {
 
 void WallFixture::expectMultiplexerSelectsSX1509(int device)
 {
-    expectMultiplexerSelectedBus(WallImplementation::ioDeviceBus[device]);
+    expectMultiplexerSelectedBus(TestableWall::ioDeviceBus[device]);
 }
 void WallFixture::expectMultiplexerSelectsADS1015(int device)
 {
-    expectMultiplexerSelectedBus(WallImplementation::analogDeviceBus[device]);
+    expectMultiplexerSelectedBus(TestableWall::analogDeviceBus[device]);
 }
 void WallFixture::expectMultiplexerSelectedBus(int bus)
 {

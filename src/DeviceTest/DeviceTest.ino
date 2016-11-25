@@ -151,9 +151,9 @@ void turnOnSelectiveLight(int choice)
 
 void indicateInputCircuitState(input_hex hex)
 {
-    indicator_led lamp = Wall::indicatorforInput(hex);
-    circuit_end left = Wall::leftCircuitForInput(hex);
-    circuit_end right = Wall::rightCircuitForInput(hex);
+    indicator_led lamp = wall->indicatorforInput(hex);
+    circuit_end left = wall->leftCircuitForInput(hex);
+    circuit_end right = wall->rightCircuitForInput(hex);
     if (wall->readCircuitState(left) == LOW)
     {
         Serial.println("Left side input "+ String(hex) + " circuit triggered");
@@ -170,9 +170,9 @@ void indicateInputCircuitState(input_hex hex)
 
 void indicateOutputCircuitState(output_hex hex)
 {
-    indicator_led lamp = Wall::indicatorForOutput(hex);
-    circuit_end left = Wall::leftCircuitForOutput(hex);
-    circuit_end right = Wall::rightCircuitForOutput(hex);
+    indicator_led lamp = wall->indicatorForOutput(hex);
+    circuit_end left = wall->leftCircuitForOutput(hex);
+    circuit_end right = wall->rightCircuitForOutput(hex);
     if (wall->readCircuitState(left) == LOW)
     {
         Serial.println("Left side output " + String(hex) + " circuit triggered");

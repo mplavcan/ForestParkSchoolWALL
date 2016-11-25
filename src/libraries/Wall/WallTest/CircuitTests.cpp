@@ -14,16 +14,16 @@ protected:
 };
 void CircuitConnectionFixture::expectCircuitIsInput(circuit_end end)
 {
-    const int device = WallImplementation::circuitDevice(end);
+    const int device = TestableWall::circuitDevice(end);
 
     InSequence set_to_input;
     expectMultiplexerSelectsSX1509(device);
-    EXPECT_SX1509_PINMODE(device, WallImplementation::circuitPin(end), INPUT_PULLUP);
+    EXPECT_SX1509_PINMODE(device, TestableWall::circuitPin(end), INPUT_PULLUP);
 }
 void CircuitConnectionFixture::expectCircuitIsOutput(circuit_end end)
 {
-    const int device = WallImplementation::circuitDevice(end);
-    const int pin = WallImplementation::circuitPin(end);
+    const int device = TestableWall::circuitDevice(end);
+    const int pin = TestableWall::circuitPin(end);
 
     InSequence set_to_output;
     expectMultiplexerSelectsSX1509(device);
@@ -36,9 +36,9 @@ TEST_P(CircuitConnectionFixture, TestCircuitIdle)
     const circuit_end end = GetParam();
  
     InSequence read_connection_value;
-    const int device = WallImplementation::circuitDevice(end);
+    const int device = TestableWall::circuitDevice(end);
     expectMultiplexerSelectsSX1509(device);
-    EXPECT_SX1509_DIGITAL_READ(device, WallImplementation::circuitPin(end), HIGH);
+    EXPECT_SX1509_DIGITAL_READ(device, TestableWall::circuitPin(end), HIGH);
     ASSERT_EQ(wall->readCircuitState(end), HIGH);
 }
 TEST_P(CircuitConnectionFixture, TestCircuitEnergized)
@@ -46,9 +46,9 @@ TEST_P(CircuitConnectionFixture, TestCircuitEnergized)
     const circuit_end end = GetParam();
 
     InSequence read_connection_value;
-    const int device = WallImplementation::circuitDevice(end);
+    const int device = TestableWall::circuitDevice(end);
     expectMultiplexerSelectsSX1509(device);
-    EXPECT_SX1509_DIGITAL_READ(device, WallImplementation::circuitPin(end), LOW);
+    EXPECT_SX1509_DIGITAL_READ(device, TestableWall::circuitPin(end), LOW);
     ASSERT_EQ(wall->readCircuitState(end), LOW);
 }
 TEST_P(CircuitConnectionFixture, TestCircuitInput)
@@ -69,11 +69,11 @@ TEST_F(CircuitConnectionFixture, TestCircuitsConnected)
     const circuit_end source = CIRCUIT_NEGATIVE_POLE;
 
     InSequence check_connection;
-    const int sink_device = WallImplementation::circuitDevice(sink);
+    const int sink_device = TestableWall::circuitDevice(sink);
     
     expectCircuitIsOutput(source);
     expectMultiplexerSelectsSX1509(sink_device);
-    EXPECT_SX1509_DIGITAL_READ(sink_device, WallImplementation::circuitPin(sink), LOW);
+    EXPECT_SX1509_DIGITAL_READ(sink_device, TestableWall::circuitPin(sink), LOW);
     expectCircuitIsInput(source);
 
     ASSERT_TRUE(wall->isCircuitConnected(source, sink));
@@ -84,11 +84,11 @@ TEST_F(CircuitConnectionFixture, TestCircuitsNotConnected)
     const circuit_end source = CIRCUIT_POSITIVE_POLE;
 
     InSequence check_connection;
-    const int sink_device = WallImplementation::circuitDevice(sink);
+    const int sink_device = TestableWall::circuitDevice(sink);
 
     expectCircuitIsOutput(source);
     expectMultiplexerSelectsSX1509(sink_device);
-    EXPECT_SX1509_DIGITAL_READ(sink_device, WallImplementation::circuitPin(sink), HIGH);
+    EXPECT_SX1509_DIGITAL_READ(sink_device, TestableWall::circuitPin(sink), HIGH);
     expectCircuitIsInput(source);
 
     ASSERT_FALSE(wall->isCircuitConnected(source, sink));

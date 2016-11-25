@@ -14,19 +14,70 @@ namespace testing {
 
 using testing::StrictMock;
 
+
+class TestableWall : public Wall
+{
+public:
+    TestableWall* usingFactory(FactoryInterface *io) override { this->Wall::usingFactory(io); return this; }
+
+    using Wall::initializeIOexpanders;
+    using Wall::initializeAnalogExpanders;
+    using Wall::initializeLEDarrayOutputs;
+    using Wall::initializeMotorOutputs;
+    using Wall::initializePWMOutputs;
+    using Wall::initializeToggleInputs;
+    using Wall::initializeJoystickInputs;
+    using Wall::resetDigitalIO;
+    using Wall::resetAnalogIO;
+    using Wall::initializeButtonInOuts;
+    using Wall::initalizeELwireOutputs;
+    using Wall::initializeLCD;
+
+    using Wall::setMultiplexerForIOexpander;
+    using Wall::setMultiplexerForAnalog;
+    using Wall::setMultiplexerI2CBus;
+
+    using Wall::ioDeviceBus;
+    using Wall::ioDeviceAddress;
+    using Wall::analogDeviceAddress;
+    using Wall::analogDeviceBus;
+
+    using Wall::normalizedKnobValue;
+    using Wall::normalizedSliderValue;
+
+    using Wall::motorControlPin1;
+    using Wall::motorControlPin2;
+    using Wall::motorPWMpin;
+    using Wall::ledArrayPin;
+    using Wall::ledArrayNormalizedValue;
+    using Wall::greenLEDarrayPin;
+    using Wall::whiteLEDarrayPin;
+    using Wall::redLEDarrayPin;
+    using Wall::indicatorPin;
+    using Wall::toggleSwitchPin;
+    using Wall::photoSensorPin;
+    using Wall::forceSensorPin;
+    using Wall::circuitDevice;
+    using Wall::circuitPin;
+    using Wall::buttonDevice;
+    using Wall::buttonPin;
+    using Wall::buttonLEDpin;
+    using Wall::elWirePin;
+};
+
 class WallFixture : public Test {
 protected:
     
     ArduinoMock *Intel101;
     MockDeviceFactory *io;
     StrictMock<WireMock> *i2c;
-    WallImplementation *wall;
+    TestableWall *wall;
 
     WallFixture() {
         Intel101 = arduinoMockInstance();
         i2c = static_cast<StrictMock<WireMock> *>(WireMockInstance());
         io = new MockDeviceFactory;
-        wall = (new WallImplementation)->usingFactory(io);
+        wall = (new TestableWall)->usingFactory(io);
     }
 
     virtual ~WallFixture() {

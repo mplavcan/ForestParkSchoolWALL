@@ -115,12 +115,62 @@ typedef enum
 } circuit_end;
 
 
-class WallImplementation
+class WallInterface
 {
 public:
-    WallImplementation() : pwm(nullptr),lcd(nullptr),lastSliderPosition(1024) {}
-    WallImplementation* usingFactory(FactoryInterface *io);
-    bool initialize(void);
+    virtual ~WallInterface() {}
+    virtual WallInterface* usingFactory(FactoryInterface *io) = 0;
+    virtual bool initialize(void) = 0;
+    virtual void turnOnLEDarray(led_array array, led_section section) = 0;
+    virtual void turnOffLEDarray(led_array array, led_section section) = 0;
+    virtual void setLEDarrayBrightness(led_array array, led_section section, unsigned char brightness) = 0;
+    virtual void setMotorDirectionClockwise(wall_motor motor) = 0;
+    virtual void setMotorDirectionCounterClockwise(wall_motor motor) = 0;
+    virtual void setMotorSpeed(wall_motor motor, unsigned char speed) = 0;
+    virtual void stopMotor(wall_motor motor) = 0;
+    virtual void turnTransducerOn(void) = 0;
+    virtual void turnTransducerOff(void) = 0;
+    virtual void turnIndicatorOn(indicator_led lamp) = 0;
+    virtual void turnIndicatorOff(indicator_led lamp) = 0;
+    virtual void setIndicatorBrightness(indicator_led lamp, unsigned int value) = 0;
+    virtual bool isToggleOn(toggle_switch toggle) = 0;
+    virtual bool isJoystickUp(void) = 0;
+    virtual bool isJoystickDown(void) = 0;
+    virtual bool isJoystickLeft(void) = 0;
+    virtual bool isJoystickRight(void) = 0;
+    virtual unsigned int getKnobPosition(void) = 0;
+    virtual unsigned int getSliderPosition(void) = 0;
+    virtual unsigned int getPhotoSensorValue(photo_sensor sensor) = 0;
+    virtual unsigned int getTouchSensorValue(force_sensor sensor) = 0;
+    virtual int readCircuitState(circuit_end end) = 0;
+    virtual void resetCircuitInputs(void) = 0;
+    virtual void setCircuitAsInput(circuit_end end) = 0;
+    virtual void setCircuitAsOutput(circuit_end end) = 0;
+    virtual bool isCircuitConnected(circuit_end A, circuit_end B) = 0;
+    virtual bool isButtonDepressed(large_button button) = 0;
+    virtual void illuminateButton(large_button button) = 0;
+    virtual void extinguishButton(large_button button) = 0;
+    virtual void illuminateELWire(EL_wire line) = 0;
+    virtual void extinguishELWire(EL_wire line) = 0;
+    virtual void lcdPrintAt(unsigned char column, unsigned char row, const char buf[]) = 0;
+    virtual void lcdSetBacklightColor(unsigned char red, unsigned char green, unsigned char blue) = 0;
+    virtual void clearLCDscreen(void) = 0;
+
+    virtual indicator_led indicatorforInput(input_hex hex) = 0;
+    virtual indicator_led indicatorForOutput(output_hex hex) = 0;
+    virtual circuit_end leftCircuitForInput(input_hex hex) = 0;
+    virtual circuit_end rightCircuitForInput(input_hex hex) = 0;
+    virtual circuit_end leftCircuitForOutput(output_hex hex) = 0;
+    virtual circuit_end rightCircuitForOutput(output_hex hex) = 0;
+};
+
+class Wall : public WallInterface
+{
+public:
+    Wall() : pwm(nullptr),lcd(nullptr),lastSliderPosition(1024) {}
+    Wall* usingFactory(FactoryInterface *io) override;
+    bool initialize(void) override;
+protected:
     bool initializeIOexpanders(void);
     void initializeAnalogExpanders(void);
     void initializeLEDarrayOutputs(void);
@@ -138,48 +188,50 @@ public:
     void setMultiplexerForAnalog(int device);
     void setMultiplexerI2CBus(int bus);
     
-    void turnOnLEDarray(led_array array, led_section section);
-    void turnOffLEDarray(led_array array, led_section section);
-    void setLEDarrayBrightness(led_array array, led_section section, unsigned char brightness);
-    void setMotorDirectionClockwise(wall_motor motor);
-    void setMotorDirectionCounterClockwise(wall_motor motor);
-    void setMotorSpeed(wall_motor motor, unsigned char speed);
-    void stopMotor(wall_motor motor);
-    void turnTransducerOn(void);
-    void turnTransducerOff(void);
-    void turnIndicatorOn(indicator_led lamp);
-    void turnIndicatorOff(indicator_led lamp);
-    void setIndicatorBrightness(indicator_led lamp, unsigned int value);
-    bool isToggleOn(toggle_switch toggle);
-    bool isJoystickUp(void);
-    bool isJoystickDown(void);
-    bool isJoystickLeft(void);
-    bool isJoystickRight(void);
-    unsigned int getKnobPosition(void);
-    unsigned int getSliderPosition(void);
-    unsigned int getPhotoSensorValue(photo_sensor sensor);
-    unsigned int getTouchSensorValue(force_sensor sensor);
-    int readCircuitState(circuit_end end);
-    void resetCircuitInputs(void);
-    void setCircuitAsInput(circuit_end end);
-    void setCircuitAsOutput(circuit_end end);
-    bool isCircuitConnected(circuit_end A, circuit_end B);
-    bool isButtonDepressed(large_button button);
-    void illuminateButton(large_button button);
-    void extinguishButton(large_button button);
-    void illuminateELWire(EL_wire line);
-    void extinguishELWire(EL_wire line);
-    void lcdPrintAt(unsigned char column, unsigned char row, const char buf[]);
-    void lcdSetBacklightColor(unsigned char red, unsigned char green, unsigned char blue);
-    void clearLCDscreen(void);
+public:
+    void turnOnLEDarray(led_array array, led_section section) override;
+    void turnOffLEDarray(led_array array, led_section section) override;
+    void setLEDarrayBrightness(led_array array, led_section section, unsigned char brightness) override;
+    void setMotorDirectionClockwise(wall_motor motor) override;
+    void setMotorDirectionCounterClockwise(wall_motor motor) override;
+    void setMotorSpeed(wall_motor motor, unsigned char speed) override;
+    void stopMotor(wall_motor motor) override;
+    void turnTransducerOn(void) override;
+    void turnTransducerOff(void) override;
+    void turnIndicatorOn(indicator_led lamp) override;
+    void turnIndicatorOff(indicator_led lamp) override;
+    void setIndicatorBrightness(indicator_led lamp, unsigned int value) override;
+    bool isToggleOn(toggle_switch toggle) override;
+    bool isJoystickUp(void) override;
+    bool isJoystickDown(void) override;
+    bool isJoystickLeft(void) override;
+    bool isJoystickRight(void) override;
+    unsigned int getKnobPosition(void) override;
+    unsigned int getSliderPosition(void) override;
+    unsigned int getPhotoSensorValue(photo_sensor sensor) override;
+    unsigned int getTouchSensorValue(force_sensor sensor) override;
+    int readCircuitState(circuit_end end) override;
+    void resetCircuitInputs(void) override;
+    void setCircuitAsInput(circuit_end end) override;
+    void setCircuitAsOutput(circuit_end end) override;
+    bool isCircuitConnected(circuit_end A, circuit_end B) override;
+    bool isButtonDepressed(large_button button) override;
+    void illuminateButton(large_button button) override;
+    void extinguishButton(large_button button) override;
+    void illuminateELWire(EL_wire line) override;
+    void extinguishELWire(EL_wire line) override;
+    void lcdPrintAt(unsigned char column, unsigned char row, const char buf[]) override;
+    void lcdSetBacklightColor(unsigned char red, unsigned char green, unsigned char blue) override;
+    void clearLCDscreen(void) override;
 
-    static indicator_led indicatorforInput(input_hex hex);
-    static indicator_led indicatorForOutput(output_hex hex);
-    static circuit_end leftCircuitForInput(input_hex hex);
-    static circuit_end rightCircuitForInput(input_hex hex);
-    static circuit_end leftCircuitForOutput(output_hex hex);
-    static circuit_end rightCircuitForOutput(output_hex hex);
+    indicator_led indicatorforInput(input_hex hex) override;
+    indicator_led indicatorForOutput(output_hex hex) override;
+    circuit_end leftCircuitForInput(input_hex hex) override;
+    circuit_end rightCircuitForInput(input_hex hex) override;
+    circuit_end leftCircuitForOutput(output_hex hex) override;
+    circuit_end rightCircuitForOutput(output_hex hex) override;
 
+protected:
     static const int ioDeviceBus[NUMBER_OF_SX1509_DEVICES];
     static const int ioDeviceAddress[NUMBER_OF_SX1509_DEVICES];
     static const int analogDeviceAddress[NUMBER_OF_ADS1015_DEVICES];
@@ -216,55 +268,6 @@ private:
     unsigned int lastSliderPosition;
     
     int writeMultiplexerForBus(int bus);
-};
-
-
-class Wall: private WallImplementation
-{
-public:
-    Wall* usingFactory(FactoryInterface *io) { this->WallImplementation::usingFactory(io); return this; }
-    using WallImplementation::initialize;
-    using WallImplementation::turnOnLEDarray;
-    using WallImplementation::turnOffLEDarray;
-    using WallImplementation::setLEDarrayBrightness;
-    using WallImplementation::setMotorDirectionClockwise;
-    using WallImplementation::setMotorDirectionCounterClockwise;
-    using WallImplementation::setMotorSpeed;
-    using WallImplementation::stopMotor;
-    using WallImplementation::turnTransducerOn;
-    using WallImplementation::turnTransducerOff;
-    using WallImplementation::turnIndicatorOn;
-    using WallImplementation::turnIndicatorOff;
-    using WallImplementation::setIndicatorBrightness;
-    using WallImplementation::isToggleOn;
-    using WallImplementation::isJoystickUp;
-    using WallImplementation::isJoystickDown;
-    using WallImplementation::isJoystickLeft;
-    using WallImplementation::isJoystickRight;
-    using WallImplementation::getKnobPosition;
-    using WallImplementation::getSliderPosition;
-    using WallImplementation::getPhotoSensorValue;
-    using WallImplementation::getTouchSensorValue;
-    using WallImplementation::readCircuitState;
-    using WallImplementation::resetCircuitInputs;
-    using WallImplementation::setCircuitAsInput;
-    using WallImplementation::setCircuitAsOutput;
-    using WallImplementation::isCircuitConnected;
-    using WallImplementation::isButtonDepressed;
-    using WallImplementation::illuminateButton;
-    using WallImplementation::extinguishButton;
-    using WallImplementation::illuminateELWire;
-    using WallImplementation::extinguishELWire;
-    using WallImplementation::lcdPrintAt;
-    using WallImplementation::lcdSetBacklightColor;
-    using WallImplementation::clearLCDscreen;
-
-    using WallImplementation::indicatorforInput;
-    using WallImplementation::indicatorForOutput;
-    using WallImplementation::leftCircuitForInput;
-    using WallImplementation::rightCircuitForInput;
-    using WallImplementation::leftCircuitForOutput;
-    using WallImplementation::rightCircuitForOutput;
 };
 
 #endif // _WALL_H_

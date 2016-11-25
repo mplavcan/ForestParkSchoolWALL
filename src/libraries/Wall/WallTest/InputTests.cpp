@@ -15,7 +15,7 @@ TEST_P(SwitchFixture, TestReadSwitchOn)
     InSequence is_switch_on;
     expectMultiplexerSelectsSX1509(INPUT_TOGGLE_I2C_DEVICE);
     EXPECT_SX1509_DIGITAL_READ(INPUT_TOGGLE_I2C_DEVICE,
-        WallImplementation::toggleSwitchPin(toggle), LOW);
+        TestableWall::toggleSwitchPin(toggle), LOW);
     ASSERT_TRUE(wall->isToggleOn(toggle));
 }
 TEST_P(SwitchFixture, TestReadSwitchOff)
@@ -25,7 +25,7 @@ TEST_P(SwitchFixture, TestReadSwitchOff)
     InSequence is_switch_off;
     expectMultiplexerSelectsSX1509(INPUT_TOGGLE_I2C_DEVICE);
     EXPECT_SX1509_DIGITAL_READ(INPUT_TOGGLE_I2C_DEVICE,
-        WallImplementation::toggleSwitchPin(toggle), HIGH);
+        TestableWall::toggleSwitchPin(toggle), HIGH);
     ASSERT_FALSE(wall->isToggleOn(toggle));
 }
 INSTANTIATE_TEST_CASE_P(ToggleSwitchTests, SwitchFixture, Values(
@@ -173,7 +173,7 @@ TEST_P(LightSensorFixture, TestReadBrightnessValue)
     InSequence read_photo_sensor;
     expectMultiplexerSelectsADS1015(INPUT_PHOTO_SENSOR_I2C_DEVICE);
     EXPECT_ADS1015_ANALOG_READ(INPUT_PHOTO_SENSOR_I2C_DEVICE,
-        WallImplementation::photoSensorPin(sensor), brightness);
+        TestableWall::photoSensorPin(sensor), brightness);
     ASSERT_EQ(wall->getPhotoSensorValue(sensor), brightness);
 }
 INSTANTIATE_TEST_CASE_P(PhotoresistorTests, LightSensorFixture, Values(
@@ -193,7 +193,7 @@ TEST_P(TouchSensorFixture, TestReadTOUCHValue)
     InSequence read_force_sensor;
     expectMultiplexerSelectsADS1015(INPUT_FORCE_SENSOR_I2C_DEVICE);
     EXPECT_ADS1015_ANALOG_READ(INPUT_FORCE_SENSOR_I2C_DEVICE,
-        WallImplementation::forceSensorPin(sensor), force);
+        TestableWall::forceSensorPin(sensor), force);
     ASSERT_EQ(wall->getTouchSensorValue(sensor), force);
 }
 INSTANTIATE_TEST_CASE_P(TOUCHTests, TouchSensorFixture, Values(
@@ -210,9 +210,9 @@ TEST_P(ButtonFixture, TestButtonDepressed)
     const large_button button = GetParam();
 
     InSequence check_button_depressed;
-    int device = WallImplementation::buttonDevice(button);
+    int device = TestableWall::buttonDevice(button);
     expectMultiplexerSelectsSX1509(device);
-    EXPECT_SX1509_DIGITAL_READ(device, WallImplementation::buttonPin(button), LOW);
+    EXPECT_SX1509_DIGITAL_READ(device, TestableWall::buttonPin(button), LOW);
     ASSERT_TRUE(wall->isButtonDepressed(button));
 }
 TEST_P(ButtonFixture, TestButtonNotDepressed)
@@ -220,29 +220,29 @@ TEST_P(ButtonFixture, TestButtonNotDepressed)
     const large_button button = GetParam();
 
     InSequence check_button_depressed;
-    int device = WallImplementation::buttonDevice(button);
+    int device = TestableWall::buttonDevice(button);
     expectMultiplexerSelectsSX1509(device);
-    EXPECT_SX1509_DIGITAL_READ(device, WallImplementation::buttonPin(button), HIGH);
+    EXPECT_SX1509_DIGITAL_READ(device, TestableWall::buttonPin(button), HIGH);
     ASSERT_FALSE(wall->isButtonDepressed(button));
 }
 TEST_P(ButtonFixture, TestButtonIlluminated)
 {
     const large_button button = GetParam();
-    const int device = WallImplementation::buttonDevice(button);
+    const int device = TestableWall::buttonDevice(button);
 
     InSequence illuminate_button;
     expectMultiplexerSelectsSX1509(device);
-    EXPECT_SX1509_DIGITAL_WRITE(device, WallImplementation::buttonLEDpin(button), HIGH);
+    EXPECT_SX1509_DIGITAL_WRITE(device, TestableWall::buttonLEDpin(button), HIGH);
     wall->illuminateButton(button);
 }
 TEST_P(ButtonFixture, TestButtonDarkened)
 {
     const large_button button = GetParam();
-    const int device = WallImplementation::buttonDevice(button);
+    const int device = TestableWall::buttonDevice(button);
 
     InSequence darken_button;
     expectMultiplexerSelectsSX1509(device);
-    EXPECT_SX1509_DIGITAL_WRITE(device, WallImplementation::buttonLEDpin(button), LOW);
+    EXPECT_SX1509_DIGITAL_WRITE(device, TestableWall::buttonLEDpin(button), LOW);
     wall->extinguishButton(button);
 }
 INSTANTIATE_TEST_CASE_P(ButtonTests, ButtonFixture, Values(

@@ -11,7 +11,7 @@
 
 class FunWithCircuits {
 public:
-    FunWithCircuits(Wall *w) : wall(w) {}
+    FunWithCircuits(WallInterface *w) : wall(w) {}
     bool setup(void);
     void loop(unsigned long elapsedTime);
 
@@ -34,7 +34,7 @@ public:
 
 
 private:
-    Wall *wall;
+    WallInterface *wall;
 
     input_hex energizedInput = NO_INPUT;
     output_hex energizedOutput = NO_OUTPUT;

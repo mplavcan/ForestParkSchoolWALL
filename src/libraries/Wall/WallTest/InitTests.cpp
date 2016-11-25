@@ -20,7 +20,7 @@ TEST_P(InitFixture, TestFailedIOExpanderInitialization)
     {
         expectMultiplexerSelectsSX1509(device);
         EXPECT_CALL(*io->accessMockSX1509(device),
-            begin(WallImplementation::ioDeviceAddress[device], SPARKFUN_SX1509_RESET_PIN))
+            begin(TestableWall::ioDeviceAddress[device], SPARKFUN_SX1509_RESET_PIN))
             .WillOnce(Return(device != failingDevice));
         if (device == failingDevice)
             break;
@@ -138,23 +138,23 @@ TEST_F(InitFixture, TestLargeButtonPinModes)
 }
 TEST_F(InitFixture, TestELwirePinModes)
 {
-    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(RED_WIRE_ONE), OUTPUT));
-    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(RED_WIRE_TWO), OUTPUT));
-    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(GREEN_WIRE_ONE), OUTPUT));
-    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(GREEN_WIRE_TWO), OUTPUT));
-    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(YELLOW_WIRE), OUTPUT));
-    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(WHITE_WIRE), OUTPUT));
-    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(BLUE_WIRE_ONE), OUTPUT));
-    EXPECT_CALL(*Intel101, pinMode(WallImplementation::elWirePin(BLUE_WIRE_TWO), OUTPUT));
+    EXPECT_CALL(*Intel101, pinMode(TestableWall::elWirePin(RED_WIRE_ONE), OUTPUT));
+    EXPECT_CALL(*Intel101, pinMode(TestableWall::elWirePin(RED_WIRE_TWO), OUTPUT));
+    EXPECT_CALL(*Intel101, pinMode(TestableWall::elWirePin(GREEN_WIRE_ONE), OUTPUT));
+    EXPECT_CALL(*Intel101, pinMode(TestableWall::elWirePin(GREEN_WIRE_TWO), OUTPUT));
+    EXPECT_CALL(*Intel101, pinMode(TestableWall::elWirePin(YELLOW_WIRE), OUTPUT));
+    EXPECT_CALL(*Intel101, pinMode(TestableWall::elWirePin(WHITE_WIRE), OUTPUT));
+    EXPECT_CALL(*Intel101, pinMode(TestableWall::elWirePin(BLUE_WIRE_ONE), OUTPUT));
+    EXPECT_CALL(*Intel101, pinMode(TestableWall::elWirePin(BLUE_WIRE_TWO), OUTPUT));
 
-    EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(RED_WIRE_ONE), LOW));
-    EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(RED_WIRE_TWO), LOW));
-    EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(GREEN_WIRE_ONE), LOW));
-    EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(GREEN_WIRE_TWO), LOW));
-    EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(YELLOW_WIRE), LOW));
-    EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(WHITE_WIRE), LOW));
-    EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(BLUE_WIRE_ONE), LOW));
-    EXPECT_CALL(*Intel101, digitalWrite(WallImplementation::elWirePin(BLUE_WIRE_TWO), LOW));
+    EXPECT_CALL(*Intel101, digitalWrite(TestableWall::elWirePin(RED_WIRE_ONE), LOW));
+    EXPECT_CALL(*Intel101, digitalWrite(TestableWall::elWirePin(RED_WIRE_TWO), LOW));
+    EXPECT_CALL(*Intel101, digitalWrite(TestableWall::elWirePin(GREEN_WIRE_ONE), LOW));
+    EXPECT_CALL(*Intel101, digitalWrite(TestableWall::elWirePin(GREEN_WIRE_TWO), LOW));
+    EXPECT_CALL(*Intel101, digitalWrite(TestableWall::elWirePin(YELLOW_WIRE), LOW));
+    EXPECT_CALL(*Intel101, digitalWrite(TestableWall::elWirePin(WHITE_WIRE), LOW));
+    EXPECT_CALL(*Intel101, digitalWrite(TestableWall::elWirePin(BLUE_WIRE_ONE), LOW));
+    EXPECT_CALL(*Intel101, digitalWrite(TestableWall::elWirePin(BLUE_WIRE_TWO), LOW));
     wall->initalizeELwireOutputs();
 }
 

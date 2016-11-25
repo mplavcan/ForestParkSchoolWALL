@@ -114,7 +114,7 @@ input_hex FunWithCircuits::findConnectedInputHex(void)
     for (int hex = KNOB_HEX; hex <= TOUCH_SENSOR_HEX; hex++)
     {
         input_hex in = static_cast<input_hex>(hex);
-        circuit_end end = Wall::leftCircuitForInput(in);
+        circuit_end end = wall->leftCircuitForInput(in);
         if (wall->isCircuitConnected(CIRCUIT_POSITIVE_POLE, end))
             return in;
     }
@@ -125,7 +125,7 @@ output_hex FunWithCircuits::findConnectedOutputHex(void)
     for (int hex = WHITE_LED_HEX; hex <= TRANSDUCER_HEX; hex++)
     {
         output_hex out = static_cast<output_hex>(hex);
-        circuit_end end = Wall::rightCircuitForOutput(out);
+        circuit_end end = wall->rightCircuitForOutput(out);
         if (wall->isCircuitConnected(CIRCUIT_NEGATIVE_POLE, end))
             return out;
     }
@@ -165,8 +165,8 @@ void FunWithCircuits::collectCircuitConnections(void)
     energizedInput = findConnectedInputHex();
     energizedOutput = findConnectedOutputHex();
     bool inputAndOutputConnected = wall->isCircuitConnected(
-        Wall::rightCircuitForInput(energizedInput),
-        Wall::leftCircuitForOutput(energizedOutput));
+        wall->rightCircuitForInput(energizedInput),
+        wall->leftCircuitForOutput(energizedOutput));
 
     circuitComplete = inputAndOutputConnected &&
         (energizedInput != NO_INPUT) &&
@@ -177,8 +177,8 @@ void FunWithCircuits::lightIndicatorsForConnectedCircuits(unsigned long currentT
 {
     if (circuitComplete)
     {
-        indicator_led inputLamp = Wall::indicatorforInput(energizedInput);
-        indicator_led outputLamp = Wall::indicatorForOutput(energizedOutput);
+        indicator_led inputLamp = wall->indicatorforInput(energizedInput);
+        indicator_led outputLamp = wall->indicatorForOutput(energizedOutput);
         wall->turnIndicatorOn(inputLamp);
         wall->turnIndicatorOn(outputLamp);
     }
@@ -187,7 +187,7 @@ void FunWithCircuits::lightIndicatorsForConnectedCircuits(unsigned long currentT
         for (int hex = KNOB_HEX; hex <= TOUCH_SENSOR_HEX; hex++)
         {
             input_hex in = static_cast<input_hex>(hex);
-            indicator_led inputLamp = Wall::indicatorforInput(in);
+            indicator_led inputLamp = wall->indicatorforInput(in);
             if (in == energizedInput)
                 wall->setIndicatorBrightness(inputLamp, sawtoothCycle(currentTime));
             else
@@ -196,7 +196,7 @@ void FunWithCircuits::lightIndicatorsForConnectedCircuits(unsigned long currentT
         for (int hex = WHITE_LED_HEX; hex <= TRANSDUCER_HEX; hex++)
         {
             output_hex out = static_cast<output_hex>(hex);
-            indicator_led outputLamp = Wall::indicatorForOutput(out);
+            indicator_led outputLamp = wall->indicatorForOutput(out);
             if (out == energizedOutput)
                 wall->setIndicatorBrightness(outputLamp, sawtoothCycle(currentTime));
             else
